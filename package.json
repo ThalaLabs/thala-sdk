@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "dev": "npx tsc && node index.js",
+    "format": "prettier . --write"
+  },
+  "devDependencies": {
+    "prettier": "3.0.3",
+    "typescript": "^5.2.2"
+  }
+}
