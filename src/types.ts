@@ -15,6 +15,7 @@ type Route = {
   amountIn: number;
   amountOut: number;
   priceImpactPercentage: number;
+  type: RouteType;
 };
 
 type LiquidityPool = {
@@ -26,6 +27,7 @@ type LiquidityPool = {
   amp?: number;
 };
 
+type RouteType = "exact_input" | "exact_output";
 type PoolType = "stable_pool" | "weighted_pool";
 type Graph = Record<string, Edge[]>;
 type Distances = Record<string, number>;

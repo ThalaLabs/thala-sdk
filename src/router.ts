@@ -214,6 +214,7 @@ export function findRouteGivenExactInput(
     amountIn,
     amountOut: distances[endToken],
     priceImpactPercentage,
+    type: "exact_input",
   };
 }
 
@@ -325,5 +326,6 @@ export function findRouteGivenExactOutput(
     amountIn: distances[startToken],
     amountOut,
     priceImpactPercentage,
+    type: "exact_output",
   };
 }

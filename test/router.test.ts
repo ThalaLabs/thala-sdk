@@ -69,6 +69,7 @@ test("Exact input 2 hop", async () => {
   expect(
     route!.path[0].from === startToken && route!.path[1].to === endToken,
   ).toBe(true);
+  expect(route!.path[0].to == route!.path[1].from).toBe(true);
 });
 
 test("Exact input 3 hop", async () => {
@@ -92,6 +93,8 @@ test("Exact input 3 hop", async () => {
   expect(
     route!.path[0].from === startToken && route!.path[2].to === endToken,
   ).toBe(true);
+  expect(route!.path[0].to == route!.path[1].from).toBe(true);
+  expect(route!.path[1].to == route!.path[2].from).toBe(true);
 });
 
 test("Exact output 1 hop", async () => {
@@ -136,6 +139,7 @@ test("Exact output 2 hop", async () => {
   expect(
     route!.path[0].from === startToken && route!.path[1].to === endToken,
   ).toBe(true);
+  expect(route!.path[0].to == route!.path[1].from).toBe(true);
 });
 
 test("Exact output 3 hop", async () => {
@@ -159,6 +163,8 @@ test("Exact output 3 hop", async () => {
   expect(
     route!.path[0].from === startToken && route!.path[2].to === endToken,
   ).toBe(true);
+  expect(route!.path[0].to == route!.path[1].from).toBe(true);
+  expect(route!.path[1].to == route!.path[2].from).toBe(true);
 });
 
 test("Low price impact for MOD-USDC stable pool", async () => {
