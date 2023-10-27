@@ -44,9 +44,8 @@ test("Exact input 1 hop", async () => {
     route,
   );
   expect(route!.path.length).toBe(1);
-  expect(
-    route!.path[0].from === startToken && route!.path[0].to === endToken,
-  ).toBe(true);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[0].to === endToken).toBe(true);
 });
 
 test("Exact input 2 hop", async () => {
@@ -66,9 +65,8 @@ test("Exact input 2 hop", async () => {
     route,
   );
   expect(route!.path.length).toBe(2);
-  expect(
-    route!.path[0].from === startToken && route!.path[1].to === endToken,
-  ).toBe(true);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[1].to === endToken).toBe(true);
   expect(route!.path[0].to == route!.path[1].from).toBe(true);
 });
 
@@ -90,9 +88,8 @@ test("Exact input 3 hop", async () => {
     route,
   );
   expect(route!.path.length).toBe(3);
-  expect(
-    route!.path[0].from === startToken && route!.path[2].to === endToken,
-  ).toBe(true);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[2].to === endToken).toBe(true);
   expect(route!.path[0].to == route!.path[1].from).toBe(true);
   expect(route!.path[1].to == route!.path[2].from).toBe(true);
 });
@@ -114,9 +111,8 @@ test("Exact output 1 hop", async () => {
     route,
   );
   expect(route!.path.length).toBe(1);
-  expect(
-    route!.path[0].from === startToken && route!.path[0].to === endToken,
-  ).toBe(true);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[0].to === endToken).toBe(true);
 });
 
 test("Exact output 2 hop", async () => {
@@ -136,9 +132,8 @@ test("Exact output 2 hop", async () => {
     route,
   );
   expect(route!.path.length).toBe(2);
-  expect(
-    route!.path[0].from === startToken && route!.path[1].to === endToken,
-  ).toBe(true);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[1].to === endToken).toBe(true);
   expect(route!.path[0].to == route!.path[1].from).toBe(true);
 });
 
@@ -160,9 +155,8 @@ test("Exact output 3 hop", async () => {
     route,
   );
   expect(route!.path.length).toBe(3);
-  expect(
-    route!.path[0].from === startToken && route!.path[2].to === endToken,
-  ).toBe(true);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[2].to === endToken).toBe(true);
   expect(route!.path[0].to == route!.path[1].from).toBe(true);
   expect(route!.path[1].to == route!.path[2].from).toBe(true);
 });
@@ -184,9 +178,8 @@ test("Low price impact for MOD-USDC stable pool", async () => {
     route,
   );
   expect(route!.path.length).toBe(1);
-  expect(
-    route!.path[0].from === startToken && route!.path[0].to === endToken,
-  ).toBe(true);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[0].to === endToken).toBe(true);
   expect(route!.priceImpactPercentage).toBeLessThan(0.1);
 
   const amountOut = 1000;
@@ -200,8 +193,7 @@ test("Low price impact for MOD-USDC stable pool", async () => {
     route2,
   );
   expect(route2!.path.length).toBe(1);
-  expect(
-    route2!.path[0].from === startToken && route2!.path[0].to === endToken,
-  ).toBe(true);
+  expect(route2!.path[0].from === startToken).toBe(true);
+  expect(route2!.path[0].to === endToken).toBe(true);
   expect(route2!.priceImpactPercentage).toBeLessThan(0.1);
 });
