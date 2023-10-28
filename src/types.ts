@@ -27,6 +27,29 @@ type LiquidityPool = {
   amp?: number;
 };
 
+type Coin = {
+  address: string;
+  decimals: number;
+};
+
+type RawPool = {
+  name: string;
+  asset0: number;
+  asset1: number;
+  asset2?: number;
+  asset3?: number;
+  balance0: number;
+  balance1: number;
+  balance2?: number;
+  balance3?: number;
+  amp?: number;
+};
+
+type PoolData = {
+  pools: RawPool[];
+  coins: Coin[];
+};
+
 type RouteType = "exact_input" | "exact_output";
 type PoolType = "stable_pool" | "weighted_pool";
 type Graph = Record<string, Edge[]>;
@@ -52,4 +75,7 @@ export type {
   PoolType,
   AssetIndex,
   BalanceIndex,
+  Coin,
+  RawPool,
+  PoolData,
 };

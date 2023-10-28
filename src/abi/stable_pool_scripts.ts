@@ -1,5 +1,5 @@
 export const STABLE_POOL_SCRIPTS_ABI = {
-  address: "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
+  address: "0x9cf21a8d229e5a9bb99b14a78d232ecb6dbf7049c861b5411ce3b5bb425e3728",
   name: "stable_pool_scripts",
   friends: [],
   exposed_functions: [

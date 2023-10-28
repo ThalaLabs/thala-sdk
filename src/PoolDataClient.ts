@@ -1,27 +1,5 @@
 import axios from "axios";
-
-interface Coin {
-  address: string;
-  decimals: number;
-}
-
-interface Pool {
-  name: string;
-  asset0: number;
-  asset1: number;
-  asset2?: number;
-  asset3?: number;
-  balance0: number;
-  balance1: number;
-  balance2?: number;
-  balance3?: number;
-  amp?: number;
-}
-
-interface PoolData {
-  pools: Pool[];
-  coins: Coin[];
-}
+import { Coin, RawPool, PoolData } from "./types";
 
 class PoolDataClient {
   private poolData: PoolData | null = null;
@@ -37,9 +15,22 @@ class PoolDataClient {
     const currentTime = Date.now();
     if (!this.poolData || currentTime - this.lastUpdated > this.expiry) {
       const response = await axios.get(this.URL);
+
+      // Convert the indices in the pools to the actual coin addresses
+      const coins = response.data.coins as Coin[];
+      const pools = response.data.pools.map((pool: RawPool) => {
+        return {
+          ...pool,
+          asset0: coins[pool.asset0],
+          asset1: coins[pool.asset1],
+          asset2: pool.asset2 ? coins[pool.asset2] : undefined,
+          asset3: pool.asset3 ? coins[pool.asset3] : undefined,
+        };
+      });
+
       this.poolData = {
-        pools: response.data.pools,
-        coins: response.data.coins,
+        pools,
+        coins,
       };
       this.lastUpdated = currentTime;
     }

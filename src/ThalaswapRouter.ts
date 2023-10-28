@@ -1,6 +1,13 @@
 import { findRouteGivenExactInput, findRouteGivenExactOutput } from "./router";
 import { PoolDataClient } from "./PoolDataClient";
-import { Graph, Route, AssetIndex, BalanceIndex, LiquidityPool } from "./types";
+import {
+  Coin,
+  Graph,
+  Route,
+  AssetIndex,
+  BalanceIndex,
+  LiquidityPool,
+} from "./types";
 import { EntryPayload, createEntryPayload } from "@thalalabs/surf";
 import { STABLE_POOL_SCRIPTS_ABI } from "./abi/stable_pool_scripts";
 import { WEIGHTED_POOL_SCRIPTS_ABI } from "./abi/weighted_pool_scripts";
@@ -48,9 +55,14 @@ const calcMinReceivedValue = (
 const calcMaxSoldValue = (expectedAmountIn: number, slippage: number): number =>
   expectedAmountIn * (1.0 + slippage / 100);
 
+const scaleUp = (amount: number, decimals: number): number => {
+  return Math.floor(amount * Math.pow(10, decimals));
+};
+
 class ThalaswapRouter {
   private client: PoolDataClient;
   private graph: Graph | null = null;
+  private coins: Coin[] | null = null;
 
   constructor(dataURL: string) {
     this.client = new PoolDataClient(dataURL);
@@ -63,6 +75,7 @@ class ThalaswapRouter {
   async refreshData() {
     const poolData = await this.client.getPoolData();
     const pools = poolData.pools;
+    this.coins = poolData.coins;
     this.graph = await this.buildGraph(pools);
   }
 
@@ -188,15 +201,27 @@ class ThalaswapRouter {
       throw new Error("Invalid route");
     }
 
+    const tokenInDecimals = this.coins!.find(
+      (coin) => coin.address === route.path[0].from,
+    )!.decimals;
+    const tokenOutDecimals = this.coins!.find(
+      (coin) => coin.address === route.path[route.path.length - 1].to,
+    )!.decimals;
     const args =
       route.type === "exact_input"
         ? [
-            route.amountIn,
-            calcMinReceivedValue(route.amountOut, slippagePercentage),
+            scaleUp(route.amountIn, tokenInDecimals),
+            scaleUp(
+              calcMinReceivedValue(route.amountOut, slippagePercentage),
+              tokenOutDecimals,
+            ),
           ]
         : [
-            route.amountOut,
-            calcMaxSoldValue(route.amountIn, slippagePercentage),
+            scaleUp(route.amountOut, tokenInDecimals),
+            scaleUp(
+              calcMaxSoldValue(route.amountIn, slippagePercentage),
+              tokenOutDecimals,
+            ),
           ];
     if (route.path.length == 1) {
       const path = route.path[0];

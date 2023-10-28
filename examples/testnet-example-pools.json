@@ -1,0 +1,44 @@
+{
+  "coins": [
+    {
+      "address": "0x1::aptos_coin::AptosCoin",
+      "decimals": 8
+    },
+    {
+      "address": "0xec84c05cc40950c86d8a8bed19552f1e8ebb783196bb021c916161d22dc179f7::asset::USDC",
+      "decimals": 6
+    },
+    {
+      "address": "0x02b1e447977ad1cf23f3cce058462dcb96f5d78fc59cc820658b947ca37e4328::ondo_wrapper::THOUSG",
+      "decimals": 6
+    },
+    {
+      "address": "0x649d4e9fe07854c6ed5c8a70c1258981384892712ccb71022c21cb1ec38c50af::mod_coin::MOD",
+      "decimals": 8
+    }
+  ],
+  "pools": [
+    {
+      "name": "S:MOD:USDC",
+      "asset0": 3,
+      "asset1": 1,
+      "balance0": 1000,
+      "balance1": 1000,
+      "amp": 200
+    },
+    {
+      "name": "W:USDC-50:THOUSG-50",
+      "asset0": 1,
+      "asset1": 2,
+      "balance0": 10,
+      "balance1": 0.1
+    },
+    {
+      "name": "W:USDC-50:APT-50",
+      "asset0": 1,
+      "asset1": 0,
+      "balance0": 6.5,
+      "balance1": 1
+    }
+  ]
+}
