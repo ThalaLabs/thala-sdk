@@ -1,10 +1,12 @@
 # Thala Router
 
-Aggregator for ThalaSwap.
+SDK to get optimal swap routing for ThalaSwap. Currently, we support finding routes of no more than 3 hops.
+
+## Examples
+
+TODO
 
 ## Development
-
-### Setup
 
 This package uses Bun for development and package management.
 
