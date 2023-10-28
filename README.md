@@ -5,6 +5,7 @@ SDK to get optimal swap routing for ThalaSwap. Currently, we support finding rou
 ## Examples
 
 ```
+const router = new ThalaswapRouter(API_URL);
 const fromToken = "0x1::aptos_coin::AptosCoin";
 const toToken = "0xec84c05cc40950c86d8a8bed19552f1e8ebb783196bb021c916161d22dc179f7::asset::USDC";
 const amountIn = 0.1;

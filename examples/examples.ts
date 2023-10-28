@@ -1,7 +1,21 @@
+import { createClient } from "@thalalabs/surf";
+import { AptosAccount } from "aptos";
 import { ThalaswapRouter } from "../src";
 
-// JSONKeeper returns pre-defined data containing testnet pools. The data may not be up-to-date.
-const router = new ThalaswapRouter("https://jsonkeeper.com/b/PAHE");
+const client = createClient({
+  nodeUrl: "https://fullnode.testnet.aptoslabs.com/v1",
+});
+
+const privateKey = Buffer.from(
+  "your_private_key_here",
+  "hex",
+);
+const account = new AptosAccount(privateKey);
+
+// `testnet-example-pools.json` contains some testnet pools. The data is not up-to-date.
+const router = new ThalaswapRouter(
+  "https://raw.githubusercontent.com/ThalaLabs/thala-router/main/examples/testnet-example-pools.json",
+);
 
 // Example 1: Exact input. 1 hop
 async function example1() {
@@ -17,10 +31,14 @@ async function example1() {
   );
 
   console.log("Route:", route);
+
+  const entryPayload = router.encodeRoute(route!, 0.5);
   console.log(
     "Entry function payload with 0.5% slippage:",
-    router.encodeRoute(route!, 0.5).rawPayload,
+    entryPayload.rawPayload,
   );
+
+  await client.submitTransaction(entryPayload, { account });
 }
 
 // Example 2: Exact output. Multi hop
@@ -37,10 +55,14 @@ async function example2() {
   );
 
   console.log("Route:", route);
+
+  const entryPayload = router.encodeRoute(route!, 0.5);
   console.log(
     "Entry function payload with 0.5% slippage:",
-    router.encodeRoute(route!, 0.5).rawPayload,
+    entryPayload.rawPayload,
   );
+
+  await client.submitTransaction(entryPayload, { account });
 }
 
 example1();
