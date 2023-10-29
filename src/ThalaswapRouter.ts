@@ -6,6 +6,7 @@ import {
   Route,
   AssetIndex,
   BalanceIndex,
+  RawPool,
   LiquidityPool,
 } from "./types";
 import { EntryPayload, createEntryPayload } from "@thalalabs/surf";
@@ -29,7 +30,7 @@ const encodeWeight = (weight: number): string => {
 // If extendStableArgs is true, then the stable pool type arguments will be extended to 8 arguments (filled with additional 4 nulls)
 const encodePoolType = (
   pool: LiquidityPool,
-  extendStableArgs?: boolean,
+  extendStableArgs: boolean,
 ): string[] => {
   if (pool.poolType === "stable_pool") {
     const typeArgs = NULL_4.map((nullType, i) =>
@@ -102,24 +103,26 @@ class ThalaswapRouter {
     return weights;
   }
 
+  // TODO: remove any
   async buildGraph(pools: any[]): Promise<Graph> {
     const tokens: Set<string> = new Set();
     const graph: Graph = {};
 
     for (const pool of pools) {
       const assets = ["asset0", "asset1", "asset2", "asset3"]
-        .map((a) => pool[a as AssetIndex])
-        .filter((a) => a !== undefined);
+        .filter((a) => pool[a as AssetIndex])
+        .map((a) => pool[a as AssetIndex]);
 
       const balances = ["balance0", "balance1", "balance2", "balance3"]
         .filter((b, i) => assets[i])
         .map((b) => pool[b as BalanceIndex] as number);
 
       for (let i = 0; i < assets.length; i++) {
-        tokens.add(assets[i].address);
+        const token = assets[i].address;
+        tokens.add(token);
         for (let j = 0; j < assets.length; j++) {
           if (i !== j) {
-            if (!graph[assets[i].address]) graph[assets[i].address] = [];
+            if (!graph[token]) graph[token] = [];
             const poolType =
               pool.name[0] === "S" ? "stable_pool" : "weighted_pool";
             const swapFee =
@@ -132,7 +135,7 @@ class ThalaswapRouter {
                 ? this.parseWeightsFromPoolName(pool.name)
                 : undefined;
 
-            graph[assets[i].address].push({
+            graph[token].push({
               pool: {
                 coinAddresses: assets.map((a) => a.address),
                 balances,
@@ -197,7 +200,7 @@ class ThalaswapRouter {
   }
 
   encodeRoute(route: Route, slippagePercentage: number): EntryPayload {
-    if (route.path.length < 1 || route.path.length > 3) {
+    if (route.path.length === 0 || route.path.length > 3) {
       throw new Error("Invalid route");
     }
 
@@ -250,7 +253,6 @@ class ThalaswapRouter {
       const functionName =
         route.type === "exact_input" ? "swap_exact_in_2" : "swap_exact_out_2";
 
-      // TODO: remove any after ABI is ready
       return createEntryPayload(MULTIHOP_ROUTER_ABI as any, {
         function: functionName,
         type_arguments: typeArgs as any,

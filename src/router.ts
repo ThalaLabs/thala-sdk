@@ -180,9 +180,11 @@ export function findRouteGivenExactInput(
     }
 
     const { token, pool } = predecessors[currentToken]!;
-    path.unshift({ from: token, to: currentToken, pool });
+    path.push({ from: token, to: currentToken, pool });
     currentToken = token;
   }
+
+  path.reverse();
 
   // We use the maximum price impact of all path segments as the price impact of the entire route
   let priceImpactPercentage = 0;
