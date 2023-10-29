@@ -46,6 +46,8 @@ test("Exact input 1 hop", async () => {
   expect(route!.path.length).toBe(1);
   expect(route!.path[0].from === startToken).toBe(true);
   expect(route!.path[0].to === endToken).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(121, 0);
+  expect(route!.amountOut).toBeCloseTo(112, 0);
 });
 
 test("Exact input 2 hop", async () => {
@@ -68,6 +70,8 @@ test("Exact input 2 hop", async () => {
   expect(route!.path[0].from === startToken).toBe(true);
   expect(route!.path[1].to === endToken).toBe(true);
   expect(route!.path[0].to == route!.path[1].from).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(227, 0);
+  expect(route!.amountOut).toBeCloseTo(153, 0);
 });
 
 test("Exact input 3 hop", async () => {
@@ -92,6 +96,8 @@ test("Exact input 3 hop", async () => {
   expect(route!.path[2].to === endToken).toBe(true);
   expect(route!.path[0].to == route!.path[1].from).toBe(true);
   expect(route!.path[1].to == route!.path[2].from).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(0.07, 2);
+  expect(route!.amountOut).toBeCloseTo(143, 0);
 });
 
 test("Exact output 1 hop", async () => {
@@ -113,6 +119,8 @@ test("Exact output 1 hop", async () => {
   expect(route!.path.length).toBe(1);
   expect(route!.path[0].from === startToken).toBe(true);
   expect(route!.path[0].to === endToken).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(279, 0);
+  expect(route!.amountIn).toBeCloseTo(326, 0);
 });
 
 test("Exact output 2 hop", async () => {
@@ -135,6 +143,8 @@ test("Exact output 2 hop", async () => {
   expect(route!.path[0].from === startToken).toBe(true);
   expect(route!.path[1].to === endToken).toBe(true);
   expect(route!.path[0].to == route!.path[1].from).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(2898, 0);
+  expect(route!.amountIn).toBeCloseTo(1566, 0);
 });
 
 test("Exact output 3 hop", async () => {
@@ -159,6 +169,8 @@ test("Exact output 3 hop", async () => {
   expect(route!.path[2].to === endToken).toBe(true);
   expect(route!.path[0].to == route!.path[1].from).toBe(true);
   expect(route!.path[1].to == route!.path[2].from).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(0.07, 2);
+  expect(route!.amountIn).toBeCloseTo(145, 0);
 });
 
 test("Low price impact for MOD-USDC stable pool", async () => {
@@ -180,7 +192,8 @@ test("Low price impact for MOD-USDC stable pool", async () => {
   expect(route!.path.length).toBe(1);
   expect(route!.path[0].from === startToken).toBe(true);
   expect(route!.path[0].to === endToken).toBe(true);
-  expect(route!.priceImpactPercentage).toBeLessThan(0.1);
+  expect(route!.priceImpactPercentage).toBeLessThan(0.002);
+  expect(route!.amountOut).toBeCloseTo(1001, 0);
 
   const amountOut = 1000;
   const route2 = await router.getRouteGivenExactOutput(
@@ -195,5 +208,6 @@ test("Low price impact for MOD-USDC stable pool", async () => {
   expect(route2!.path.length).toBe(1);
   expect(route2!.path[0].from === startToken).toBe(true);
   expect(route2!.path[0].to === endToken).toBe(true);
-  expect(route2!.priceImpactPercentage).toBeLessThan(0.1);
+  expect(route2!.priceImpactPercentage).toBeLessThan(0.002);
+  expect(route2!.amountIn).toBeCloseTo(999, 0);
 });
