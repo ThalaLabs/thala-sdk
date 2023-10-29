@@ -1,10 +1,30 @@
 {
+  "name": "@thalalabs/router-sdk",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "dev": "npx tsc && node index.js",
+    "build": "bun run build.mjs",
     "format": "prettier . --write"
   },
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThalaLabs/thala-router.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "devDependencies": {
+    "bun-plugin-dts": "^0.2.1",
     "prettier": "3.0.3",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@thalalabs/surf": "^0.0.14",
+    "aptos": "^1.20.0",
+    "axios": "^1.5.1"
   }
 }

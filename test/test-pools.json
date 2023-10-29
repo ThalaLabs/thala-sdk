@@ -1,0 +1,265 @@
+{
+  "coins": [
+    {
+      "address": "0x6f986d146e4a90b828d8c12c14b6f4e003fdff11a8eecceceb63744363eaac01::mod_coin::MOD",
+      "decimals": 8
+    },
+    {
+      "address": "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL",
+      "decimals": 8
+    },
+    {
+      "address": "0x1::aptos_coin::AptosCoin",
+      "decimals": 8
+    },
+    {
+      "address": "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::WETH",
+      "decimals": 6
+    },
+    {
+      "address": "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDC",
+      "decimals": 6
+    },
+    {
+      "address": "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT",
+      "decimals": 6
+    },
+    {
+      "address": "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::WBTC",
+      "decimals": 6
+    },
+    {
+      "address": "0xcc8a89c8dce9693d354449f1f73e60e14e347417854f029db5bc8e7454008abb::coin::T",
+      "decimals": 8
+    },
+    {
+      "address": "0x5e156f1207d0ebfa19a9eeff00d62a282278fb8719f4fab3a586a0a2c0fffbea::coin::T",
+      "decimals": 6
+    },
+    {
+      "address": "0x84d7aeef42d38a5ffc3ccef853e1b82e4958659d16a7de736a29c55fbbeb0114::staked_aptos_coin::StakedAptosCoin",
+      "decimals": 8
+    },
+    {
+      "address": "0x159df6b7689437016108a019fd5bef736bac692b6d4a1f10c941f6fbb9a74ca6::oft::CakeOFT",
+      "decimals": 8
+    },
+    {
+      "address": "0xd916a950d4c1279df4aa0d6f32011842dc5c633a45c11ac5019232c159d115bb::coin::T",
+      "decimals": 8
+    },
+    {
+      "address": "0x52ab49a4039c3d2b0aa6e0a00aaed75dcff72a3120ba3610f62d1d0b6032345a::war_coin::WarCoin",
+      "decimals": 8
+    }
+  ],
+  "pools": [
+    {
+      "name": "S:APT:tAPT",
+      "asset0": 2,
+      "asset1": 9,
+      "balance0": 13008.29255679,
+      "balance1": 7089.59780576,
+      "amp": 100
+    },
+    {
+      "name": "W:zUSDC-50:APT-50",
+      "asset0": 4,
+      "asset1": 2,
+      "balance0": 2056.163873,
+      "balance1": 343.08755821
+    },
+    {
+      "name": "S:USDC:zUSDC",
+      "asset0": 8,
+      "asset1": 4,
+      "balance0": 116253605.3264,
+      "balance1": 147928165.8321,
+      "amp": 100
+    },
+    {
+      "name": "W:wTBT-50:MOD-50",
+      "asset0": 11,
+      "asset1": 0,
+      "balance0": 34979.5108242,
+      "balance1": 35724.6883114
+    },
+    {
+      "name": "W:CAKE-50:APT-50",
+      "asset0": 10,
+      "asset1": 2,
+      "balance0": 72.51205774,
+      "balance1": 13.8509258
+    },
+    {
+      "name": "W:zWETH-50:APT-50",
+      "asset0": 3,
+      "asset1": 2,
+      "balance0": 0.004836,
+      "balance1": 1.32766579
+    },
+    {
+      "name": "W:MOD-50:APT-50",
+      "asset0": 0,
+      "asset1": 2,
+      "balance0": 362930.20489986,
+      "balance1": 60585.67918414
+    },
+    {
+      "name": "W:MOD-20:THL-80",
+      "asset0": 0,
+      "asset1": 1,
+      "balance0": 248734.03692406,
+      "balance1": 6879670.48528901
+    },
+    {
+      "name": "S:zUSDT:APT",
+      "asset0": 5,
+      "asset1": 2,
+      "balance0": 270.645707,
+      "balance1": 3.7526662,
+      "amp": 100
+    },
+    {
+      "name": "S:zUSDC:APT",
+      "asset0": 4,
+      "asset1": 2,
+      "balance0": 28.135422,
+      "balance1": 0.99660011,
+      "amp": 100
+    },
+    {
+      "name": "W:zUSDC-50:zWETH-50",
+      "asset0": 4,
+      "asset1": 3,
+      "balance0": 298505.588373,
+      "balance1": 178.617787
+    },
+    {
+      "name": "S:MOD:zUSDC",
+      "asset0": 0,
+      "asset1": 4,
+      "balance0": 2156392.68306257,
+      "balance1": 1718685.730877,
+      "amp": 100
+    },
+    {
+      "name": "W:zUSDT-50:APT-50",
+      "asset0": 5,
+      "asset1": 2,
+      "balance0": 85.842312,
+      "balance1": 14.31721868
+    },
+    {
+      "name": "W:USDC-50:MOD-50",
+      "asset0": 8,
+      "asset1": 0,
+      "balance0": 128039.615342,
+      "balance1": 128142.51454857
+    },
+    {
+      "name": "S:MOD:APT",
+      "asset0": 0,
+      "asset1": 2,
+      "balance0": 4.02854082,
+      "balance1": 0.14138684,
+      "amp": 100
+    },
+    {
+      "name": "W:USDC-50:zUSDT-50",
+      "asset0": 8,
+      "asset1": 5,
+      "balance0": 1.001998,
+      "balance1": 0.99801
+    },
+    {
+      "name": "S:MOD:zUSDT",
+      "asset0": 0,
+      "asset1": 5,
+      "balance0": 4.94143188,
+      "balance1": 5.141924,
+      "amp": 100
+    },
+    {
+      "name": "S:zWETH:APT",
+      "asset0": 3,
+      "asset1": 2,
+      "balance0": 0.023479,
+      "balance1": 14.64680542,
+      "amp": 100
+    },
+    {
+      "name": "W:USDC-50:APT-50",
+      "asset0": 8,
+      "asset1": 2,
+      "balance0": 24.579756,
+      "balance1": 4.12285236
+    },
+    {
+      "name": "S:USDC:MOD",
+      "asset0": 8,
+      "asset1": 0,
+      "balance0": 0.571745,
+      "balance1": 0.52156903,
+      "amp": 100
+    },
+    {
+      "name": "W:zUSDC-50:zWBTC-50",
+      "asset0": 4,
+      "asset1": 6,
+      "balance0": 222295.82288,
+      "balance1": 7.312754
+    },
+    {
+      "name": "W:zUSDC-20:APT-80",
+      "asset0": 4,
+      "asset1": 2,
+      "balance0": 25.909589,
+      "balance1": 17.38773534
+    },
+    {
+      "name": "W:THL-50:zUSDT-50",
+      "asset0": 1,
+      "asset1": 5,
+      "balance0": 26.2370464,
+      "balance1": 3.833277
+    },
+    {
+      "name": "W:THL-50:APT-50",
+      "asset0": 1,
+      "asset1": 2,
+      "balance0": 35654.3460136,
+      "balance1": 859.43733753
+    },
+    {
+      "name": "S:zUSDC:zUSDT",
+      "asset0": 4,
+      "asset1": 5,
+      "balance0": 1345237.470138,
+      "balance1": 1164406.178002,
+      "amp": 100
+    },
+    {
+      "name": "W:THL-50:zUSDC-50",
+      "asset0": 1,
+      "asset1": 4,
+      "balance0": 92.37699208,
+      "balance1": 13.095411
+    },
+    {
+      "name": "W:THL-55:APT-45",
+      "asset0": 1,
+      "asset1": 2,
+      "balance0": 204.13207378,
+      "balance1": 3.98294437
+    },
+    {
+      "name": "S:THL:zUSDC",
+      "asset0": 1,
+      "asset1": 4,
+      "balance0": 360.03921448,
+      "balance1": 23.350643,
+      "amp": 100
+    }
+  ]
+}
