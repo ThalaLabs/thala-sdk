@@ -21,11 +21,11 @@
   "devDependencies": {
     "bun-plugin-dts": "^0.2.1",
     "prettier": "3.0.3",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "@changesets/cli": "^2.26.2"
   },
   "license": "MIT",
   "dependencies": {
-    "@changesets/cli": "^2.26.2",
     "@thalalabs/surf": "^0.0.15",
     "aptos": "^1.20.0",
     "axios": "^1.5.1"
