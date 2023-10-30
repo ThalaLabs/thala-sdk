@@ -6,10 +6,7 @@ const client = createClient({
   nodeUrl: "https://fullnode.testnet.aptoslabs.com/v1",
 });
 
-const privateKey = Buffer.from(
-  "your_private_key_here",
-  "hex",
-);
+const privateKey = Buffer.from("your_private_key_here", "hex");
 const account = new AptosAccount(privateKey);
 
 // `testnet-example-pools.json` contains some testnet pools. The data is not up-to-date.

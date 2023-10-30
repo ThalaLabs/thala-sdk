@@ -18,7 +18,7 @@ class PoolDataClient {
       for (let i = 0; i < this.retryLimit; i++) {
         try {
           const response = await axios.get(this.URL);
-          
+
           // Convert the indices in the pools to the actual coin addresses
           const coins = response.data.coins as Coin[];
           const pools = response.data.pools.map((pool: RawPool) => {
@@ -38,11 +38,11 @@ class PoolDataClient {
           this.lastUpdated = currentTime;
           return this.poolData;
         } catch (error) {
-          console.error('Failed to get pool data:', error);
+          console.error("Failed to get pool data:", error);
           if (i < this.retryLimit - 1) {
-            console.log('Retrying...');
+            console.log("Retrying...");
           } else {
-            console.log('Failed after retrying.');
+            console.log("Failed after retrying.");
             throw error;
           }
         }
