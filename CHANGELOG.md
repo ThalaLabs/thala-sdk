@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 1.0.2
+
+### Patch Changes
+
+- f69a80b: change changeset as a dev dependency instead of common dependency
+
 ## 1.0.1
 
 ### Patch Changes
