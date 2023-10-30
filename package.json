@@ -6,7 +6,7 @@
   "scripts": {
     "build": "bun run build.mjs",
     "format": "prettier . --write",
-    "release": "bun build && changeset publish"
+    "release": "bun run build.mjs && changeset publish"
   },
   "files": [
     "dist"
