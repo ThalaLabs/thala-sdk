@@ -5,7 +5,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "bun run build.mjs",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "release": "bun build && changeset publish"
   },
   "files": [
     "dist"
