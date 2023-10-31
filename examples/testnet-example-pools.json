@@ -22,23 +22,23 @@
       "name": "S:MOD:USDC",
       "asset0": 3,
       "asset1": 1,
-      "balance0": 1000,
-      "balance1": 1000,
+      "balance0": 100000000000,
+      "balance1": 1000000000,
       "amp": 200
     },
     {
       "name": "W:USDC-50:THOUSG-50",
       "asset0": 1,
       "asset1": 2,
-      "balance0": 10,
-      "balance1": 0.1
+      "balance0": 10000000,
+      "balance1": 100000
     },
     {
       "name": "W:USDC-50:APT-50",
       "asset0": 1,
       "asset1": 0,
-      "balance0": 6.5,
-      "balance1": 1
+      "balance0": 6500000,
+      "balance1": 100000000
     }
   ]
 }

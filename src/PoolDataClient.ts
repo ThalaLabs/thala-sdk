@@ -24,6 +24,10 @@ class PoolDataClient {
           const pools = response.data.pools.map((pool: RawPool) => {
             return {
               ...pool,
+              balance0: pool.balance0 / Math.pow(10, coins[pool.asset0].decimals),
+              balance1: pool.balance1 / Math.pow(10, coins[pool.asset1].decimals),
+              balance2: pool.balance2 ? pool.balance2 / Math.pow(10, coins[pool.asset2 as number].decimals) : undefined,
+              balance3: pool.balance3 ? pool.balance3 / Math.pow(10, coins[pool.asset3 as number].decimals) : undefined,
               asset0: coins[pool.asset0],
               asset1: coins[pool.asset1],
               asset2: pool.asset2 ? coins[pool.asset2] : undefined,
