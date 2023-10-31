@@ -17,7 +17,11 @@ class PoolDataClient {
     if (!this.poolData || currentTime - this.lastUpdated > this.expiry) {
       for (let i = 0; i < this.retryLimit; i++) {
         try {
-          const response = await axios.get(this.URL);
+          const response = await axios.get(this.URL, {
+            headers: {
+              "Cache-Control": "max-age=0, s-maxage=10",
+            },
+          });
 
           // Convert the indices in the pools to the actual coin addresses
           const coins = response.data.coins as Coin[];
