@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Coin, Pool, PoolData, RawPool, RawPoolData } from "./types";
+import { Coin, PoolData, RawPool, RawPoolData } from "./types";
 
 class PoolDataClient {
   private poolData: PoolData | null = null;

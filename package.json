@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "typecheck": "bun run tsc",
+    "typecheck": "bun run tsc --noEmit",
     "build": "bun run tsup ./src/index.ts",
     "format": "prettier . --write",
     "release": "bun run build && changeset publish"
