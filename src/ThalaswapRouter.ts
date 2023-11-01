@@ -212,19 +212,19 @@ class ThalaswapRouter {
     const args =
       route.type === "exact_input"
         ? [
-          scaleUp(route.amountIn, tokenInDecimals),
-          scaleUp(
-            calcMinReceivedValue(route.amountOut, slippagePercentage),
-            tokenOutDecimals,
-          ),
-        ]
-        : [
-          scaleUp(route.amountOut, tokenInDecimals),
-          scaleUp(
-            calcMaxSoldValue(route.amountIn, slippagePercentage),
-            tokenOutDecimals,
-          ),
-        ];
+            scaleUp(route.amountIn, tokenInDecimals),
+            scaleUp(
+              calcMinReceivedValue(route.amountOut, slippagePercentage),
+              tokenOutDecimals,
+            ),
+          ]
+          : [
+            scaleUp(route.amountOut, tokenInDecimals),
+            scaleUp(
+              calcMaxSoldValue(route.amountIn, slippagePercentage),
+              tokenOutDecimals,
+            ),
+          ];
     if (route.path.length == 1) {
       const path = route.path[0];
       const functionName =
