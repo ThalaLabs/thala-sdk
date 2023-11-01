@@ -8,6 +8,7 @@ import {
   BalanceIndex,
   RawPool,
   LiquidityPool,
+  Pool,
 } from "./types";
 import { EntryPayload, createEntryPayload } from "@thalalabs/surf";
 import { STABLE_POOL_SCRIPTS_ABI } from "./abi/stable_pool_scripts";
@@ -21,9 +22,8 @@ const NULL_TYPE = `${STABLE_POOL_SCRIPTS_ABI.address}::base_pool::Null`;
 const NULL_4 = Array(4).fill(NULL_TYPE);
 
 const encodeWeight = (weight: number): string => {
-  return `${
-    WEIGHTED_POOL_SCRIPTS_ABI.address
-  }::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
+  return `${WEIGHTED_POOL_SCRIPTS_ABI.address
+    }::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
 };
 
 // Encode the pool type arguments for a given pool
@@ -103,15 +103,14 @@ class ThalaswapRouter {
     return weights;
   }
 
-  // TODO: remove any
-  async buildGraph(pools: any[]): Promise<Graph> {
+  async buildGraph(pools: Pool[]): Promise<Graph> {
     const tokens: Set<string> = new Set();
     const graph: Graph = {};
 
     for (const pool of pools) {
       const assets = ["asset0", "asset1", "asset2", "asset3"]
         .filter((a) => pool[a as AssetIndex])
-        .map((a) => pool[a as AssetIndex]);
+        .map((a) => pool[a as AssetIndex]!);
 
       const balances = ["balance0", "balance1", "balance2", "balance3"]
         .filter((b, i) => assets[i])
@@ -219,7 +218,7 @@ class ThalaswapRouter {
               tokenOutDecimals,
             ),
           ]
-        : [
+          : [
             scaleUp(route.amountOut, tokenInDecimals),
             scaleUp(
               calcMaxSoldValue(route.amountIn, slippagePercentage),

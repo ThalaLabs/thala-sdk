@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Coin, RawPool, PoolData } from "./types";
+import { Coin, PoolData, RawPool, RawPoolData } from "./types";
 
 class PoolDataClient {
   private poolData: PoolData | null = null;
@@ -17,7 +17,7 @@ class PoolDataClient {
     if (!this.poolData || currentTime - this.lastUpdated > this.expiry) {
       for (let i = 0; i < this.retryLimit; i++) {
         try {
-          const response = await axios.get(this.URL);
+          const response = await axios.get<RawPoolData>(this.URL);
 
           // Convert the indices in the pools to the actual coin addresses
           const coins = response.data.coins as Coin[];

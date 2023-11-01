@@ -32,21 +32,35 @@ type Coin = {
   decimals: number;
 };
 
-type RawPool = {
+type PoolBase = {
   name: string;
-  asset0: number;
-  asset1: number;
-  asset2?: number;
-  asset3?: number;
   balance0: number;
   balance1: number;
   balance2?: number;
   balance3?: number;
   amp?: number;
 };
+type RawPool = PoolBase & {
+  asset0: number;
+  asset1: number;
+  asset2?: number;
+  asset3?: number;
+};
+
+type Pool = PoolBase & {
+  asset0: Coin;
+  asset1: Coin;
+  asset2?: Coin;
+  asset3?: Coin;
+};
+
+type RawPoolData = {
+  pools: RawPool[];
+  coins: Coin[];
+};
 
 type PoolData = {
-  pools: RawPool[];
+  pools: Pool[];
   coins: Coin[];
 };
 
@@ -77,5 +91,7 @@ export type {
   BalanceIndex,
   Coin,
   RawPool,
+  RawPoolData,
   PoolData,
+  Pool
 };
