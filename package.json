@@ -4,9 +4,9 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "bun run build.mjs",
+    "build": "bun run tsup ./src/index.ts",
     "format": "prettier . --write",
-    "release": "bun run build.mjs && changeset publish"
+    "release": "bun run build && changeset publish"
   },
   "files": [
     "dist"
@@ -19,10 +19,11 @@
     "access": "public"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.26.2",
     "bun-plugin-dts": "^0.2.1",
     "prettier": "3.0.3",
-    "typescript": "^5.2.2",
-    "@changesets/cli": "^2.26.2"
+    "tsup": "^7.2.0",
+    "typescript": "^5.2.2"
   },
   "license": "MIT",
   "dependencies": {
