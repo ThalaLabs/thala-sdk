@@ -172,7 +172,7 @@ class ThalaswapRouter {
     startToken: string,
     endToken: string,
     amountIn: number,
-    maxHops = 3,
+    maxHops: number = 3,
   ): Promise<Route | null> {
     await this.refreshData();
 
@@ -194,7 +194,7 @@ class ThalaswapRouter {
     startToken: string,
     endToken: string,
     amountOut: number,
-    maxHops = 3,
+    maxHops: number = 3,
   ): Promise<Route | null> {
     await this.refreshData();
 
