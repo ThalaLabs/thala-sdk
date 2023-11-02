@@ -93,5 +93,5 @@ export type {
   RawPool,
   RawPoolData,
   PoolData,
-  Pool
+  Pool,
 };
