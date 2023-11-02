@@ -113,6 +113,7 @@ class ThalaswapRouter {
     const graph: Graph = {};
 
     for (const pool of pools) {
+      // Convert pool data to LiquidityPool type
       const assets = ["asset0", "asset1", "asset2", "asset3"]
         .filter((a) => pool[a as AssetIndex])
         .map((a) => pool[a as AssetIndex]!);
@@ -121,38 +122,41 @@ class ThalaswapRouter {
         .filter((b, i) => assets[i])
         .map((b) => pool[b as BalanceIndex] as number);
 
+      const poolType =
+        pool.name[0] === "S" ? "stable_pool" : "weighted_pool";
+      const swapFee =
+        poolType === "stable_pool"
+          ? DEFAULT_SWAP_FEE_STABLE
+          : DEFAULT_SWAP_FEE_WEIGHTED;
+
+      const weights =
+        poolType === "weighted_pool"
+          ? this.parseWeightsFromWeightedPoolName(pool.name)
+          : undefined;
+
+      const amp =
+        poolType === "stable_pool"
+          ? this.parseAmpFactorFromStablePoolName(pool.name)
+          : undefined;
+
+      const convertedPool: LiquidityPool = {
+        coinAddresses: assets.map((a) => a.address),
+        balances,
+        poolType,
+        swapFee,
+        weights,
+        amp,
+      };
+
       for (let i = 0; i < assets.length; i++) {
         const token = assets[i].address;
         tokens.add(token);
         for (let j = 0; j < assets.length; j++) {
           if (i !== j) {
             if (!graph[token]) graph[token] = [];
-            const poolType =
-              pool.name[0] === "S" ? "stable_pool" : "weighted_pool";
-            const swapFee =
-              poolType === "stable_pool"
-                ? DEFAULT_SWAP_FEE_STABLE
-                : DEFAULT_SWAP_FEE_WEIGHTED;
-
-            const weights =
-              poolType === "weighted_pool"
-                ? this.parseWeightsFromWeightedPoolName(pool.name)
-                : undefined;
-
-            const amp =
-              poolType === "stable_pool"
-                ? this.parseAmpFactorFromStablePoolName(pool.name)
-                : undefined;
-
+            
             graph[token].push({
-              pool: {
-                coinAddresses: assets.map((a) => a.address),
-                balances,
-                poolType,
-                swapFee,
-                weights,
-                amp,
-              },
+              pool: convertedPool,
               fromIndex: i,
               toIndex: j,
             });

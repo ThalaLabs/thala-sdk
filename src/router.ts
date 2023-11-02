@@ -135,7 +135,6 @@ export function findRouteGivenExactInput(
 
   for (let i = 0; i < maxHops; i++) {
     const newDistances = { ...distances };
-    const newPredecessors = { ...predecessors };
     const newHops = { ...hops };
 
     for (const [token, edges] of Object.entries(graph)) {
@@ -158,7 +157,7 @@ export function findRouteGivenExactInput(
             newHops[fromToken] + 1 <= maxHops
           ) {
             newDistances[toToken] = newDistance;
-            newPredecessors[toToken] = { token: fromToken, pool: edge.pool };
+            predecessors[toToken] = { token: fromToken, pool: edge.pool };
             newHops[toToken] = newHops[fromToken] + 1;
           }
         }
@@ -166,22 +165,23 @@ export function findRouteGivenExactInput(
     }
 
     distances = newDistances;
-    predecessors = newPredecessors;
     hops = newHops;
   }
 
   const path: SwapPath[] = [];
   let currentToken = endToken;
 
+  let numHops = 0;
   while (currentToken !== startToken) {
-    if (predecessors[currentToken] === null) {
+    if (predecessors[currentToken] === null || numHops > maxHops) {
       console.error("No path found");
-      break;
+      return null;
     }
 
     const { token, pool } = predecessors[currentToken]!;
     path.push({ from: token, to: currentToken, pool });
     currentToken = token;
+    numHops++;
   }
 
   path.reverse();
@@ -241,7 +241,6 @@ export function findRouteGivenExactOutput(
 
   for (let i = 0; i < maxHops; i++) {
     const newDistances = { ...distances };
-    const newPredecessors = { ...predecessors };
     const newHops = { ...hops };
 
     for (const [token, edges] of Object.entries(graph)) {
@@ -266,7 +265,7 @@ export function findRouteGivenExactOutput(
               newHops[toToken] + 1 <= maxHops
             ) {
               newDistances[fromToken] = newDistance;
-              newPredecessors[fromToken] = { token: toToken, pool: edge.pool };
+              predecessors[fromToken] = { token: toToken, pool: edge.pool };
               newHops[fromToken] = newHops[toToken] + 1;
             }
           } catch (error) {
@@ -277,15 +276,15 @@ export function findRouteGivenExactOutput(
     }
 
     distances = newDistances;
-    predecessors = newPredecessors;
     hops = newHops;
   }
 
   const path: SwapPath[] = [];
   let currentToken = startToken;
 
+  let numHops = 0;
   while (currentToken !== endToken) {
-    if (predecessors[currentToken] === null) {
+    if (predecessors[currentToken] === null || numHops > maxHops) {
       console.error("No path found");
       return null;
     }
@@ -293,6 +292,7 @@ export function findRouteGivenExactOutput(
     const { token, pool } = predecessors[currentToken]!;
     path.push({ from: currentToken, to: token, pool });
     currentToken = token;
+    numHops++;
   }
 
   // We use the maximum price impact of all path segments as the price impact of the entire route
