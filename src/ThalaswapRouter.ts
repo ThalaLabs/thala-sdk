@@ -22,8 +22,9 @@ const NULL_TYPE = `${STABLE_POOL_SCRIPTS_ABI.address}::base_pool::Null`;
 const NULL_4 = Array(4).fill(NULL_TYPE);
 
 const encodeWeight = (weight: number): string => {
-  return `${WEIGHTED_POOL_SCRIPTS_ABI.address
-    }::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
+  return `${
+    WEIGHTED_POOL_SCRIPTS_ABI.address
+  }::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
 };
 
 // Encode the pool type arguments for a given pool
@@ -218,7 +219,7 @@ class ThalaswapRouter {
               tokenOutDecimals,
             ),
           ]
-          : [
+        : [
             scaleUp(route.amountOut, tokenInDecimals),
             scaleUp(
               calcMaxSoldValue(route.amountIn, slippagePercentage),
