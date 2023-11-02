@@ -6,7 +6,6 @@ import {
   Route,
   AssetIndex,
   BalanceIndex,
-  RawPool,
   LiquidityPool,
   Pool,
 } from "./types";
@@ -81,7 +80,7 @@ class ThalaswapRouter {
     this.graph = await this.buildGraph(pools);
   }
 
-  parseWeightsFromPoolName(poolName: string): number[] {
+  parseWeightsFromWeightedPoolName(poolName: string): number[] {
     const weights: number[] = [];
 
     const tokenWeightPairs = poolName.split(":");
@@ -102,6 +101,11 @@ class ThalaswapRouter {
     }
 
     return weights;
+  }
+
+  parseAmpFactorFromStablePoolName(poolName: string): number {
+    const parts = poolName.split(":");
+    return parseInt(parts[1]);
   }
 
   async buildGraph(pools: Pool[]): Promise<Graph> {
@@ -132,7 +136,12 @@ class ThalaswapRouter {
 
             const weights =
               poolType === "weighted_pool"
-                ? this.parseWeightsFromPoolName(pool.name)
+                ? this.parseWeightsFromWeightedPoolName(pool.name)
+                : undefined;
+
+            const amp =
+              poolType === "stable_pool"
+                ? this.parseAmpFactorFromStablePoolName(pool.name)
                 : undefined;
 
             graph[token].push({
@@ -142,7 +151,7 @@ class ThalaswapRouter {
                 poolType,
                 swapFee,
                 weights,
-                amp: pool.amp,
+                amp,
               },
               fromIndex: i,
               toIndex: j,

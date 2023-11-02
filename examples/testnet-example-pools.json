@@ -19,12 +19,11 @@
   ],
   "pools": [
     {
-      "name": "S:MOD:USDC",
+      "name": "S:200:MOD:USDC",
       "asset0": 3,
       "asset1": 1,
       "balance0": 1000,
-      "balance1": 1000,
-      "amp": 200
+      "balance1": 1000
     },
     {
       "name": "W:USDC-50:THOUSG-50",
