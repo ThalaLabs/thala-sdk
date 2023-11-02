@@ -122,8 +122,7 @@ class ThalaswapRouter {
         .filter((b, i) => assets[i])
         .map((b) => pool[b as BalanceIndex] as number);
 
-      const poolType =
-        pool.name[0] === "S" ? "stable_pool" : "weighted_pool";
+      const poolType = pool.name[0] === "S" ? "stable_pool" : "weighted_pool";
       const swapFee =
         poolType === "stable_pool"
           ? DEFAULT_SWAP_FEE_STABLE
@@ -154,7 +153,7 @@ class ThalaswapRouter {
         for (let j = 0; j < assets.length; j++) {
           if (i !== j) {
             if (!graph[token]) graph[token] = [];
-            
+
             graph[token].push({
               pool: convertedPool,
               fromIndex: i,

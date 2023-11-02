@@ -155,7 +155,9 @@ export function findRouteGivenExactInput(
           );
 
           const nextHop = hop + 1;
-          if (newDistance > (newDistances[toToken][nextHop] || defaultDistance)) {
+          if (
+            newDistance > (newDistances[toToken][nextHop] || defaultDistance)
+          ) {
             newDistances[toToken][nextHop] = newDistance;
             predecessors[toToken][nextHop] = {
               token: fromToken,
@@ -240,7 +242,7 @@ export function findRouteGivenExactOutput(
   const tokens = Object.keys(graph);
   let distances: Distances = {};
   let predecessors: Predecessors = {};
-  
+
   const defaultDistance = Infinity;
   for (const token of tokens) {
     distances[token] = {};
@@ -271,7 +273,8 @@ export function findRouteGivenExactOutput(
 
             const nextHop = hop + 1;
             if (
-              newDistance < (newDistances[fromToken][nextHop] || defaultDistance)
+              newDistance <
+              (newDistances[fromToken][nextHop] || defaultDistance)
             ) {
               newDistances[fromToken][nextHop] = newDistance;
               predecessors[fromToken][nextHop] = {
@@ -283,7 +286,6 @@ export function findRouteGivenExactOutput(
             // If expected output amount is greater than pool balance, do not update distance
           }
         }
-        
       }
     }
 
