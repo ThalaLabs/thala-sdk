@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 1.0.3
+
+### Patch Changes
+
+- 2fff8a4: change pool schema
+
 ## 1.0.2
 
 ### Patch Changes
