@@ -84,7 +84,6 @@ export type {
   Graph,
   Distances,
   Predecessors,
-  Hops,
   PoolType,
   AssetIndex,
   BalanceIndex,

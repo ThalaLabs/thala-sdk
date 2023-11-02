@@ -13,7 +13,6 @@ import {
   LiquidityPool,
   Distances,
   Predecessors,
-  Hops,
 } from "./types";
 
 function calcOutGivenIn(
