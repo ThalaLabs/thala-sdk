@@ -55,12 +55,11 @@
   ],
   "pools": [
     {
-      "name": "S:APT:tAPT",
+      "name": "S:100:APT:tAPT",
       "asset0": 2,
       "asset1": 9,
       "balance0": 13008.29255679,
-      "balance1": 7089.59780576,
-      "amp": 100
+      "balance1": 7089.59780576
     },
     {
       "name": "W:zUSDC-50:APT-50",
@@ -70,12 +69,11 @@
       "balance1": 343.08755821
     },
     {
-      "name": "S:USDC:zUSDC",
+      "name": "S:100:USDC:zUSDC",
       "asset0": 8,
       "asset1": 4,
       "balance0": 116253605.3264,
-      "balance1": 147928165.8321,
-      "amp": 100
+      "balance1": 147928165.8321
     },
     {
       "name": "W:wTBT-50:MOD-50",
@@ -113,20 +111,18 @@
       "balance1": 6879670.48528901
     },
     {
-      "name": "S:zUSDT:APT",
+      "name": "S:100:zUSDT:APT",
       "asset0": 5,
       "asset1": 2,
       "balance0": 270.645707,
-      "balance1": 3.7526662,
-      "amp": 100
+      "balance1": 3.7526662
     },
     {
-      "name": "S:zUSDC:APT",
+      "name": "S:100:zUSDC:APT",
       "asset0": 4,
       "asset1": 2,
       "balance0": 28.135422,
-      "balance1": 0.99660011,
-      "amp": 100
+      "balance1": 0.99660011
     },
     {
       "name": "W:zUSDC-50:zWETH-50",
@@ -136,12 +132,11 @@
       "balance1": 178.617787
     },
     {
-      "name": "S:MOD:zUSDC",
+      "name": "S:100:MOD:zUSDC",
       "asset0": 0,
       "asset1": 4,
       "balance0": 2156392.68306257,
-      "balance1": 1718685.730877,
-      "amp": 100
+      "balance1": 1718685.730877
     },
     {
       "name": "W:zUSDT-50:APT-50",
@@ -158,12 +153,11 @@
       "balance1": 128142.51454857
     },
     {
-      "name": "S:MOD:APT",
+      "name": "S:100:MOD:APT",
       "asset0": 0,
       "asset1": 2,
       "balance0": 4.02854082,
-      "balance1": 0.14138684,
-      "amp": 100
+      "balance1": 0.14138684
     },
     {
       "name": "W:USDC-50:zUSDT-50",
@@ -173,20 +167,18 @@
       "balance1": 0.99801
     },
     {
-      "name": "S:MOD:zUSDT",
+      "name": "S:100:MOD:zUSDT",
       "asset0": 0,
       "asset1": 5,
       "balance0": 4.94143188,
-      "balance1": 5.141924,
-      "amp": 100
+      "balance1": 5.141924
     },
     {
-      "name": "S:zWETH:APT",
+      "name": "S:100:zWETH:APT",
       "asset0": 3,
       "asset1": 2,
       "balance0": 0.023479,
-      "balance1": 14.64680542,
-      "amp": 100
+      "balance1": 14.64680542
     },
     {
       "name": "W:USDC-50:APT-50",
@@ -196,12 +188,11 @@
       "balance1": 4.12285236
     },
     {
-      "name": "S:USDC:MOD",
+      "name": "S:100:USDC:MOD",
       "asset0": 8,
       "asset1": 0,
       "balance0": 0.571745,
-      "balance1": 0.52156903,
-      "amp": 100
+      "balance1": 0.52156903
     },
     {
       "name": "W:zUSDC-50:zWBTC-50",
@@ -232,12 +223,11 @@
       "balance1": 859.43733753
     },
     {
-      "name": "S:zUSDC:zUSDT",
+      "name": "S:100:zUSDC:zUSDT",
       "asset0": 4,
       "asset1": 5,
       "balance0": 1345237.470138,
-      "balance1": 1164406.178002,
-      "amp": 100
+      "balance1": 1164406.178002
     },
     {
       "name": "W:THL-50:zUSDC-50",
@@ -254,12 +244,11 @@
       "balance1": 3.98294437
     },
     {
-      "name": "S:THL:zUSDC",
+      "name": "S:100:THL:zUSDC",
       "asset0": 1,
       "asset1": 4,
       "balance0": 360.03921448,
-      "balance1": 23.350643,
-      "amp": 100
+      "balance1": 23.350643
     }
   ]
 }

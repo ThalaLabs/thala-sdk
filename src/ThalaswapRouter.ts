@@ -6,7 +6,6 @@ import {
   Route,
   AssetIndex,
   BalanceIndex,
-  RawPool,
   LiquidityPool,
   Pool,
 } from "./types";
@@ -22,8 +21,9 @@ const NULL_TYPE = `${STABLE_POOL_SCRIPTS_ABI.address}::base_pool::Null`;
 const NULL_4 = Array(4).fill(NULL_TYPE);
 
 const encodeWeight = (weight: number): string => {
-  return `${WEIGHTED_POOL_SCRIPTS_ABI.address
-    }::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
+  return `${
+    WEIGHTED_POOL_SCRIPTS_ABI.address
+  }::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
 };
 
 // Encode the pool type arguments for a given pool
@@ -80,7 +80,7 @@ class ThalaswapRouter {
     this.graph = await this.buildGraph(pools);
   }
 
-  parseWeightsFromPoolName(poolName: string): number[] {
+  parseWeightsFromWeightedPoolName(poolName: string): number[] {
     const weights: number[] = [];
 
     const tokenWeightPairs = poolName.split(":");
@@ -101,6 +101,11 @@ class ThalaswapRouter {
     }
 
     return weights;
+  }
+
+  parseAmpFactorFromStablePoolName(poolName: string): number {
+    const parts = poolName.split(":");
+    return parseInt(parts[1]);
   }
 
   async buildGraph(pools: Pool[]): Promise<Graph> {
@@ -131,7 +136,12 @@ class ThalaswapRouter {
 
             const weights =
               poolType === "weighted_pool"
-                ? this.parseWeightsFromPoolName(pool.name)
+                ? this.parseWeightsFromWeightedPoolName(pool.name)
+                : undefined;
+
+            const amp =
+              poolType === "stable_pool"
+                ? this.parseAmpFactorFromStablePoolName(pool.name)
                 : undefined;
 
             graph[token].push({
@@ -141,7 +151,7 @@ class ThalaswapRouter {
                 poolType,
                 swapFee,
                 weights,
-                amp: pool.amp,
+                amp,
               },
               fromIndex: i,
               toIndex: j,
@@ -218,7 +228,7 @@ class ThalaswapRouter {
               tokenOutDecimals,
             ),
           ]
-          : [
+        : [
             scaleUp(route.amountOut, tokenInDecimals),
             scaleUp(
               calcMaxSoldValue(route.amountIn, slippagePercentage),
