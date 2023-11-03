@@ -134,40 +134,31 @@ export function findRouteGivenExactInput(
   distances[startToken][0] = amountIn;
 
   for (let i = 0; i < maxHops; i++) {
-    const newDistances = { ...distances };
-
     for (const [token, edges] of Object.entries(graph)) {
       for (const edge of edges) {
         const fromToken = edge.pool.coinAddresses[edge.fromIndex];
         const toToken = edge.pool.coinAddresses[edge.toIndex];
         if (fromToken === endToken || toToken === startToken) continue; // This prevents cycles
 
-        for (const [hopStr, distance] of Object.entries(distances[fromToken])) {
-          const hop = parseInt(hopStr);
-          if (hop === maxHops) continue;
+        if (distances[fromToken][i] === undefined) continue; // Skip unvisited nodes
 
-          const newDistance = calcOutGivenIn(
-            distance,
-            edge.pool,
-            edge.fromIndex,
-            edge.toIndex,
-          );
+        const newDistance = calcOutGivenIn(
+          distances[fromToken][i]!,
+          edge.pool,
+          edge.fromIndex,
+          edge.toIndex,
+        );
 
-          const nextHop = hop + 1;
-          if (
-            newDistance > (newDistances[toToken][nextHop] || defaultDistance)
-          ) {
-            newDistances[toToken][nextHop] = newDistance;
-            predecessors[toToken][nextHop] = {
-              token: fromToken,
-              pool: edge.pool,
-            };
-          }
+        const nextHop = i + 1;
+        if (newDistance > (distances[toToken][nextHop] || defaultDistance)) {
+          distances[toToken][nextHop] = newDistance;
+          predecessors[toToken][nextHop] = {
+            token: fromToken,
+            pool: edge.pool,
+          };
         }
       }
     }
-
-    distances = newDistances;
   }
 
   // Find the best number of hops
@@ -250,45 +241,37 @@ export function findRouteGivenExactOutput(
   distances[endToken][0] = amountOut;
 
   for (let i = 0; i < maxHops; i++) {
-    const newDistances = { ...distances };
-
     for (const [token, edges] of Object.entries(graph)) {
       for (const edge of edges) {
         const fromToken = edge.pool.coinAddresses[edge.fromIndex];
         const toToken = edge.pool.coinAddresses[edge.toIndex];
         if (fromToken === endToken || toToken === startToken) continue; // This prevents cycles
 
-        for (const [hopStr, distance] of Object.entries(distances[toToken])) {
-          const hop = parseInt(hopStr);
-          if (hop === maxHops) continue;
+        if (distances[toToken][i] === undefined) continue; // Skip unvisited nodes
 
-          try {
-            const newDistance = calcInGivenOut(
-              distance,
-              edge.pool,
-              edge.fromIndex,
-              edge.toIndex,
-            );
+        try {
+          const newDistance = calcInGivenOut(
+            distances[toToken][i]!,
+            edge.pool,
+            edge.fromIndex,
+            edge.toIndex,
+          );
 
-            const nextHop = hop + 1;
-            if (
-              newDistance <
-              (newDistances[fromToken][nextHop] || defaultDistance)
-            ) {
-              newDistances[fromToken][nextHop] = newDistance;
-              predecessors[fromToken][nextHop] = {
-                token: toToken,
-                pool: edge.pool,
-              };
-            }
-          } catch (error) {
-            // If expected output amount is greater than pool balance, do not update distance
+          const nextHop = i + 1;
+          if (
+            newDistance < (distances[fromToken][nextHop] || defaultDistance)
+          ) {
+            distances[fromToken][nextHop] = newDistance;
+            predecessors[fromToken][nextHop] = {
+              token: toToken,
+              pool: edge.pool,
+            };
           }
+        } catch (error) {
+          // If expected output amount is greater than pool balance, do not update distance
         }
       }
     }
-
-    distances = newDistances;
   }
 
   // Find the best number of hops
