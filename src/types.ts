@@ -67,12 +67,11 @@ type PoolData = {
 type RouteType = "exact_input" | "exact_output";
 type PoolType = "stable_pool" | "weighted_pool";
 type Graph = Record<string, Edge[]>;
-type Distances = Record<string, number>;
+type Distances = Record<string, Record<number, number>>;
 type Predecessors = Record<
   string,
-  { token: string; pool: LiquidityPool } | null
+  Record<number, { token: string; pool: LiquidityPool } | null>
 >;
-type Hops = Record<string, number>;
 
 type AssetIndex = "asset0" | "asset1" | "asset2" | "asset3";
 type BalanceIndex = "balance0" | "balance1" | "balance2" | "balance3";
@@ -85,7 +84,6 @@ export type {
   Graph,
   Distances,
   Predecessors,
-  Hops,
   PoolType,
   AssetIndex,
   BalanceIndex,

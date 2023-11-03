@@ -76,10 +76,10 @@ test("Exact input 2 hop", async () => {
 
 test("Exact input 3 hop", async () => {
   const startToken =
-    "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL";
+    "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDC";
   const endToken =
-    "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT";
-  const amountIn = 1000;
+    "0x5e156f1207d0ebfa19a9eeff00d62a282278fb8719f4fab3a586a0a2c0fffbea::coin::T";
+  const amountIn = 1;
 
   const route = await router.getRouteGivenExactInput(
     startToken,
@@ -96,8 +96,8 @@ test("Exact input 3 hop", async () => {
   expect(route!.path[2].to === endToken).toBe(true);
   expect(route!.path[0].to == route!.path[1].from).toBe(true);
   expect(route!.path[1].to == route!.path[2].from).toBe(true);
-  expect(route!.priceImpactPercentage).toBeCloseTo(0.07, 2);
-  expect(route!.amountOut).toBeCloseTo(143, 0);
+  expect(route!.priceImpactPercentage).toBeCloseTo(79.7, 1);
+  expect(route!.amountOut).toBeCloseTo(2.35, 2);
 });
 
 test("Exact output 1 hop", async () => {
@@ -149,10 +149,10 @@ test("Exact output 2 hop", async () => {
 
 test("Exact output 3 hop", async () => {
   const startToken =
-    "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT";
+    "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDC";
   const endToken =
-    "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL";
-  const amountOut = 1000;
+    "0x5e156f1207d0ebfa19a9eeff00d62a282278fb8719f4fab3a586a0a2c0fffbea::coin::T";
+  const amountOut = 1;
 
   const route = await router.getRouteGivenExactOutput(
     startToken,
@@ -169,8 +169,8 @@ test("Exact output 3 hop", async () => {
   expect(route!.path[2].to === endToken).toBe(true);
   expect(route!.path[0].to == route!.path[1].from).toBe(true);
   expect(route!.path[1].to == route!.path[2].from).toBe(true);
-  expect(route!.priceImpactPercentage).toBeCloseTo(0.07, 2);
-  expect(route!.amountIn).toBeCloseTo(145, 0);
+  expect(route!.priceImpactPercentage).toBeCloseTo(20.66, 2);
+  expect(route!.amountIn).toBeCloseTo(0.36, 2);
 });
 
 test("Low price impact for MOD-USDC stable pool", async () => {
@@ -210,4 +210,155 @@ test("Low price impact for MOD-USDC stable pool", async () => {
   expect(route2!.path[0].to === endToken).toBe(true);
   expect(route2!.priceImpactPercentage).toBeLessThan(0.002);
   expect(route2!.amountIn).toBeCloseTo(999, 0);
+});
+
+// Below are tests for THL -> USDT
+// We have 3 posible routes:
+// 1. THL - USDT
+// 2. THL - APT - USDT
+// 3. THL - MOD - APT - USDT
+// The algorithm should choose the optimal route given the limit of hops
+
+test("THL -> USDT exact in 1 hop", async () => {
+  const startToken =
+    "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL";
+  const endToken =
+    "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT";
+  const amountIn = 1;
+
+  const route = await router.getRouteGivenExactInput(
+    startToken,
+    endToken,
+    amountIn,
+    1,
+  );
+  console.log(
+    `From: ${startToken}, To: ${endToken}, AmountIn: ${amountIn}, Optimal Route:`,
+    route,
+  );
+  expect(route!.path.length).toBe(1);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[0].to === endToken).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(7.8, 1);
+  expect(route!.amountOut).toBeCloseTo(0.14, 2);
+});
+
+test("THL -> USDT exact in 2 hops", async () => {
+  const startToken =
+    "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL";
+  const endToken =
+    "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT";
+  const amountIn = 1;
+
+  const route = await router.getRouteGivenExactInput(
+    startToken,
+    endToken,
+    amountIn,
+    2,
+  );
+  console.log(
+    `From: ${startToken}, To: ${endToken}, AmountIn: ${amountIn}, Optimal Route:`,
+    route,
+  );
+  expect(route!.path.length).toBe(2);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[1].to === endToken).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(1.6, 1);
+  expect(route!.amountOut).toBeCloseTo(0.75, 2);
+});
+
+test("THL -> USDT exact in 3 hops", async () => {
+  const startToken =
+    "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL";
+  const endToken =
+    "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT";
+  const amountIn = 1;
+
+  const route = await router.getRouteGivenExactInput(
+    startToken,
+    endToken,
+    amountIn,
+    3,
+  );
+  console.log(
+    `From: ${startToken}, To: ${endToken}, AmountIn: ${amountIn}, Optimal Route:`,
+    route,
+  );
+  expect(route!.path.length).toBe(3);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[2].to === endToken).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(54, 0);
+  expect(route!.amountOut).toBeCloseTo(1.87, 2);
+});
+
+test("THL -> USDT exact out 1 hop", async () => {
+  const startToken =
+    "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL";
+  const endToken =
+    "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT";
+  const amountOut = 0.14;
+
+  const route = await router.getRouteGivenExactOutput(
+    startToken,
+    endToken,
+    amountOut,
+    1,
+  );
+  console.log(
+    `From: ${startToken}, To: ${endToken}, AmountOut: ${amountOut}, Optimal Route:`,
+    route,
+  );
+  expect(route!.path.length).toBe(1);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[0].to === endToken).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(7.7, 1);
+  expect(route!.amountIn).toBeCloseTo(1, 2);
+});
+
+test("THL -> USDT exact out 2 hops", async () => {
+  const startToken =
+    "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL";
+  const endToken =
+    "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT";
+  const amountOut = 0.75;
+
+  const route = await router.getRouteGivenExactOutput(
+    startToken,
+    endToken,
+    amountOut,
+    2,
+  );
+  console.log(
+    `From: ${startToken}, To: ${endToken}, AmountOut: ${amountOut}, Optimal Route:`,
+    route,
+  );
+  expect(route!.path.length).toBe(2);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[1].to === endToken).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(1.6, 1);
+  expect(route!.amountIn).toBeCloseTo(1, 2);
+});
+
+test("THL -> USDT exact out 3 hops", async () => {
+  const startToken =
+    "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL";
+  const endToken =
+    "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDT";
+  const amountOut = 1.87;
+
+  const route = await router.getRouteGivenExactOutput(
+    startToken,
+    endToken,
+    amountOut,
+    3,
+  );
+  console.log(
+    `From: ${startToken}, To: ${endToken}, AmountOut: ${amountOut}, Optimal Route:`,
+    route,
+  );
+  expect(route!.path.length).toBe(3);
+  expect(route!.path[0].from === startToken).toBe(true);
+  expect(route!.path[2].to === endToken).toBe(true);
+  expect(route!.priceImpactPercentage).toBeCloseTo(53, 0);
+  expect(route!.amountIn).toBeCloseTo(1, 2);
 });
