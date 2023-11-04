@@ -1,6 +1,5 @@
-// TODO: deploy router and add ABI
 export const MULTIHOP_ROUTER_ABI = {
-  address: "0xe8643d5170d010105fc2363f59cadd6f069cdf6ce3d6fc0f0cf674194090db27",
+  address: "0xd54f477c1436849a8c9c04e39f341b8ab81c0f67f4638f63eae229d0d2f1313f",
   name: "router",
   friends: [],
   exposed_functions: [
