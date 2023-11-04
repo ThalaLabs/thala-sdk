@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 1.0.4
+
+### Patch Changes
+
+- c01ef43: generate the type declaration file, and export all types.
+
 ## 1.0.3
 
 ### Patch Changes
