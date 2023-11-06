@@ -29,7 +29,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@thalalabs/surf": "^0.0.15",
+    "@thalalabs/surf": "^0.0.16",
     "aptos": "^1.20.0",
     "axios": "^1.5.1"
   }
