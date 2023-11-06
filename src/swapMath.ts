@@ -113,9 +113,10 @@ export function calcPriceImpactPercentageStable(
   const oldPrice = getPriceStable(indexIn, indexOut, balances, amp);
 
   // update new balance
-  balances[indexIn] = balances[indexIn] + exactAmountIn;
-  balances[indexOut] = balances[indexOut] - exactAmountOut;
-  const newPrice = getPriceStable(indexIn, indexOut, balances, amp);
+  const newBalances = [...balances];
+  newBalances[indexIn] = newBalances[indexIn] + exactAmountIn;
+  newBalances[indexOut] = newBalances[indexOut] - exactAmountOut;
+  const newPrice = getPriceStable(indexIn, indexOut, newBalances, amp);
   return (Math.abs(newPrice - oldPrice) / oldPrice) * 100;
 }
 
