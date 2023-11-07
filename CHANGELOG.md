@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 1.0.5
+
+### Patch Changes
+
+- 7ebe94a: fix a swap with exact out bug
+
 ## 1.0.4
 
 ### Patch Changes
