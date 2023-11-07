@@ -232,10 +232,10 @@ class ThalaswapRouter {
             ),
           ]
         : [
-            scaleUp(route.amountOut, tokenInDecimals),
+            scaleUp(route.amountOut, tokenOutDecimals),
             scaleUp(
               calcMaxSoldValue(route.amountIn, slippagePercentage),
-              tokenOutDecimals,
+              tokenInDecimals,
             ),
           ];
     if (route.path.length == 1) {
