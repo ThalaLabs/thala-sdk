@@ -222,7 +222,7 @@ class ThalaswapRouter {
     const tokenOutDecimals = this.coins!.find(
       (coin) => coin.address === route.path[route.path.length - 1].to,
     )!.decimals;
-    const args =
+    const args: [number, number] =
       route.type === "exact_input"
         ? [
             scaleUp(route.amountIn, tokenInDecimals),
@@ -232,10 +232,10 @@ class ThalaswapRouter {
             ),
           ]
         : [
-            scaleUp(route.amountOut, tokenInDecimals),
+            scaleUp(route.amountOut, tokenOutDecimals),
             scaleUp(
               calcMaxSoldValue(route.amountIn, slippagePercentage),
-              tokenOutDecimals,
+              tokenInDecimals,
             ),
           ];
     if (route.path.length == 1) {
