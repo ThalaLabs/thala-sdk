@@ -222,7 +222,7 @@ class ThalaswapRouter {
     const tokenOutDecimals = this.coins!.find(
       (coin) => coin.address === route.path[route.path.length - 1].to,
     )!.decimals;
-    const args: [number, number] =
+    const args =
       route.type === "exact_input"
         ? [
             scaleUp(route.amountIn, tokenInDecimals),
