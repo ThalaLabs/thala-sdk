@@ -1,5 +1,5 @@
 export const MULTIHOP_ROUTER_ABI = {
-  address: "0xd54f477c1436849a8c9c04e39f341b8ab81c0f67f4638f63eae229d0d2f1313f",
+  address: "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
   name: "router",
   friends: [],
   exposed_functions: [
