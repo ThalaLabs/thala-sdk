@@ -235,11 +235,11 @@ class ThalaswapRouter {
       if (balanceCoinIn !== undefined && balanceCoinIn < route.amountIn) {
         throw new Error("Insufficient balance");
       }
-      (amountInArg = scaleUp(route.amountIn, tokenInDecimals)),
-        (amountOutArg = scaleUp(
-          calcMinReceivedValue(route.amountOut, slippagePercentage),
-          tokenOutDecimals,
-        ));
+      amountInArg = scaleUp(route.amountIn, tokenInDecimals);
+      amountOutArg = scaleUp(
+        calcMinReceivedValue(route.amountOut, slippagePercentage),
+        tokenOutDecimals,
+      );
     } else {
       const maxSoldValueAfterSlippage = calcMaxSoldValue(
         route.amountIn,
