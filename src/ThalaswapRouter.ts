@@ -212,7 +212,7 @@ class ThalaswapRouter {
   }
 
   // balanceCoinIn is the user's balance of input coin. If it's specified, this function will check
-  // (1) for exact-in type of swap, throw an error if the user has enough balance to perform the swap.
+  // (1) for exact-in type of swap, throw an error if the user doesn't have enough balance to perform the swap.
   // (2) for exact-out type of swap, the maximum input amount is limited by the user's balance.
   encodeRoute(
     route: Route,
