@@ -89,7 +89,7 @@ function calcPriceImpactPercentage(
   fromIndex: number,
   toIndex: number,
 ): number {
-  const { poolType, balances, swapFee, weights, amp } = pool;
+  const { poolType, balances, weights, amp } = pool;
   if (poolType === "stable_pool") {
     return calcPriceImpactPercentageStable(
       amountIn,
@@ -122,9 +122,9 @@ export function findRouteGivenExactInput(
 ): Route | null {
   const tokens = Object.keys(graph);
   // distances[token][hop] is the maximum amount of token that can be received given hop number
-  let distances: Distances = {};
+  const distances: Distances = {};
   // predecessors[token][hop] is the previous hop of the optimal path
-  let predecessors: Predecessors = {};
+  const predecessors: Predecessors = {};
 
   const defaultDistance = -Infinity;
   for (const token of tokens) {
@@ -134,7 +134,7 @@ export function findRouteGivenExactInput(
   distances[startToken][0] = amountIn;
 
   for (let i = 0; i < maxHops; i++) {
-    for (const [token, edges] of Object.entries(graph)) {
+    for (const [_, edges] of Object.entries(graph)) {
       for (const edge of edges) {
         const fromToken = edge.pool.coinAddresses[edge.fromIndex];
         const toToken = edge.pool.coinAddresses[edge.toIndex];
@@ -230,8 +230,8 @@ export function findRouteGivenExactOutput(
   maxHops: number,
 ): Route | null {
   const tokens = Object.keys(graph);
-  let distances: Distances = {};
-  let predecessors: Predecessors = {};
+  const distances: Distances = {};
+  const predecessors: Predecessors = {};
 
   const defaultDistance = Infinity;
   for (const token of tokens) {
@@ -241,7 +241,7 @@ export function findRouteGivenExactOutput(
   distances[endToken][0] = amountOut;
 
   for (let i = 0; i < maxHops; i++) {
-    for (const [token, edges] of Object.entries(graph)) {
+    for (const [_, edges] of Object.entries(graph)) {
       for (const edge of edges) {
         const fromToken = edge.pool.coinAddresses[edge.fromIndex];
         const toToken = edge.pool.coinAddresses[edge.toIndex];

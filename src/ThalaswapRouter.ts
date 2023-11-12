@@ -211,7 +211,14 @@ class ThalaswapRouter {
     );
   }
 
-  encodeRoute(route: Route, slippagePercentage: number): EntryPayload {
+  // balanceCoinIn is the user's balance of input coin. If it's specified, this function will check
+  // (1) for exact-in type of swap, throw an error if the user doesn't have enough balance to perform the swap.
+  // (2) for exact-out type of swap, the maximum input amount is limited by the user's balance.
+  encodeRoute(
+    route: Route,
+    slippagePercentage: number,
+    balanceCoinIn?: number,
+  ): EntryPayload {
     if (route.path.length === 0 || route.path.length > 3) {
       throw new Error("Invalid route");
     }
@@ -222,22 +229,30 @@ class ThalaswapRouter {
     const tokenOutDecimals = this.coins!.find(
       (coin) => coin.address === route.path[route.path.length - 1].to,
     )!.decimals;
-    const args =
-      route.type === "exact_input"
-        ? [
-            scaleUp(route.amountIn, tokenInDecimals),
-            scaleUp(
-              calcMinReceivedValue(route.amountOut, slippagePercentage),
-              tokenOutDecimals,
-            ),
-          ]
-        : [
-            scaleUp(route.amountOut, tokenOutDecimals),
-            scaleUp(
-              calcMaxSoldValue(route.amountIn, slippagePercentage),
-              tokenInDecimals,
-            ),
-          ];
+    let amountInArg: number;
+    let amountOutArg: number;
+    if (route.type === "exact_input") {
+      if (balanceCoinIn !== undefined && balanceCoinIn < route.amountIn) {
+        throw new Error("Insufficient balance");
+      }
+      amountInArg = scaleUp(route.amountIn, tokenInDecimals);
+      amountOutArg = scaleUp(
+        calcMinReceivedValue(route.amountOut, slippagePercentage),
+        tokenOutDecimals,
+      );
+    } else {
+      const maxSoldValueAfterSlippage = calcMaxSoldValue(
+        route.amountIn,
+        slippagePercentage,
+      );
+      amountInArg = scaleUp(
+        balanceCoinIn !== undefined
+          ? Math.min(balanceCoinIn, maxSoldValueAfterSlippage)
+          : maxSoldValueAfterSlippage,
+        tokenInDecimals,
+      );
+      amountOutArg = scaleUp(route.amountOut, tokenOutDecimals);
+    }
     if (route.path.length == 1) {
       const path = route.path[0];
       const functionName =
@@ -254,7 +269,7 @@ class ThalaswapRouter {
       return createEntryPayload(abi, {
         function: functionName,
         type_arguments: typeArgs as any,
-        arguments: args as [number, number],
+        arguments: [amountInArg, amountOutArg],
       });
     } else if (route.path.length == 2) {
       const path0 = route.path[0];
@@ -265,10 +280,10 @@ class ThalaswapRouter {
       const functionName =
         route.type === "exact_input" ? "swap_exact_in_2" : "swap_exact_out_2";
 
-      return createEntryPayload(MULTIHOP_ROUTER_ABI as any, {
+      return createEntryPayload(MULTIHOP_ROUTER_ABI, {
         function: functionName,
         type_arguments: typeArgs as any,
-        arguments: args as any,
+        arguments: [amountInArg, amountOutArg],
       });
     } else {
       // route.path.length == 3
@@ -282,11 +297,10 @@ class ThalaswapRouter {
       const functionName =
         route.type === "exact_input" ? "swap_exact_in_3" : "swap_exact_out_3";
 
-      // TODO: remove any after ABI is ready
-      return createEntryPayload(MULTIHOP_ROUTER_ABI as any, {
+      return createEntryPayload(MULTIHOP_ROUTER_ABI, {
         function: functionName,
         type_arguments: typeArgs as any,
-        arguments: args as any,
+        arguments: [amountInArg, amountOutArg],
       });
     }
   }
