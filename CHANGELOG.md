@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 1.1.0
+
+### Minor Changes
+
+- a68319a: update contract address and fix the order of swap-exact-out arguments
+
 ## 1.0.5
 
 ### Patch Changes
