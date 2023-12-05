@@ -1,13 +1,25 @@
-import { createClient } from "@thalalabs/surf";
-import { AptosAccount } from "aptos";
+import { createSurfClient } from "@thalalabs/surf";
 import { ThalaswapRouter } from "../src";
+import {
+  Account,
+  Aptos,
+  AptosConfig,
+  Network,
+  Ed25519PrivateKey,
+} from "@aptos-labs/ts-sdk";
 
-const client = createClient({
-  nodeUrl: "https://fullnode.testnet.aptoslabs.com/v1",
+const client = createSurfClient(
+  new Aptos(
+    new AptosConfig({
+      network: Network.TESTNET,
+    }),
+  ),
+);
+
+const privateKey = "your_private_key_here";
+const account = Account.fromPrivateKey({
+  privateKey: new Ed25519PrivateKey(privateKey),
 });
-
-const privateKey = Buffer.from("your_private_key_here", "hex");
-const account = new AptosAccount(privateKey);
 
 // `testnet-example-pools.json` contains some testnet pools. The data is not up-to-date.
 const router = new ThalaswapRouter(
@@ -30,12 +42,12 @@ async function example1() {
   console.log("Route:", route);
 
   const entryPayload = router.encodeRoute(route!, 0.5);
-  console.log(
-    "Entry function payload with 0.5% slippage:",
-    entryPayload.rawPayload,
-  );
+  console.log("Entry function payload with 0.5% slippage:", entryPayload);
 
-  await client.submitTransaction(entryPayload, { account });
+  await client.submitTransaction({
+    payload: entryPayload,
+    signer: account,
+  });
 }
 
 // Example 2: Exact output. Multi hop
@@ -54,12 +66,12 @@ async function example2() {
   console.log("Route:", route);
 
   const entryPayload = router.encodeRoute(route!, 0.5);
-  console.log(
-    "Entry function payload with 0.5% slippage:",
-    entryPayload.rawPayload,
-  );
+  console.log("Entry function payload with 0.5% slippage:", entryPayload);
 
-  await client.submitTransaction(entryPayload, { account });
+  await client.submitTransaction({
+    payload: entryPayload,
+    signer: account,
+  });
 }
 
 example1();

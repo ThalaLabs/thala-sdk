@@ -268,8 +268,8 @@ class ThalaswapRouter {
 
       return createEntryPayload(abi, {
         function: functionName,
-        type_arguments: typeArgs as any,
-        arguments: [amountInArg, amountOutArg],
+        typeArguments: typeArgs as any,
+        functionArguments: [amountInArg, amountOutArg],
       });
     } else if (route.path.length == 2) {
       const path0 = route.path[0];
@@ -282,8 +282,8 @@ class ThalaswapRouter {
 
       return createEntryPayload(MULTIHOP_ROUTER_ABI, {
         function: functionName,
-        type_arguments: typeArgs as any,
-        arguments: [amountInArg, amountOutArg],
+        typeArguments: typeArgs as any,
+        functionArguments: [amountInArg, amountOutArg],
       });
     } else {
       // route.path.length == 3
@@ -299,8 +299,8 @@ class ThalaswapRouter {
 
       return createEntryPayload(MULTIHOP_ROUTER_ABI, {
         function: functionName,
-        type_arguments: typeArgs as any,
-        arguments: [amountInArg, amountOutArg],
+        typeArguments: typeArgs as any,
+        functionArguments: [amountInArg, amountOutArg],
       });
     }
   }
