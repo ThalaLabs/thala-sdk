@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 1.1.1
+
+### Patch Changes
+
+- 321c13d: upgrade surf to 1.0.1
+
 ## 1.1.0
 
 ### Minor Changes
