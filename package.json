@@ -35,8 +35,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@thalalabs/surf": "^0.0.16",
-    "aptos": "^1.20.0",
+    "@aptos-labs/ts-sdk": "^1.0.0",
+    "@thalalabs/surf": "^1.0.1",
     "axios": "^1.5.1"
   },
   "lint-staged": {
