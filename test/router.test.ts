@@ -27,11 +27,6 @@ const mockPoolDataClient = {
 const router = new ThalaswapRouter("example-url");
 router.setPoolDataClient(mockPoolDataClient as any);
 
-function parseU8Array(arr: Uint8Array): bigint {
-  const view = new DataView(arr.buffer);
-  return view.getBigUint64(0, true); // true indicates little endian
-}
-
 test("Exact input 1 hop", async () => {
   const startToken =
     "0xf22bede237a07e121b56d91a491eb7bcdfd1f5907926a9e58338f964a01b17fa::asset::USDC";
@@ -55,13 +50,9 @@ test("Exact input 1 hop", async () => {
   expect(route!.amountOut).toBeCloseTo(112, 0);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.entryRequest.module_name.name.value).toBe(
-    "weighted_pool_scripts",
-  );
-  expect(
-    payload.entryRequest.function_name.value.search("swap_exact_in"),
-  ).not.toBe(-1);
-  expect(parseU8Array(payload.entryRequest.args[0])).toBe(1000000000n);
+  expect(payload.function).toInclude("weighted_pool_scripts");
+  expect(payload.function).toInclude("swap_exact_in");
+  expect(payload.functionArguments[0]).toBe(1000000000);
 });
 
 test("Exact input 2 hop", async () => {
@@ -88,11 +79,9 @@ test("Exact input 2 hop", async () => {
   expect(route!.amountOut).toBeCloseTo(153, 0);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.entryRequest.module_name.name.value).toBe("router");
-  expect(
-    payload.entryRequest.function_name.value.search("swap_exact_in_2"),
-  ).not.toBe(-1);
-  expect(parseU8Array(payload.entryRequest.args[0])).toBe(1000000n);
+  expect(payload.function).toInclude("router");
+  expect(payload.function).toInclude("swap_exact_in_2");
+  expect(payload.functionArguments[0]).toBe(1000000);
 });
 
 test("Exact input 3 hop", async () => {
@@ -121,11 +110,9 @@ test("Exact input 3 hop", async () => {
   expect(route!.amountOut).toBeCloseTo(2.35, 2);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.entryRequest.module_name.name.value).toBe("router");
-  expect(
-    payload.entryRequest.function_name.value.search("swap_exact_in_3"),
-  ).not.toBe(-1);
-  expect(parseU8Array(payload.entryRequest.args[0])).toBe(1000000n);
+  expect(payload.function).toInclude("router");
+  expect(payload.function).toInclude("swap_exact_in_3");
+  expect(payload.functionArguments[0]).toBe(1000000);
 });
 
 test("Exact output 1 hop", async () => {
@@ -151,13 +138,9 @@ test("Exact output 1 hop", async () => {
   expect(route!.amountIn).toBeCloseTo(326, 0);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.entryRequest.module_name.name.value).toBe(
-    "weighted_pool_scripts",
-  );
-  expect(
-    payload.entryRequest.function_name.value.search("swap_exact_out"),
-  ).not.toBe(-1);
-  expect(parseU8Array(payload.entryRequest.args[1])).toBe(1000000000n);
+  expect(payload.function).toInclude("weighted_pool_scripts");
+  expect(payload.function).toInclude("swap_exact_out");
+  expect(payload.functionArguments[1]).toBe(1000000000);
 });
 
 test("Exact output 2 hop", async () => {
@@ -184,11 +167,9 @@ test("Exact output 2 hop", async () => {
   expect(route!.amountIn).toBeCloseTo(1566, 0);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.entryRequest.module_name.name.value).toBe("router");
-  expect(
-    payload.entryRequest.function_name.value.search("swap_exact_out_2"),
-  ).not.toBe(-1);
-  expect(parseU8Array(payload.entryRequest.args[1])).toBe(1000000n);
+  expect(payload.function).toInclude("router");
+  expect(payload.function).toInclude("swap_exact_out_2");
+  expect(payload.functionArguments[1]).toBe(1000000);
 });
 
 test("Exact output 3 hop", async () => {
@@ -217,11 +198,9 @@ test("Exact output 3 hop", async () => {
   expect(route!.amountIn).toBeCloseTo(0.36, 2);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.entryRequest.module_name.name.value).toBe("router");
-  expect(
-    payload.entryRequest.function_name.value.search("swap_exact_out_3"),
-  ).not.toBe(-1);
-  expect(parseU8Array(payload.entryRequest.args[1])).toBe(1000000n);
+  expect(payload.function).toInclude("router");
+  expect(payload.function).toInclude("swap_exact_out_3");
+  expect(payload.functionArguments[1]).toBe(1000000);
 });
 
 test("Low price impact for MOD-USDC stable pool", async () => {
@@ -429,13 +408,9 @@ test("encodeRouter with balance input for exact-in swap", async () => {
 
   // 1. should succeed if user has enough balance
   const payload = router.encodeRoute(route!, 0, 1000000);
-  expect(payload.entryRequest.module_name.name.value).toBe(
-    "weighted_pool_scripts",
-  );
-  expect(
-    payload.entryRequest.function_name.value.search("swap_exact_in"),
-  ).not.toBe(-1);
-  expect(parseU8Array(payload.entryRequest.args[0])).toBe(100000000n);
+  expect(payload.function).toInclude("weighted_pool_scripts");
+  expect(payload.function).toInclude("swap_exact_in");
+  expect(payload.functionArguments[0]).toBe(100000000);
 
   // 2. should fail if user doesn't have enough balance
   expect(() => {
@@ -458,21 +433,13 @@ test("encodeRouter with balance input for exact-out swap", async () => {
 
   // 1. should succeed if user has enough balance. Slippage percentage is 50%
   const payload = router.encodeRoute(route!, 50, 1000000);
-  expect(payload.entryRequest.module_name.name.value).toBe(
-    "weighted_pool_scripts",
-  );
-  expect(
-    payload.entryRequest.function_name.value.search("swap_exact_out"),
-  ).not.toBe(-1);
-  expect(parseU8Array(payload.entryRequest.args[0])).toBe(9043083n);
+  expect(payload.function).toInclude("weighted_pool_scripts");
+  expect(payload.function).toInclude("swap_exact_out");
+  expect(payload.functionArguments[0]).toBe(9043083);
 
   // 2. should set "amountIn" argument to user's balance if user's balance is smaller than expected input amount + slippage
   const payload2 = router.encodeRoute(route!, 50, 9);
-  expect(payload2.entryRequest.module_name.name.value).toBe(
-    "weighted_pool_scripts",
-  );
-  expect(
-    payload2.entryRequest.function_name.value.search("swap_exact_out"),
-  ).not.toBe(-1);
-  expect(parseU8Array(payload2.entryRequest.args[0])).toBe(9000000n);
+  expect(payload2.function).toInclude("weighted_pool_scripts");
+  expect(payload2.function).toInclude("swap_exact_out");
+  expect(payload2.functionArguments[0]).toBe(9000000);
 });
