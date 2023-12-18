@@ -31,13 +31,16 @@
     "lint-staged": "^15.0.2",
     "prettier": "3.1.0",
     "tsup": "^7.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "@aptos-labs/ts-sdk": "^1.0.0",
+    "@thalalabs/surf": "^1.1.0"
   },
   "license": "MIT",
   "dependencies": {
-    "@aptos-labs/ts-sdk": "^1.0.0",
-    "@thalalabs/surf": "^1.0.1",
     "axios": "^1.5.1"
+  },
+  "peerDependencies": {
+    "@thalalabs/surf": "^1.1.0"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
