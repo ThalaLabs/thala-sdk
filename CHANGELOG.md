@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 1.2.0
+
+### Minor Changes
+
+- cabac03: Upgrade Surf and Change Surf to peer dependency
+
 ## 1.1.1
 
 ### Patch Changes
