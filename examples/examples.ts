@@ -21,10 +21,7 @@ const account = Account.fromPrivateKey({
   privateKey: new Ed25519PrivateKey(privateKey),
 });
 
-// `testnet-example-pools.json` contains some testnet pools. The data is not up-to-date.
-const router = new ThalaswapRouter(
-  "https://raw.githubusercontent.com/ThalaLabs/thala-router/main/examples/testnet-example-pools.json",
-);
+const router = new ThalaswapRouter("https://fullnode.mainnet.aptoslabs.com/v1");
 
 // Example 1: Exact input. 1 hop
 async function example1() {

@@ -22,7 +22,7 @@ function calcOutGivenIn(
   toIndex: number,
 ): number {
   const { poolType, balances, swapFee, weights, amp } = pool;
-  if (poolType === "stable_pool") {
+  if (poolType === "Stable") {
     return calcOutGivenInStable(
       amountIn,
       fromIndex,
@@ -31,7 +31,7 @@ function calcOutGivenIn(
       amp as number,
       swapFee,
     );
-  } else if (poolType === "weighted_pool") {
+  } else if (poolType === "Weighted") {
     const weightFrom = weights![fromIndex];
     const weightTo = weights![toIndex];
     return calcOutGivenInWeighted(
@@ -58,7 +58,7 @@ function calcInGivenOut(
     throw new Error("Insufficient balance");
   }
 
-  if (poolType === "stable_pool") {
+  if (poolType === "Stable") {
     return calcInGivenOutStable(
       amountOut,
       fromIndex,
@@ -67,7 +67,7 @@ function calcInGivenOut(
       amp as number,
       swapFee,
     );
-  } else if (poolType === "weighted_pool") {
+  } else if (poolType === "Weighted") {
     return calcInGivenOutWeighted(
       balances[fromIndex],
       weights![fromIndex],
@@ -90,7 +90,7 @@ function calcPriceImpactPercentage(
   toIndex: number,
 ): number {
   const { poolType, balances, weights, amp } = pool;
-  if (poolType === "stable_pool") {
+  if (poolType === "Stable") {
     return calcPriceImpactPercentageStable(
       amountIn,
       amountOut,
@@ -99,7 +99,7 @@ function calcPriceImpactPercentage(
       balances,
       amp as number,
     );
-  } else if (poolType === "weighted_pool") {
+  } else if (poolType === "Weighted") {
     return calcPriceImpactPercentageWeighted(
       amountIn,
       amountOut,

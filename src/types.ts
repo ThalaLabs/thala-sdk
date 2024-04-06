@@ -33,11 +33,12 @@ type Coin = {
 };
 
 type PoolBase = {
-  name: string;
+  poolType: "Weighted" | "Stable";
   balance0: number;
   balance1: number;
   balance2?: number;
   balance3?: number;
+  weights: number[];
   amp?: number;
 };
 type RawPool = PoolBase & {
@@ -65,7 +66,7 @@ type PoolData = {
 };
 
 type RouteType = "exact_input" | "exact_output";
-type PoolType = "stable_pool" | "weighted_pool";
+type PoolType = "Stable" | "Weighted";
 type Graph = Record<string, Edge[]>;
 type Distances = Record<string, Record<number, number>>;
 type Predecessors = Record<
@@ -92,4 +93,12 @@ export type {
   RawPoolData,
   PoolData,
   Pool,
+};
+
+export type LiquidityPoolMetadata = {
+  type: string;
+  poolType: PoolType;
+  numCoins: number;
+  coinAddresses: string[];
+  weights: number[];
 };
