@@ -1,5 +1,15 @@
 # @thalalabs/router-sdk
 
+## 2.0.0
+
+### Major Changes
+
+- 952c683: Fetch data from aptos sdk directly, instead of depends on external indexer
+
+### Patch Changes
+
+- e2d92a0: add swap fee & fetch coin addresses from resource
+
 ## 1.2.0
 
 ### Minor Changes
