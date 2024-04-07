@@ -60,7 +60,8 @@
       "asset0": 2,
       "asset1": 9,
       "balance0": 13008.29255679,
-      "balance1": 7089.59780576
+      "balance1": 7089.59780576,
+      "swapFee": 0.001
     },
     {
       "weights": [0.5, 0.5],
@@ -68,7 +69,8 @@
       "asset0": 4,
       "asset1": 2,
       "balance0": 2056.163873,
-      "balance1": 343.08755821
+      "balance1": 343.08755821,
+      "swapFee": 0.003
     },
     {
       "poolType": "Stable",
@@ -76,7 +78,8 @@
       "asset0": 8,
       "asset1": 4,
       "balance0": 116253605.3264,
-      "balance1": 147928165.8321
+      "balance1": 147928165.8321,
+      "swapFee": 0.001
     },
     {
       "weights": [0.5, 0.5],
@@ -84,7 +87,8 @@
       "asset0": 11,
       "asset1": 0,
       "balance0": 34979.5108242,
-      "balance1": 35724.6883114
+      "balance1": 35724.6883114,
+      "swapFee": 0.003
     },
     {
       "weights": [0.5, 0.5],
@@ -92,7 +96,8 @@
       "asset0": 10,
       "asset1": 2,
       "balance0": 72.51205774,
-      "balance1": 13.8509258
+      "balance1": 13.8509258,
+      "swapFee": 0.003
     },
     {
       "weights": [0.5, 0.5],
@@ -100,7 +105,8 @@
       "asset0": 3,
       "asset1": 2,
       "balance0": 0.004836,
-      "balance1": 1.32766579
+      "balance1": 1.32766579,
+      "swapFee": 0.003
     },
     {
       "weights": [0.5, 0.5],
@@ -108,7 +114,8 @@
       "asset0": 0,
       "asset1": 2,
       "balance0": 362930.20489986,
-      "balance1": 60585.67918414
+      "balance1": 60585.67918414,
+      "swapFee": 0.003
     },
     {
       "weights": [0.2, 0.8],
@@ -116,7 +123,8 @@
       "asset0": 0,
       "asset1": 1,
       "balance0": 248734.03692406,
-      "balance1": 6879670.48528901
+      "balance1": 6879670.48528901,
+      "swapFee": 0.003
     },
     {
       "poolType": "Stable",
@@ -124,7 +132,8 @@
       "asset0": 5,
       "asset1": 2,
       "balance0": 270.645707,
-      "balance1": 3.7526662
+      "balance1": 3.7526662,
+      "swapFee": 0.001
     },
     {
       "poolType": "Stable",
@@ -132,7 +141,8 @@
       "asset0": 4,
       "asset1": 2,
       "balance0": 28.135422,
-      "balance1": 0.99660011
+      "balance1": 0.99660011,
+      "swapFee": 0.001
     },
     {
       "weights": [0.5, 0.5],
@@ -140,7 +150,8 @@
       "asset0": 4,
       "asset1": 3,
       "balance0": 298505.588373,
-      "balance1": 178.617787
+      "balance1": 178.617787,
+      "swapFee": 0.003
     },
     {
       "poolType": "Stable",
@@ -148,7 +159,8 @@
       "asset0": 0,
       "asset1": 4,
       "balance0": 2156392.68306257,
-      "balance1": 1718685.730877
+      "balance1": 1718685.730877,
+      "swapFee": 0.001
     },
     {
       "weights": [0.5, 0.5],
@@ -156,7 +168,8 @@
       "asset0": 5,
       "asset1": 2,
       "balance0": 85.842312,
-      "balance1": 14.31721868
+      "balance1": 14.31721868,
+      "swapFee": 0.003
     },
     {
       "weights": [0.5, 0.5],
@@ -164,7 +177,8 @@
       "asset0": 8,
       "asset1": 0,
       "balance0": 128039.615342,
-      "balance1": 128142.51454857
+      "balance1": 128142.51454857,
+      "swapFee": 0.003
     },
     {
       "poolType": "Stable",
@@ -172,7 +186,8 @@
       "asset0": 0,
       "asset1": 2,
       "balance0": 4.02854082,
-      "balance1": 0.14138684
+      "balance1": 0.14138684,
+      "swapFee": 0.001
     },
     {
       "weights": [0.5, 0.5],
@@ -180,7 +195,8 @@
       "asset0": 8,
       "asset1": 5,
       "balance0": 1.001998,
-      "balance1": 0.99801
+      "balance1": 0.99801,
+      "swapFee": 0.003
     },
     {
       "poolType": "Stable",
@@ -188,7 +204,8 @@
       "asset0": 0,
       "asset1": 5,
       "balance0": 4.94143188,
-      "balance1": 5.141924
+      "balance1": 5.141924,
+      "swapFee": 0.001
     },
     {
       "poolType": "Stable",
@@ -196,7 +213,8 @@
       "asset0": 3,
       "asset1": 2,
       "balance0": 0.023479,
-      "balance1": 14.64680542
+      "balance1": 14.64680542,
+      "swapFee": 0.001
     },
     {
       "weights": [0.5, 0.5],
@@ -204,7 +222,8 @@
       "asset0": 8,
       "asset1": 2,
       "balance0": 24.579756,
-      "balance1": 4.12285236
+      "balance1": 4.12285236,
+      "swapFee": 0.003
     },
     {
       "poolType": "Stable",
@@ -212,7 +231,8 @@
       "asset0": 8,
       "asset1": 0,
       "balance0": 0.571745,
-      "balance1": 0.52156903
+      "balance1": 0.52156903,
+      "swapFee": 0.001
     },
     {
       "weights": [0.5, 0.5],
@@ -220,7 +240,8 @@
       "asset0": 4,
       "asset1": 6,
       "balance0": 222295.82288,
-      "balance1": 7.312754
+      "balance1": 7.312754,
+      "swapFee": 0.003
     },
     {
       "weights": [0.2, 0.8],
@@ -228,7 +249,8 @@
       "asset0": 4,
       "asset1": 2,
       "balance0": 25.909589,
-      "balance1": 17.38773534
+      "balance1": 17.38773534,
+      "swapFee": 0.003
     },
     {
       "weights": [0.5, 0.5],
@@ -236,7 +258,8 @@
       "asset0": 1,
       "asset1": 5,
       "balance0": 26.2370464,
-      "balance1": 3.833277
+      "balance1": 3.833277,
+      "swapFee": 0.003
     },
     {
       "weights": [0.5, 0.5],
@@ -244,7 +267,8 @@
       "asset0": 1,
       "asset1": 2,
       "balance0": 35654.3460136,
-      "balance1": 859.43733753
+      "balance1": 859.43733753,
+      "swapFee": 0.003
     },
     {
       "poolType": "Stable",
@@ -252,7 +276,8 @@
       "asset0": 4,
       "asset1": 5,
       "balance0": 1345237.470138,
-      "balance1": 1164406.178002
+      "balance1": 1164406.178002,
+      "swapFee": 0.001
     },
     {
       "weights": [0.5, 0.5],
@@ -260,7 +285,8 @@
       "asset0": 1,
       "asset1": 4,
       "balance0": 92.37699208,
-      "balance1": 13.095411
+      "balance1": 13.095411,
+      "swapFee": 0.003
     },
     {
       "weights": [0.55, 0.45],
@@ -268,7 +294,8 @@
       "asset0": 1,
       "asset1": 2,
       "balance0": 204.13207378,
-      "balance1": 3.98294437
+      "balance1": 3.98294437,
+      "swapFee": 0.003
     },
     {
       "poolType": "Stable",
@@ -276,7 +303,8 @@
       "asset0": 1,
       "asset1": 4,
       "balance0": 360.03921448,
-      "balance1": 23.350643
+      "balance1": 23.350643,
+      "swapFee": 0.001
     }
   ]
 }

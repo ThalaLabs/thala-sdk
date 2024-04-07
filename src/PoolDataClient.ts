@@ -2,7 +2,7 @@ import { Coin, Pool, PoolData } from "./types";
 import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 import { THALASWAP_RESOURCE_ACCOUNT_ADDRESS } from "./constants";
 import { uniq } from "lodash";
-import { parsePoolMetadata, scaleDown } from "./utils";
+import { fp64ToFloat, parsePoolMetadata, scaleDown } from "./utils";
 
 class PoolDataClient {
   private poolData: PoolData | null = null;
@@ -26,11 +26,11 @@ class PoolDataClient {
     if (!this.poolData || currentTime - this.lastUpdated > this.expiry) {
       for (let i = 0; i < this.retryLimit; i++) {
         try {
-          const resources = (
-            await this.client.getAccountResources({
-              accountAddress: THALASWAP_RESOURCE_ACCOUNT_ADDRESS,
-            })
-          ).filter(
+          const resources = await this.client.getAccountResources({
+            accountAddress: THALASWAP_RESOURCE_ACCOUNT_ADDRESS,
+          });
+
+          const poolResources = resources.filter(
             (r) =>
               r.type.startsWith(
                 `${THALASWAP_RESOURCE_ACCOUNT_ADDRESS}::weighted_pool::WeightedPool<`,
@@ -46,18 +46,23 @@ class PoolDataClient {
               asset_2: { value: string };
               asset_3: { value: string };
               amp_factor?: string;
+              swap_fee_ratio: { v: string };
             };
           }[];
 
-          const allCoinAddress = uniq(
-            resources.reduce((acc, resource) => {
-              const metadata = parsePoolMetadata(resource.type);
-              metadata.coinAddresses.forEach((coin) => {
-                coin && acc.push(coin);
-              });
-              return acc;
-            }, [] as string[]),
+          const coinResources = resources.filter((r) =>
+            r.type.startsWith("0x1::coin::CoinStore<"),
           );
+
+          const allCoinAddress = coinResources.map((r) => {
+            const match = r.type.match(
+              new RegExp("0x1::coin::CoinStore<(.*)>"),
+            );
+            if (!match) {
+              throw new Error("Invalid coin address");
+            }
+            return match[1];
+          });
 
           await Promise.all(
             allCoinAddress.map(async (address) => {
@@ -80,7 +85,7 @@ class PoolDataClient {
             }),
           );
 
-          const pools = resources.reduce((acc, resource) => {
+          const pools = poolResources.reduce((acc, resource) => {
             const metadata = parsePoolMetadata(resource.type);
             const [coin0, coin1, coin2, coin3] = metadata.coinAddresses.map(
               (addr) => this.coins.find((c) => c.address === addr),
@@ -104,6 +109,7 @@ class PoolDataClient {
               balance3: coin3
                 ? scaleDown(resource.data.asset_3.value, coin3.decimals)
                 : undefined,
+              swapFee: fp64ToFloat(BigInt(resource.data.swap_fee_ratio.v)),
             });
             return acc;
           }, [] as Pool[]);

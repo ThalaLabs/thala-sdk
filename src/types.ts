@@ -39,6 +39,7 @@ type PoolBase = {
   balance2?: number;
   balance3?: number;
   weights: number[];
+  swapFee: number;
   amp?: number;
 };
 type RawPool = PoolBase & {
