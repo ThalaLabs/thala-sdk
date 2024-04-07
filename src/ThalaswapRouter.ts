@@ -32,7 +32,7 @@ const encodePoolType = (
   pool: LiquidityPool,
   extendStableArgs: boolean,
 ): string[] => {
-  if (pool.poolType === "stable_pool") {
+  if (pool.poolType === "Stable") {
     const typeArgs = NULL_4.map((nullType, i) =>
       i < pool.coinAddresses.length ? pool.coinAddresses[i] : nullType,
     );
@@ -80,34 +80,6 @@ class ThalaswapRouter {
     this.graph = await this.buildGraph(pools);
   }
 
-  parseWeightsFromWeightedPoolName(poolName: string): number[] {
-    const weights: number[] = [];
-
-    const tokenWeightPairs = poolName.split(":");
-
-    // Iterate over each token-weight pair except the first one (which is just 'W' or 'S')
-    for (const pair of tokenWeightPairs.slice(1)) {
-      const parts = pair.split("-");
-      if (parts.length === 2) {
-        const weight = parseInt(parts[1], 10);
-        if (!isNaN(weight)) {
-          weights.push(weight / 100);
-        } else {
-          throw new Error("Invalid weight in pool name");
-        }
-      } else {
-        throw new Error("Invalid token-weight pair in pool name: " + poolName);
-      }
-    }
-
-    return weights;
-  }
-
-  parseAmpFactorFromStablePoolName(poolName: string): number {
-    const parts = poolName.split(":");
-    return parseInt(parts[1]);
-  }
-
   async buildGraph(pools: Pool[]): Promise<Graph> {
     const tokens: Set<string> = new Set();
     const graph: Graph = {};
@@ -122,26 +94,19 @@ class ThalaswapRouter {
         .filter((b, i) => assets[i])
         .map((b) => pool[b as BalanceIndex] as number);
 
-      const poolType = pool.name[0] === "S" ? "stable_pool" : "weighted_pool";
       const swapFee =
-        poolType === "stable_pool"
+        pool.poolType === "Stable"
           ? DEFAULT_SWAP_FEE_STABLE
           : DEFAULT_SWAP_FEE_WEIGHTED;
 
-      const weights =
-        poolType === "weighted_pool"
-          ? this.parseWeightsFromWeightedPoolName(pool.name)
-          : undefined;
+      const weights = pool.poolType === "Weighted" ? pool.weights! : undefined;
 
-      const amp =
-        poolType === "stable_pool"
-          ? this.parseAmpFactorFromStablePoolName(pool.name)
-          : undefined;
+      const amp = pool.poolType === "Stable" ? pool.amp! : undefined;
 
       const convertedPool: LiquidityPool = {
         coinAddresses: assets.map((a) => a.address),
         balances,
-        poolType,
+        poolType: pool.poolType,
         swapFee,
         weights,
         amp,
@@ -258,7 +223,7 @@ class ThalaswapRouter {
       const functionName =
         route.type === "exact_input" ? "swap_exact_in" : "swap_exact_out";
       const abi =
-        path.pool.poolType === "stable_pool"
+        path.pool.poolType === "Stable"
           ? STABLE_POOL_SCRIPTS_ABI
           : WEIGHTED_POOL_SCRIPTS_ABI;
       const typeArgs = encodePoolType(path.pool, false).concat([
