@@ -14,9 +14,6 @@ import { STABLE_POOL_SCRIPTS_ABI } from "./abi/stable_pool_scripts";
 import { WEIGHTED_POOL_SCRIPTS_ABI } from "./abi/weighted_pool_scripts";
 import { MULTIHOP_ROUTER_ABI } from "./abi/multihop_router";
 
-const DEFAULT_SWAP_FEE_STABLE = 0.001;
-const DEFAULT_SWAP_FEE_WEIGHTED = 0.003;
-
 const NULL_TYPE = `${STABLE_POOL_SCRIPTS_ABI.address}::base_pool::Null`;
 const NULL_4 = Array(4).fill(NULL_TYPE);
 
@@ -94,11 +91,6 @@ class ThalaswapRouter {
         .filter((b, i) => assets[i])
         .map((b) => pool[b as BalanceIndex] as number);
 
-      const swapFee =
-        pool.poolType === "Stable"
-          ? DEFAULT_SWAP_FEE_STABLE
-          : DEFAULT_SWAP_FEE_WEIGHTED;
-
       const weights = pool.poolType === "Weighted" ? pool.weights! : undefined;
 
       const amp = pool.poolType === "Stable" ? pool.amp! : undefined;
@@ -107,7 +99,7 @@ class ThalaswapRouter {
         coinAddresses: assets.map((a) => a.address),
         balances,
         poolType: pool.poolType,
-        swapFee,
+        swapFee: pool.swapFee,
         weights,
         amp,
       };
