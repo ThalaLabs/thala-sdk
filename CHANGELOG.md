@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 2.1.0
+
+### Minor Changes
+
+- 7ab163d: Fix coin missed issue
+
 ## 2.0.0
 
 ### Major Changes
