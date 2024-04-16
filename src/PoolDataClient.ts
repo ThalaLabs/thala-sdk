@@ -50,19 +50,15 @@ class PoolDataClient {
             };
           }[];
 
-          const coinResources = resources.filter((r) =>
-            r.type.startsWith("0x1::coin::CoinStore<"),
+          const allCoinAddress = uniq(
+            poolResources.reduce((acc, resource) => {
+              const metadata = parsePoolMetadata(resource.type);
+              metadata.coinAddresses.forEach((coin) => {
+                coin && acc.push(coin);
+              });
+              return acc;
+            }, [] as string[]),
           );
-
-          const allCoinAddress = coinResources.map((r) => {
-            const match = r.type.match(
-              new RegExp("0x1::coin::CoinStore<(.*)>"),
-            );
-            if (!match) {
-              throw new Error("Invalid coin address");
-            }
-            return match[1];
-          });
 
           await Promise.all(
             allCoinAddress.map(async (address) => {
@@ -86,31 +82,41 @@ class PoolDataClient {
           );
 
           const pools = poolResources.reduce((acc, resource) => {
-            const metadata = parsePoolMetadata(resource.type);
-            const [coin0, coin1, coin2, coin3] = metadata.coinAddresses.map(
-              (addr) => this.coins.find((c) => c.address === addr),
-            );
+            try {
+              const metadata = parsePoolMetadata(resource.type);
+              const [coin0, coin1, coin2, coin3] = metadata.coinAddresses.map(
+                (addr) => this.coins.find((c) => c.address === addr),
+              );
 
-            acc.push({
-              weights: metadata.weights.map((w) => Number(w) / 100),
-              poolType: metadata.poolType,
-              amp: resource.data.amp_factor
-                ? Number(resource.data.amp_factor)
-                : undefined,
-              asset0: coin0!,
-              asset1: coin1!,
-              asset2: coin2,
-              asset3: coin3,
-              balance0: scaleDown(resource.data.asset_0.value, coin0!.decimals),
-              balance1: scaleDown(resource.data.asset_1.value, coin1!.decimals),
-              balance2: coin2
-                ? scaleDown(resource.data.asset_2.value, coin2.decimals)
-                : undefined,
-              balance3: coin3
-                ? scaleDown(resource.data.asset_3.value, coin3.decimals)
-                : undefined,
-              swapFee: fp64ToFloat(BigInt(resource.data.swap_fee_ratio.v)),
-            });
+              acc.push({
+                weights: metadata.weights.map((w) => Number(w) / 100),
+                poolType: metadata.poolType,
+                amp: resource.data.amp_factor
+                  ? Number(resource.data.amp_factor)
+                  : undefined,
+                asset0: coin0!,
+                asset1: coin1!,
+                asset2: coin2,
+                asset3: coin3,
+                balance0: scaleDown(
+                  resource.data.asset_0.value,
+                  coin0!.decimals,
+                ),
+                balance1: scaleDown(
+                  resource.data.asset_1.value,
+                  coin1!.decimals,
+                ),
+                balance2: coin2
+                  ? scaleDown(resource.data.asset_2.value, coin2.decimals)
+                  : undefined,
+                balance3: coin3
+                  ? scaleDown(resource.data.asset_3.value, coin3.decimals)
+                  : undefined,
+                swapFee: fp64ToFloat(BigInt(resource.data.swap_fee_ratio.v)),
+              });
+            } catch (e) {
+              console.error("failed to add pool", resource.type, e);
+            }
             return acc;
           }, [] as Pool[]);
 
