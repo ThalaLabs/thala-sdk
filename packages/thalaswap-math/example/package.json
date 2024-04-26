@@ -13,6 +13,6 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@thalalabs/thalaswap-math": "link:.."
+    "@thalalabs/thalaswap-math": "workspace:^"
   }
 }
