@@ -7,9 +7,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: oven-sh/setup-bun@v1
-      - run: bun install
-      - run: bun run typecheck
-      - run: bun run build
-      - run: bun test
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm i
+      - run: pnpm run all
+        env:
+          CI: true

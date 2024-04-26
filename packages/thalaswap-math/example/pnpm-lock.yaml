@@ -1,0 +1,21 @@
+lockfileVersion: "6.0"
+
+dependencies:
+  "@thalalabs/thalaswap-math":
+    specifier: link:..
+    version: link:..
+
+devDependencies:
+  typescript:
+    specifier: ^5.4.5
+    version: 5.4.5
+
+packages:
+  /typescript@5.4.5:
+    resolution:
+      {
+        integrity: sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==,
+      }
+    engines: { node: ">=14.17" }
+    hasBin: true
+    dev: true

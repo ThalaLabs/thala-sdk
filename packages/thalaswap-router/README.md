@@ -28,11 +28,11 @@ This package uses Bun for development and package management.
 
 ```
 # install dependencies
-bun install
+pnpm install
 
 # test the app
-bun test
+pnpm run test
 
 # build the app, available under dist
-bun run build
+pnpm run build
 ```

@@ -1,6 +1,5 @@
 import poolData from "./test-pools.json";
 import { ThalaswapRouter } from "../src";
-import { expect, test, jest } from "bun:test";
 
 const coins = poolData.coins;
 const pools = poolData.pools.map((pool: any) => {
@@ -50,8 +49,8 @@ test("Exact input 1 hop", async () => {
   expect(route!.amountOut).toBeCloseTo(112, 0);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.function).toInclude("weighted_pool_scripts");
-  expect(payload.function).toInclude("swap_exact_in");
+  expect(payload.function).toContain("weighted_pool_scripts");
+  expect(payload.function).toContain("swap_exact_in");
   expect(payload.functionArguments[0]).toBe(1000000000);
 });
 
@@ -79,8 +78,8 @@ test("Exact input 2 hop", async () => {
   expect(route!.amountOut).toBeCloseTo(153, 0);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.function).toInclude("router");
-  expect(payload.function).toInclude("swap_exact_in_2");
+  expect(payload.function).toContain("router");
+  expect(payload.function).toContain("swap_exact_in_2");
   expect(payload.functionArguments[0]).toBe(1000000);
 });
 
@@ -110,8 +109,8 @@ test("Exact input 3 hop", async () => {
   expect(route!.amountOut).toBeCloseTo(2.35, 2);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.function).toInclude("router");
-  expect(payload.function).toInclude("swap_exact_in_3");
+  expect(payload.function).toContain("router");
+  expect(payload.function).toContain("swap_exact_in_3");
   expect(payload.functionArguments[0]).toBe(1000000);
 });
 
@@ -138,8 +137,8 @@ test("Exact output 1 hop", async () => {
   expect(route!.amountIn).toBeCloseTo(326, 0);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.function).toInclude("weighted_pool_scripts");
-  expect(payload.function).toInclude("swap_exact_out");
+  expect(payload.function).toContain("weighted_pool_scripts");
+  expect(payload.function).toContain("swap_exact_out");
   expect(payload.functionArguments[1]).toBe(1000000000);
 });
 
@@ -167,8 +166,8 @@ test("Exact output 2 hop", async () => {
   expect(route!.amountIn).toBeCloseTo(1566, 0);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.function).toInclude("router");
-  expect(payload.function).toInclude("swap_exact_out_2");
+  expect(payload.function).toContain("router");
+  expect(payload.function).toContain("swap_exact_out_2");
   expect(payload.functionArguments[1]).toBe(1000000);
 });
 
@@ -198,8 +197,8 @@ test("Exact output 3 hop", async () => {
   expect(route!.amountIn).toBeCloseTo(0.36, 2);
 
   const payload = router.encodeRoute(route!, 0);
-  expect(payload.function).toInclude("router");
-  expect(payload.function).toInclude("swap_exact_out_3");
+  expect(payload.function).toContain("router");
+  expect(payload.function).toContain("swap_exact_out_3");
   expect(payload.functionArguments[1]).toBe(1000000);
 });
 
@@ -408,8 +407,8 @@ test("encodeRouter with balance input for exact-in swap", async () => {
 
   // 1. should succeed if user has enough balance
   const payload = router.encodeRoute(route!, 0, 1000000);
-  expect(payload.function).toInclude("weighted_pool_scripts");
-  expect(payload.function).toInclude("swap_exact_in");
+  expect(payload.function).toContain("weighted_pool_scripts");
+  expect(payload.function).toContain("swap_exact_in");
   expect(payload.functionArguments[0]).toBe(100000000);
 
   // 2. should fail if user doesn't have enough balance
@@ -433,13 +432,13 @@ test("encodeRouter with balance input for exact-out swap", async () => {
 
   // 1. should succeed if user has enough balance. Slippage percentage is 50%
   const payload = router.encodeRoute(route!, 50, 1000000);
-  expect(payload.function).toInclude("weighted_pool_scripts");
-  expect(payload.function).toInclude("swap_exact_out");
+  expect(payload.function).toContain("weighted_pool_scripts");
+  expect(payload.function).toContain("swap_exact_out");
   expect(payload.functionArguments[0]).toBe(9043083);
 
   // 2. should set "amountIn" argument to user's balance if user's balance is smaller than expected input amount + slippage
   const payload2 = router.encodeRoute(route!, 50, 9);
-  expect(payload2.function).toInclude("weighted_pool_scripts");
-  expect(payload2.function).toInclude("swap_exact_out");
+  expect(payload2.function).toContain("weighted_pool_scripts");
+  expect(payload2.function).toContain("swap_exact_out");
   expect(payload2.functionArguments[0]).toBe(9000000);
 });
