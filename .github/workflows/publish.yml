@@ -16,15 +16,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: oven-sh/setup-bun@v1
-      - uses: actions/setup-node@v3
-      - run: bun install
-      - run: bun run build
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - run: pnpm i
+      - run: pnpm run test
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          publish: npm run release
+          publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

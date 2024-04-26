@@ -1,51 +1,3 @@
-const EPSILON = 0.000001; // 1e-6, for detecting convergence in stableswap math
-const MAX_LOOP_LIMIT = 100;
-
-/// Reference "Out-Given-In" section in Balancer whitepaper https://balancer.fi/whitepaper.pdf
-/// ********************************************************************************************
-/// calcOutGivenIn                                                                            //
-/// aO = tokenAmountOut                                                                       //
-/// bO = tokenBalanceOut                                                                      //
-/// bI = tokenBalanceIn              /      /            bI             \    (wI / wO) \      //
-/// aI = tokenAmountIn    aO = bO * |  1 - | --------------------------  | ^            |     //
-/// wI = tokenWeightIn               \      \ ( bI + ( aI * ( 1 - sF )) /              /      //
-/// wO = tokenWeightOut                                                                       //
-/// sF = swapFee                                                                              //
-/// ********************************************************************************************
-export function calcOutGivenInWeighted(
-  bI: number,
-  wI: number,
-  bO: number,
-  wO: number,
-  aI: number,
-  sF: number,
-): number {
-  const denom = bI + aI * (1 - sF);
-  return bO * (1 - Math.pow(bI / denom, wI / wO));
-}
-
-/// Reference "In-Given-Out" section in Balancer whitepaper https://balancer.fi/whitepaper.pdf
-/// ********************************************************************************************
-/// calcInGivenOut                                                                            //
-/// aI = tokenAmountIn                                                                        //
-/// bO = tokenBalanceOut               /  /     bO      \    (wO / wI)      \                 //
-/// bI = tokenBalanceIn          bI * |  | ------------  | ^            - 1  |                //
-/// aO = tokenAmountOut    aI =        \  \ ( bO - aO ) /                   /                 //
-/// wI = tokenWeightIn           --------------------------------------------                 //
-/// wO = tokenWeightOut                          ( 1 - sF )                                   //
-/// sF = swapFee                                                                              //
-/// ********************************************************************************************
-export function calcInGivenOutWeighted(
-  bI: number,
-  wI: number,
-  bO: number,
-  wO: number,
-  aO: number,
-  sF: number,
-): number {
-  return (bI * (Math.pow(bO / (bO - aO), wO / wI) - 1)) / (1 - sF);
-}
-
 export function calcOutGivenInStable(
   amountIn: number,
   indexIn: number,
@@ -73,29 +25,24 @@ export function calcInGivenOutStable(
   return (newY - balances[indexIn]) / (1 - fee);
 }
 
-export function calcPriceImpactPercentageWeighted(
-  exactAmountIn: number,
-  exactAmountOut: number,
-  balanceIn: number,
-  balanceOut: number,
-  weightIn: number,
-  weightOut: number,
+// get relative price of coin j to i
+// formula: https://linear.app/thala-labs/issue/THA-434/calculate-swap-price-impact
+export function getPriceStable(
+  i: number,
+  j: number,
+  balances: number[],
+  amp: number,
 ): number {
-  if (balanceOut - exactAmountOut < 0.000001) {
-    // to avoid loss of accuracy, we just return 100%
-    return 100;
-  }
-
-  // https://docs.balancer.fi/v/v1/core-concepts/protocol/index#spot-price
-  // price1To0 = (balance0 / balance1) * (weight1 / weight0)
-  const oldPrice = ((balanceIn / balanceOut) * weightOut) / weightIn;
-
-  // update new balance
-  balanceIn = balanceIn + exactAmountIn;
-  balanceOut = balanceOut - exactAmountOut;
-  const newPrice = ((balanceIn / balanceOut) * weightOut) / weightIn;
-
-  return (Math.abs(newPrice - oldPrice) / oldPrice) * 100;
+  const d = getD(balances, amp);
+  const n = balances.length;
+  let b = Math.pow(d, n + 1) / Math.pow(n, n);
+  balances.forEach((x: number, index: number) => {
+    if (index != i && index != j) {
+      b = b / x;
+    }
+  });
+  let naxx = n * amp * balances[i] * balances[i] * balances[j] * balances[j];
+  return (balances[i] * b + naxx) / (balances[j] * b + naxx);
 }
 
 export function calcPriceImpactPercentageStable(
@@ -113,10 +60,9 @@ export function calcPriceImpactPercentageStable(
   const oldPrice = getPriceStable(indexIn, indexOut, balances, amp);
 
   // update new balance
-  const newBalances = [...balances];
-  newBalances[indexIn] = newBalances[indexIn] + exactAmountIn;
-  newBalances[indexOut] = newBalances[indexOut] - exactAmountOut;
-  const newPrice = getPriceStable(indexIn, indexOut, newBalances, amp);
+  balances[indexIn] = balances[indexIn] + exactAmountIn;
+  balances[indexOut] = balances[indexOut] - exactAmountOut;
+  const newPrice = getPriceStable(indexIn, indexOut, balances, amp);
   return (Math.abs(newPrice - oldPrice) / oldPrice) * 100;
 }
 
@@ -154,24 +100,18 @@ export function getStableSwapSlippageLoss(
   return (prevWorth - newWorth) / prevWorth;
 }
 
-// get relative price of coin j to i
-// formula: https://linear.app/thala-labs/issue/THA-434/calculate-swap-price-impact
-function getPriceStable(
-  i: number,
-  j: number,
-  balances: number[],
+export function getLpTokenToIssueStable(
+  inputAmounts: number[],
+  poolBalances: number[],
   amp: number,
+  lpSupply: number,
 ): number {
-  const d = getD(balances, amp);
-  const n = balances.length;
-  let b = Math.pow(d, n + 1) / Math.pow(n, n);
-  balances.forEach((x: number, index: number) => {
-    if (index != i && index != j) {
-      b = b / x;
-    }
-  });
-  let naxx = n * amp * balances[i] * balances[i] * balances[j] * balances[j];
-  return (balances[i] * b + naxx) / (balances[j] * b + naxx);
+  const d = getD(poolBalances, amp);
+  const newPoolBalances = poolBalances.map(
+    (balance, i) => balance + inputAmounts[i],
+  );
+  const newD = getD(newPoolBalances, amp);
+  return (lpSupply * (newD - d)) / d;
 }
 
 // same as getPriceStable, but with known D (invariant)
@@ -192,6 +132,9 @@ function getPriceStableWithKnownD(
   let naxx = n * amp * balances[i] * balances[i] * balances[j] * balances[j];
   return (balances[i] * b + naxx) / (balances[j] * b + naxx);
 }
+
+const EPSILON = 0.000001; // 1e-6, for detecting convergence in stableswap math
+const MAX_LOOP_LIMIT = 100;
 
 // see `get_Y` in https://github.com/ThalaLabs/thala-modules/blob/main/thalaswap_math/sources/stable_math.move
 function getY(

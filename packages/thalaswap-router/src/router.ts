@@ -5,7 +5,7 @@ import {
   calcInGivenOutWeighted,
   calcPriceImpactPercentageStable,
   calcPriceImpactPercentageWeighted,
-} from "./swapMath";
+} from "@thalalabs/thalaswap-math";
 import {
   Graph,
   Route,

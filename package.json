@@ -1,50 +1,17 @@
 {
-  "name": "@thalalabs/router-sdk",
-  "version": "2.1.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "sideEffects": false,
-  "scripts": {
-    "typecheck": "bun run tsc --noEmit",
-    "build": "bun run tsup ./src/index.ts --dts",
-    "format": "prettier . --write",
-    "release": "bun run build && changeset publish",
-    "prepare": "husky install"
-  },
-  "files": [
-    "dist"
+  "name": "thala-sdk",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ThalaLabs/thala-router.git"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.26.2",
-    "@typescript-eslint/eslint-plugin": "^6.10.0",
-    "@typescript-eslint/parser": "^6.10.0",
-    "bun-plugin-dts": "^0.2.1",
-    "bun-types": "^1.0.7",
-    "eslint": "^8.53.0",
-    "husky": "^9.0.10",
-    "lint-staged": "^15.0.2",
-    "prettier": "3.2.5",
-    "tsup": "^8.0.2",
-    "typescript": "^5.2.2",
-    "@aptos-labs/ts-sdk": "^1.11.0",
-    "@thalalabs/surf": "^1.3.1",
-    "@types/lodash": "^4.17.0"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "bignumber.js": "^9.1.2",
-    "lodash": "^4.17.21"
-  },
-  "peerDependencies": {
-    "@aptos-labs/ts-sdk": "^1.11.0",
-    "@thalalabs/surf": "^1.3.1"
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky",
+    "typecheck": "pnpm -r run typecheck",
+    "build": "pnpm -r run build",
+    "test": "pnpm -r run test",
+    "format": "prettier . --write"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -52,5 +19,12 @@
       "prettier --write"
     ],
     "*.json": "prettier --write"
-  }
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5"
+  },
+  "license": "MIT"
 }
