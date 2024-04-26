@@ -38,16 +38,6 @@ importers:
         specifier: ^5.4.5
         version: 5.4.5
 
-  packages/thalaswap-math/example:
-    dependencies:
-      '@thalalabs/thalaswap-math':
-        specifier: workspace:^
-        version: link:..
-    devDependencies:
-      typescript:
-        specifier: ^5.4.5
-        version: 5.4.5
-
   packages/thalaswap-router:
     dependencies:
       '@thalalabs/thalaswap-math':
