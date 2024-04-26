@@ -14,7 +14,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ThalaLabs/thala-sdk"
+    "url": "git+https://github.com/ThalaLabs/thala-sdk.git"
   },
   "publishConfig": {
     "access": "public"
