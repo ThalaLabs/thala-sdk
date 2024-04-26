@@ -8,15 +8,16 @@
   "main": "index.js",
   "scripts": {
     "prepare": "husky",
-    "typecheck": "pnpm -r run typecheck",
-    "build": "pnpm run build",
-    "test": "pnpm -r run test",
+    "typecheck": "turbo typecheck",
+    "build": "turbo typecheck build",
+    "test": "turbo typecheck test",
     "format": "prettier . --write",
-    "release": "turbo build typecheck test && changeset publish"
+    "all": "turbo build typecheck test",
+    "release": "pnpm run all && changeset publish"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "pnpm -r run eslint --fix",
+      "npx run eslint --fix",
       "prettier --write"
     ],
     "*.json": "prettier --write"
