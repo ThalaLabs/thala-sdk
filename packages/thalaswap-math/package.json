@@ -5,8 +5,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tsup ./src --dts",
-    "test": "jest",
-    "release": "pnpm run build && changeset publish"
+    "test": "jest"
   },
   "files": [
     "dist",

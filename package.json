@@ -9,9 +9,10 @@
   "scripts": {
     "prepare": "husky",
     "typecheck": "pnpm -r run typecheck",
-    "build": "pnpm -r run build",
+    "build": "pnpm run build",
     "test": "pnpm -r run test",
-    "format": "prettier . --write"
+    "format": "prettier . --write",
+    "release": "turbo build typecheck test && changeset publish"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

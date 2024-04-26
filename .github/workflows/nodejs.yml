@@ -12,8 +12,6 @@ jobs:
         with:
           version: 8
       - run: pnpm i
-      - run: pnpm run typecheck
-      - run: pnpm run build
-      - run: pnpm run test
+      - run: turbo build typecheck test
         env:
           CI: true
