@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 importers:
 
   .:
@@ -54,11 +58,11 @@ importers:
         version: 4.17.21
     devDependencies:
       '@aptos-labs/ts-sdk':
-        specifier: ^1.11.0
-        version: 1.11.0
+        specifier: ^1.13.1
+        version: 1.13.1
       '@thalalabs/surf':
         specifier: ^1.3.1
-        version: 1.3.1(@aptos-labs/ts-sdk@1.11.0)
+        version: 1.3.1(@aptos-labs/ts-sdk@1.13.1)
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
@@ -115,8 +119,8 @@ packages:
       - debug
     dev: true
 
-  /@aptos-labs/ts-sdk@1.11.0:
-    resolution: {integrity: sha512-iy4bcHHVfRxcMgrdZEl6KBu2NeWpD9oMMli43R82eBLHfBO+LjDHdkr9GcFE5FE6ogt0EP9EWQk8TcjZmWkyVg==}
+  /@aptos-labs/ts-sdk@1.13.1:
+    resolution: {integrity: sha512-zyJDU5dO7pMoGv59nySSKQt1gjf2GtG7uYIpF+eiiiZPHtjKtZ5I/3IfbASXPm1o7Q5VP1Y8C4aC5QttjLBT2w==}
     engines: {node: '>=11.0.0'}
     dependencies:
       '@aptos-labs/aptos-client': 0.1.0
@@ -126,7 +130,6 @@ packages:
       '@scure/bip39': 1.3.0
       eventemitter3: 5.0.1
       form-data: 4.0.0
-      tweetnacl: 1.0.3
     transitivePeerDependencies:
       - debug
     dev: true
@@ -1633,7 +1636,7 @@ packages:
       defer-to-connect: 2.0.1
     dev: true
 
-  /@thalalabs/surf@1.3.1(@aptos-labs/ts-sdk@1.11.0):
+  /@thalalabs/surf@1.3.1(@aptos-labs/ts-sdk@1.13.1):
     resolution: {integrity: sha512-z6rnNW0lW5nM2Pb3hgNA4fVwLIfZYFKvuQaK1BLZHmnBRoUQSm3nbSv2NXWtvwJmQGFntxHADh7+TOdehEngVg==}
     peerDependencies:
       '@aptos-labs/ts-sdk': ^1.11.0
@@ -1645,7 +1648,7 @@ packages:
       react:
         optional: true
     dependencies:
-      '@aptos-labs/ts-sdk': 1.11.0
+      '@aptos-labs/ts-sdk': 1.13.1
     dev: true
 
   /@tsconfig/node10@1.0.11:
@@ -5809,10 +5812,6 @@ packages:
       turbo-linux-arm64: 1.13.3
       turbo-windows-64: 1.13.3
       turbo-windows-arm64: 1.13.3
-    dev: true
-
-  /tweetnacl@1.0.3:
-    resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
     dev: true
 
   /type-check@0.4.0:
