@@ -1,5 +1,5 @@
 ---
-"@thalalabs/thalaswap-math": major
+"@thalalabs/thalaswap-math": patch
 ---
 
 Update Readme & move some files

@@ -12,12 +12,14 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ThalaLabs/thala-sdk.git"
-  },
-  "publishConfig": {
-    "access": "public"
+    "url": "git+https://github.com/ThalaLabs/thala-sdk.git",
+    "directory": "packages/thalaswap-router"
   },
   "devDependencies": {
     "@aptos-labs/ts-sdk": "^1.11.0",

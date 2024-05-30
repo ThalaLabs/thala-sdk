@@ -22,9 +22,6 @@
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
-  "publishConfig": {
-    "access": "public"
-  },
   "keywords": [
     "move",
     "blockchain",
@@ -32,9 +29,14 @@
   ],
   "author": "",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npm.pkg.github.com"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ThalaLabs/thala-sdk.git"
+    "url": "git+https://github.com/ThalaLabs/thala-sdk.git",
+    "directory": "packages/thalaswap-math"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
