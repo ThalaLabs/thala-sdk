@@ -4,23 +4,6 @@ SDK to get optimal swap routing for ThalaSwap. Currently, we support finding rou
 
 ## Install
 
-Edit or add a `.npmrc` file to including following lines:
-
-```
-//npm.pkg.github.com/:_authToken=_authToken
-@thalalabs:registry=https://npm.pkg.github.com
-```
-
-Run command to login:
-
-```
-$ npm login --registry=https://npm.pkg.github.com
-> Username: USERNAME
-> Password: TOKEN
-```
-
-USERNAME is you github account username. Get the token from your github settings, see ["Managing your personal access tokens."](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
-
 ```
 $ npm i @thalalabs/router-sdk
 ```
