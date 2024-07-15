@@ -1,6 +1,6 @@
 import BigNumber from "bignumber.js";
-import { THALASWAP_RESOURCE_ACCOUNT_ADDRESS } from "./constants";
 import { LiquidityPoolMetadata } from "./types";
+import { THALASWAP_RESOURCE_ACCOUNT_ADDRESS } from "./constants";
 
 export const BN_TEN = new BigNumber(10);
 
@@ -10,8 +10,16 @@ export function scaleDown(v: number | string, decimals: number): number {
     .toNumber();
 }
 
-export function parsePoolMetadata(poolType: string): LiquidityPoolMetadata {
-  const [liquidityPoolType, poolTypeArgs] = parseLiquidityPoolType(poolType);
+export function parsePoolMetadata(
+  poolType: string,
+  resourceAddress: string,
+): LiquidityPoolMetadata {
+  const NULL_PATTERN = new RegExp(`${resourceAddress}::base_pool::Null`);
+
+  const [liquidityPoolType, poolTypeArgs] = parseLiquidityPoolType(
+    poolType,
+    resourceAddress,
+  );
 
   // if first n coins are not dummycoin, then numCoins = n
   const nullIndex = poolTypeArgs
@@ -37,7 +45,15 @@ export function parsePoolMetadata(poolType: string): LiquidityPoolMetadata {
 
 export function parseLiquidityPoolType(
   poolType: string,
+  resourceAddress: string,
 ): ["Weighted" | "Stable", string[]] {
+  const WEIGHTED_POOL_PATTERN = new RegExp(
+    `${resourceAddress}::weighted_pool::WeightedPool<(.*)>`,
+  );
+  const STABLE_POOL_PATTERN = new RegExp(
+    `${resourceAddress}::stable_pool::StablePool<(.*)>`,
+  );
+
   const matchWeightedPool = poolType.match(WEIGHTED_POOL_PATTERN);
   if (matchWeightedPool) {
     return ["Weighted", matchWeightedPool[1].split(",").map((e) => e.trim())];
@@ -48,16 +64,6 @@ export function parseLiquidityPoolType(
   }
   throw new Error(`Invalid poolType: ${poolType}`);
 }
-
-const WEIGHTED_POOL_PATTERN = new RegExp(
-  `${THALASWAP_RESOURCE_ACCOUNT_ADDRESS}::weighted_pool::WeightedPool<(.*)>`,
-);
-const STABLE_POOL_PATTERN = new RegExp(
-  `${THALASWAP_RESOURCE_ACCOUNT_ADDRESS}::stable_pool::StablePool<(.*)>`,
-);
-const NULL_PATTERN = new RegExp(
-  `${THALASWAP_RESOURCE_ACCOUNT_ADDRESS}::base_pool::Null`,
-);
 
 // input cannot be larger the 2^31
 // this should allow at least 6 digits precision in the fractional part
