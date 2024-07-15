@@ -1,6 +1,5 @@
 import BigNumber from "bignumber.js";
 import { LiquidityPoolMetadata } from "./types";
-import { THALASWAP_RESOURCE_ACCOUNT_ADDRESS } from "./constants";
 
 export const BN_TEN = new BigNumber(10);
 
