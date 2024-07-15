@@ -24,6 +24,7 @@ const account = Account.fromPrivateKey({
 const router = new ThalaswapRouter(
   Network.MAINNET,
   "https://fullnode.mainnet.aptoslabs.com/v1",
+  "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
 );
 
 // Example 1: Exact input. 1 hop

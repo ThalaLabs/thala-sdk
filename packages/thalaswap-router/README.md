@@ -13,7 +13,8 @@ $ npm i @thalalabs/router-sdk
 ```
 const router = new ThalaswapRouter(
   Network.MAINNET,
-  "https://fullnode.mainnet.aptoslabs.com/v1"
+  "https://fullnode.mainnet.aptoslabs.com/v1",
+  "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af"
 );
 const fromToken = "0x1::aptos_coin::AptosCoin";
 const toToken = "0xec84c05cc40950c86d8a8bed19552f1e8ebb783196bb021c916161d22dc179f7::asset::USDC";

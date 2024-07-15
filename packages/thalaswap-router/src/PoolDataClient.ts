@@ -2,7 +2,6 @@ import { Coin, Pool, PoolData } from "./types";
 import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 import { uniq } from "lodash";
 import { fp64ToFloat, parsePoolMetadata, scaleDown } from "./utils";
-import { THALASWAP_RESOURCE_ACCOUNT_ADDRESS } from "./constants";
 
 class PoolDataClient {
   private poolData: PoolData | null = null;
@@ -13,9 +12,8 @@ class PoolDataClient {
   private coins: Coin[] = [];
   private resourceAddress: string;
 
-  constructor(network: Network, fullnode: string, resourceAddress?: string) {
-    this.resourceAddress =
-      resourceAddress || THALASWAP_RESOURCE_ACCOUNT_ADDRESS;
+  constructor(network: Network, fullnode: string, resourceAddress: string) {
+    this.resourceAddress = resourceAddress;
 
     this.client = new Aptos(
       new AptosConfig({
