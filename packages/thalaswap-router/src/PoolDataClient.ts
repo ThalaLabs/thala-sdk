@@ -1,6 +1,5 @@
 import { Coin, Pool, PoolData } from "./types";
 import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
-import { THALASWAP_RESOURCE_ACCOUNT_ADDRESS } from "./constants";
 import { uniq } from "lodash";
 import { fp64ToFloat, parsePoolMetadata, scaleDown } from "./utils";
 
@@ -11,12 +10,15 @@ class PoolDataClient {
   private retryLimit = 3;
   private client: Aptos;
   private coins: Coin[] = [];
+  private resourceAddress: string;
 
-  constructor(aptosRpc: string) {
+  constructor(network: Network, fullnode: string, resourceAddress: string) {
+    this.resourceAddress = resourceAddress;
+
     this.client = new Aptos(
       new AptosConfig({
-        network: Network.MAINNET,
-        fullnode: aptosRpc,
+        network: network,
+        fullnode: fullnode,
       }),
     );
   }
@@ -27,16 +29,16 @@ class PoolDataClient {
       for (let i = 0; i < this.retryLimit; i++) {
         try {
           const resources = await this.client.getAccountResources({
-            accountAddress: THALASWAP_RESOURCE_ACCOUNT_ADDRESS,
+            accountAddress: this.resourceAddress,
           });
 
           const poolResources = resources.filter(
             (r) =>
               r.type.startsWith(
-                `${THALASWAP_RESOURCE_ACCOUNT_ADDRESS}::weighted_pool::WeightedPool<`,
+                `${this.resourceAddress}::weighted_pool::WeightedPool<`,
               ) ||
               r.type.startsWith(
-                `${THALASWAP_RESOURCE_ACCOUNT_ADDRESS}::stable_pool::StablePool<`,
+                `${this.resourceAddress}::stable_pool::StablePool<`,
               ),
           ) as {
             type: string;
@@ -52,7 +54,10 @@ class PoolDataClient {
 
           const allCoinAddress = uniq(
             poolResources.reduce((acc, resource) => {
-              const metadata = parsePoolMetadata(resource.type);
+              const metadata = parsePoolMetadata(
+                resource.type,
+                this.resourceAddress,
+              );
               metadata.coinAddresses.forEach((coin) => {
                 coin && acc.push(coin);
               });
@@ -83,7 +88,10 @@ class PoolDataClient {
 
           const pools = poolResources.reduce((acc, resource) => {
             try {
-              const metadata = parsePoolMetadata(resource.type);
+              const metadata = parsePoolMetadata(
+                resource.type,
+                this.resourceAddress,
+              );
               const [coin0, coin1, coin2, coin3] = metadata.coinAddresses.map(
                 (addr) => this.coins.find((c) => c.address === addr),
               );

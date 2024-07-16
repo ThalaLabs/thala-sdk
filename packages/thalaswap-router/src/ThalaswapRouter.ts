@@ -13,6 +13,7 @@ import { EntryPayload, createEntryPayload } from "@thalalabs/surf";
 import { STABLE_POOL_SCRIPTS_ABI } from "./abi/stable_pool_scripts";
 import { WEIGHTED_POOL_SCRIPTS_ABI } from "./abi/weighted_pool_scripts";
 import { MULTIHOP_ROUTER_ABI } from "./abi/multihop_router";
+import { Network } from "@aptos-labs/ts-sdk";
 
 const NULL_TYPE = `${STABLE_POOL_SCRIPTS_ABI.address}::base_pool::Null`;
 const NULL_4 = Array(4).fill(NULL_TYPE);
@@ -62,8 +63,8 @@ class ThalaswapRouter {
   private graph: Graph | null = null;
   private coins: Coin[] | null = null;
 
-  constructor(dataURL: string) {
-    this.client = new PoolDataClient(dataURL);
+  constructor(network: Network, fullnode: string, resourceAddress: string) {
+    this.client = new PoolDataClient(network, fullnode, resourceAddress);
   }
 
   setPoolDataClient(client: PoolDataClient) {

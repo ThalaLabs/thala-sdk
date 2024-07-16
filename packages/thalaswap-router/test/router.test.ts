@@ -1,5 +1,6 @@
 import poolData from "./test-pools.json";
 import { ThalaswapRouter } from "../src";
+import { Network } from "@aptos-labs/ts-sdk";
 
 const coins = poolData.coins;
 const pools = poolData.pools.map((pool: any) => {
@@ -23,7 +24,7 @@ const mockPoolDataClient = {
   }),
 };
 
-const router = new ThalaswapRouter("example-url");
+const router = new ThalaswapRouter(Network.MAINNET, "test", "0x123");
 router.setPoolDataClient(mockPoolDataClient as any);
 
 test("Exact input 1 hop", async () => {
