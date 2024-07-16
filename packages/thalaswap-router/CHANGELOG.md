@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 3.0.0
+
+### Major Changes
+
+- a5000e7: Support multi-chains
+
 ## 2.1.1
 
 ### Patch Changes
