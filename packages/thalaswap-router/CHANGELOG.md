@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 3.2.0
+
+### Minor Changes
+
+- 5c3f156: Make multi-router configurable
+
 ## 3.1.1
 
 ### Patch Changes
