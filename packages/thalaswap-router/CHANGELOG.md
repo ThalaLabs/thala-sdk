@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 3.1.0
+
+### Minor Changes
+
+- 8844775: upgrade surf
+
 ## 3.0.0
 
 ### Major Changes
