@@ -230,7 +230,7 @@ class ThalaswapRouter {
         function: functionName,
         typeArguments: typeArgs as any,
         functionArguments: [amountInArg, amountOutArg],
-        address: this.resourceAddress,
+        address: this.resourceAddress as `0x${string}`,
       });
     } else if (route.path.length == 2) {
       const path0 = route.path[0];
@@ -245,7 +245,7 @@ class ThalaswapRouter {
         function: functionName,
         typeArguments: typeArgs as any,
         functionArguments: [amountInArg, amountOutArg],
-        address: this.resourceAddress,
+        address: this.resourceAddress as `0x${string}`,
       });
     } else {
       // route.path.length == 3
@@ -263,7 +263,7 @@ class ThalaswapRouter {
         function: functionName,
         typeArguments: typeArgs as any,
         functionArguments: [amountInArg, amountOutArg],
-        address: this.resourceAddress,
+        address: this.resourceAddress as `0x${string}`,
       });
     }
   }
