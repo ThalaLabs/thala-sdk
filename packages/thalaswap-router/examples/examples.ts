@@ -25,6 +25,7 @@ const router = new ThalaswapRouter(
   Network.MAINNET,
   "https://fullnode.mainnet.aptoslabs.com/v1",
   "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
+  "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
 );
 
 // Example 1: Exact input. 1 hop
