@@ -15,9 +15,6 @@ import { WEIGHTED_POOL_SCRIPTS_ABI } from "./abi/weighted_pool_scripts";
 import { MULTIHOP_ROUTER_ABI } from "./abi/multihop_router";
 import { Network } from "@aptos-labs/ts-sdk";
 
-const NULL_TYPE = `${STABLE_POOL_SCRIPTS_ABI.address}::base_pool::Null`;
-const NULL_4 = Array(4).fill(NULL_TYPE);
-
 const encodeWeight = (weight: number): string => {
   return `${
     WEIGHTED_POOL_SCRIPTS_ABI.address
@@ -29,7 +26,11 @@ const encodeWeight = (weight: number): string => {
 const encodePoolType = (
   pool: LiquidityPool,
   extendStableArgs: boolean,
+  resourceAddress: string,
 ): string[] => {
+  const NULL_TYPE = `${resourceAddress}::base_pool::Null`;
+  const NULL_4 = Array(4).fill(NULL_TYPE);
+
   if (pool.poolType === "Stable") {
     const typeArgs = NULL_4.map((nullType, i) =>
       i < pool.coinAddresses.length ? pool.coinAddresses[i] : nullType,
@@ -221,10 +222,11 @@ class ThalaswapRouter {
         path.pool.poolType === "Stable"
           ? STABLE_POOL_SCRIPTS_ABI
           : WEIGHTED_POOL_SCRIPTS_ABI;
-      const typeArgs = encodePoolType(path.pool, false).concat([
-        path.from,
-        path.to,
-      ]);
+      const typeArgs = encodePoolType(
+        path.pool,
+        false,
+        this.resourceAddress,
+      ).concat([path.from, path.to]);
 
       return createEntryPayload(abi, {
         function: functionName,
@@ -235,8 +237,8 @@ class ThalaswapRouter {
     } else if (route.path.length == 2) {
       const path0 = route.path[0];
       const path1 = route.path[1];
-      const typeArgs = encodePoolType(path0.pool, true)
-        .concat(encodePoolType(path1.pool, true))
+      const typeArgs = encodePoolType(path0.pool, true, this.resourceAddress)
+        .concat(encodePoolType(path1.pool, true, this.resourceAddress))
         .concat([path0.from, path0.to, path1.to]);
       const functionName =
         route.type === "exact_input" ? "swap_exact_in_2" : "swap_exact_out_2";
@@ -252,9 +254,9 @@ class ThalaswapRouter {
       const path0 = route.path[0];
       const path1 = route.path[1];
       const path2 = route.path[2];
-      const typeArgs = encodePoolType(path0.pool, true)
-        .concat(encodePoolType(path1.pool, true))
-        .concat(encodePoolType(path2.pool, true))
+      const typeArgs = encodePoolType(path0.pool, true, this.resourceAddress)
+        .concat(encodePoolType(path1.pool, true, this.resourceAddress))
+        .concat(encodePoolType(path2.pool, true, this.resourceAddress))
         .concat([path0.from, path0.to, path1.to, path2.to]);
       const functionName =
         route.type === "exact_input" ? "swap_exact_in_3" : "swap_exact_out_3";
