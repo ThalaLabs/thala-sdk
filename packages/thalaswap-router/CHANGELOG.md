@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 3.1.1
+
+### Patch Changes
+
+- c8ae58b: fix null type address bug
+
 ## 3.1.0
 
 ### Minor Changes
