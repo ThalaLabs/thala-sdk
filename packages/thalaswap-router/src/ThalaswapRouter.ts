@@ -62,8 +62,10 @@ class ThalaswapRouter {
   private client: PoolDataClient;
   private graph: Graph | null = null;
   private coins: Coin[] | null = null;
+  private resourceAddress: string;
 
   constructor(network: Network, fullnode: string, resourceAddress: string) {
+    this.resourceAddress = resourceAddress;
     this.client = new PoolDataClient(network, fullnode, resourceAddress);
   }
 
@@ -228,6 +230,7 @@ class ThalaswapRouter {
         function: functionName,
         typeArguments: typeArgs as any,
         functionArguments: [amountInArg, amountOutArg],
+        address: this.resourceAddress,
       });
     } else if (route.path.length == 2) {
       const path0 = route.path[0];
@@ -242,6 +245,7 @@ class ThalaswapRouter {
         function: functionName,
         typeArguments: typeArgs as any,
         functionArguments: [amountInArg, amountOutArg],
+        address: this.resourceAddress,
       });
     } else {
       // route.path.length == 3
@@ -259,6 +263,7 @@ class ThalaswapRouter {
         function: functionName,
         typeArguments: typeArgs as any,
         functionArguments: [amountInArg, amountOutArg],
+        address: this.resourceAddress,
       });
     }
   }
