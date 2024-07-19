@@ -15,10 +15,8 @@ import { WEIGHTED_POOL_SCRIPTS_ABI } from "./abi/weighted_pool_scripts";
 import { MULTIHOP_ROUTER_ABI } from "./abi/multihop_router";
 import { Network } from "@aptos-labs/ts-sdk";
 
-const encodeWeight = (weight: number): string => {
-  return `${
-    WEIGHTED_POOL_SCRIPTS_ABI.address
-  }::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
+const encodeWeight = (weight: number, resourceAddress: string): string => {
+  return `${resourceAddress}::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
 };
 
 // Encode the pool type arguments for a given pool
@@ -41,7 +39,9 @@ const encodePoolType = (
       i < pool.coinAddresses.length ? pool.coinAddresses[i] : nullType,
     );
     const typeArgsForWeights = NULL_4.map((nullType, i) =>
-      i < pool.weights!.length ? encodeWeight(pool.weights![i]) : nullType,
+      i < pool.weights!.length
+        ? encodeWeight(pool.weights![i], resourceAddress)
+        : nullType,
     );
     return typeArgsForCoins.concat(typeArgsForWeights);
   }
