@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 3.2.1
+
+### Patch Changes
+
+- a6e1e2d: fix weight address
+
 ## 3.2.0
 
 ### Minor Changes
