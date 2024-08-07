@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 3.3.0
+
+### Minor Changes
+
+- 6157e05: Add max allowed swap percentage to filter out some small pools
+
 ## 3.2.1
 
 ### Patch Changes
