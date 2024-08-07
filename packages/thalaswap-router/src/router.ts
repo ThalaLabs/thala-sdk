@@ -119,6 +119,7 @@ export function findRouteGivenExactInput(
   endToken: string,
   amountIn: number,
   maxHops: number,
+  maxAllowedSwapPercentage: number,
 ): Route | null {
   const tokens = Object.keys(graph);
   // distances[token][hop] is the maximum amount of token that can be received given hop number
@@ -141,6 +142,12 @@ export function findRouteGivenExactInput(
         if (fromToken === endToken || toToken === startToken) continue; // This prevents cycles
 
         if (distances[fromToken][i] === undefined) continue; // Skip unvisited nodes
+
+        if (
+          distances[fromToken][i] / edge.pool.balances[edge.fromIndex] >
+          maxAllowedSwapPercentage
+        )
+          continue;
 
         const newDistance = calcOutGivenIn(
           distances[fromToken][i]!,
@@ -228,6 +235,7 @@ export function findRouteGivenExactOutput(
   endToken: string,
   amountOut: number,
   maxHops: number,
+  maxAllowedSwapPercentage: number,
 ): Route | null {
   const tokens = Object.keys(graph);
   const distances: Distances = {};
@@ -248,6 +256,12 @@ export function findRouteGivenExactOutput(
         if (fromToken === endToken || toToken === startToken) continue; // This prevents cycles
 
         if (distances[toToken][i] === undefined) continue; // Skip unvisited nodes
+
+        if (
+          distances[toToken][i] / edge.pool.balances[edge.toIndex] >
+          maxAllowedSwapPercentage
+        )
+          continue;
 
         try {
           const newDistance = calcInGivenOut(

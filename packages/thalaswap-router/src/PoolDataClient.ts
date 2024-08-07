@@ -4,7 +4,7 @@ import { uniq } from "lodash";
 import { fp64ToFloat, parsePoolMetadata, scaleDown } from "./utils";
 
 class PoolDataClient {
-  private poolData: PoolData | null = null;
+  public poolData: PoolData | null = null;
   private lastUpdated: number = 0;
   private expiry = 10000; // 10 seconds
   private retryLimit = 3;

@@ -24,7 +24,9 @@ const mockPoolDataClient = {
   }),
 };
 
-const router = new ThalaswapRouter(Network.MAINNET, "test", "0x123", "0x123");
+const router = new ThalaswapRouter(Network.MAINNET, "test", "0x123", "0x123", {
+  maxAllowedSwapPercentage: 1,
+});
 router.setPoolDataClient(mockPoolDataClient as any);
 
 test("Exact input 1 hop", async () => {
