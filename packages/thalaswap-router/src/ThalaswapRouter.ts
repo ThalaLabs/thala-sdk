@@ -19,6 +19,8 @@ const encodeWeight = (weight: number, resourceAddress: string): string => {
   return `${resourceAddress}::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
 };
 
+const DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE = 0.5;
+
 // Encode the pool type arguments for a given pool
 // If extendStableArgs is true, then the stable pool type arguments will be extended to 8 arguments (filled with additional 4 nulls)
 const encodePoolType = (
@@ -59,22 +61,29 @@ const scaleUp = (amount: number, decimals: number): number => {
   return Math.floor(amount * Math.pow(10, decimals));
 };
 
+type Options = {
+  maxAllowedSwapPercentage?: number;
+};
+
 class ThalaswapRouter {
-  private client: PoolDataClient;
+  public client: PoolDataClient;
   private graph: Graph | null = null;
   private coins: Coin[] | null = null;
   private resourceAddress: string;
   private multirouterAddress: string;
+  private options: Options;
 
   constructor(
     network: Network,
     fullnode: string,
     resourceAddress: string,
     multirouterAddress: string,
+    options?: Options,
   ) {
     this.resourceAddress = resourceAddress;
     this.multirouterAddress = multirouterAddress;
     this.client = new PoolDataClient(network, fullnode, resourceAddress);
+    this.options = options ?? {};
   }
 
   setPoolDataClient(client: PoolDataClient) {
@@ -154,6 +163,8 @@ class ThalaswapRouter {
       endToken,
       amountIn,
       maxHops,
+      this.options.maxAllowedSwapPercentage ??
+        DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE,
     );
   }
 
@@ -176,6 +187,8 @@ class ThalaswapRouter {
       endToken,
       amountOut,
       maxHops,
+      this.options.maxAllowedSwapPercentage ??
+        DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE,
     );
   }
 
