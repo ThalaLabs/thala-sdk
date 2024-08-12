@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 3.4.0
+
+### Minor Changes
+
+- 9e6b60c: Add pool filter in ThalaswapRouter Option argument. So that user can filter out some pools for the router.
+
 ## 3.3.0
 
 ### Minor Changes
