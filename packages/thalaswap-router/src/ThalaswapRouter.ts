@@ -63,6 +63,7 @@ const scaleUp = (amount: number, decimals: number): number => {
 
 type Options = {
   maxAllowedSwapPercentage?: number;
+  poolFilter?: (pool: Pool) => boolean;
 };
 
 class ThalaswapRouter {
@@ -102,6 +103,11 @@ class ThalaswapRouter {
     const graph: Graph = {};
 
     for (const pool of pools) {
+      // Apply pool filter if provided
+      if (this.options.poolFilter && !this.options.poolFilter(pool)) {
+        continue;
+      }
+
       // Convert pool data to LiquidityPool type
       const assets = ["asset0", "asset1", "asset2", "asset3"]
         .filter((a) => pool[a as AssetIndex])
