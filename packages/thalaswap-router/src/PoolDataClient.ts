@@ -97,6 +97,7 @@ class PoolDataClient {
               );
 
               acc.push({
+                type: metadata.type,
                 weights: metadata.weights.map((w) => Number(w) / 100),
                 poolType: metadata.poolType,
                 amp: resource.data.amp_factor
