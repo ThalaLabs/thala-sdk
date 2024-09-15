@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 3.4.1
+
+### Patch Changes
+
+- 19fcc93: Add poolType in pool data struct
+
 ## 3.4.0
 
 ### Minor Changes
