@@ -33,6 +33,7 @@ type Coin = {
 };
 
 type PoolBase = {
+  type: string;
   poolType: "Weighted" | "Stable";
   balance0: number;
   balance1: number;
