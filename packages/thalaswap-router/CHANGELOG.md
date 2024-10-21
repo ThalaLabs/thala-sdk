@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.0.0
+
+### Major Changes
+
+- 6d4a3fd: Support thalaswap v2
+
 ## 3.4.1
 
 ### Patch Changes
