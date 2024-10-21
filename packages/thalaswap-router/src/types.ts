@@ -25,6 +25,8 @@ type LiquidityPool = {
   swapFee: number;
   weights?: number[];
   amp?: number;
+  type: string;
+  isV2: boolean;
 };
 
 type Coin = {
@@ -32,7 +34,11 @@ type Coin = {
   decimals: number;
 };
 
-type PoolBase = {
+type Pool = {
+  asset0: Coin;
+  asset1: Coin;
+  asset2?: Coin;
+  asset3?: Coin;
   type: string;
   poolType: "Weighted" | "Stable";
   balance0: number;
@@ -42,24 +48,8 @@ type PoolBase = {
   weights: number[];
   swapFee: number;
   amp?: number;
-};
-type RawPool = PoolBase & {
-  asset0: number;
-  asset1: number;
-  asset2?: number;
-  asset3?: number;
-};
-
-type Pool = PoolBase & {
-  asset0: Coin;
-  asset1: Coin;
-  asset2?: Coin;
-  asset3?: Coin;
-};
-
-type RawPoolData = {
-  pools: RawPool[];
-  coins: Coin[];
+  isV2: boolean;
+  lptAddress: string;
 };
 
 type PoolData = {
@@ -91,8 +81,6 @@ export type {
   AssetIndex,
   BalanceIndex,
   Coin,
-  RawPool,
-  RawPoolData,
   PoolData,
   Pool,
 };

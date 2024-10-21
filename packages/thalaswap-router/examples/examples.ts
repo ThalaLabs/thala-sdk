@@ -21,12 +21,16 @@ const account = Account.fromPrivateKey({
   privateKey: new Ed25519PrivateKey(privateKey),
 });
 
-const router = new ThalaswapRouter(
-  Network.MAINNET,
-  "https://fullnode.mainnet.aptoslabs.com/v1",
-  "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
-  "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
-);
+const router = new ThalaswapRouter({
+  network: Network.MAINNET,
+  fullnode: "https://fullnode.mainnet.aptoslabs.com/v1",
+  resourceAddress:
+    "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
+  v2ResourceAddress:
+    "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
+  multirouterAddress:
+    "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
+});
 
 // Example 1: Exact input. 1 hop
 async function example1() {
@@ -43,7 +47,7 @@ async function example1() {
 
   console.log("Route:", route);
 
-  const entryPayload = router.encodeRoute(route!, 0.5);
+  const entryPayload = await router.encodeRoute(route!, 0.5);
   console.log("Entry function payload with 0.5% slippage:", entryPayload);
 
   await client.submitTransaction({
@@ -67,7 +71,7 @@ async function example2() {
 
   console.log("Route:", route);
 
-  const entryPayload = router.encodeRoute(route!, 0.5);
+  const entryPayload = await router.encodeRoute(route!, 0.5);
   console.log("Entry function payload with 0.5% slippage:", entryPayload);
 
   await client.submitTransaction({

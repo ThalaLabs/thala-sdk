@@ -11,12 +11,16 @@ $ npm i @thalalabs/router-sdk
 ## Examples
 
 ```
-const router = new ThalaswapRouter(
-  Network.MAINNET,
-  "https://fullnode.mainnet.aptoslabs.com/v1",
-  "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
-  "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
-);
+const router = new ThalaswapRouter({
+  network: Network.MAINNET,
+  fullnode: "https://fullnode.mainnet.aptoslabs.com/v1",
+  resourceAddress:
+    "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
+  v2ResourceAddress:
+    "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
+  multirouterAddress:
+    "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
+});
 const fromToken = "0x1::aptos_coin::AptosCoin";
 const toToken = "0xec84c05cc40950c86d8a8bed19552f1e8ebb783196bb021c916161d22dc179f7::asset::USDC";
 const amountIn = 0.1;

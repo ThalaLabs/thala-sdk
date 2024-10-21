@@ -13,7 +13,9 @@ import { EntryPayload, createEntryPayload } from "@thalalabs/surf";
 import { STABLE_POOL_SCRIPTS_ABI } from "./abi/stable_pool_scripts";
 import { WEIGHTED_POOL_SCRIPTS_ABI } from "./abi/weighted_pool_scripts";
 import { MULTIHOP_ROUTER_ABI } from "./abi/multihop_router";
-import { Network } from "@aptos-labs/ts-sdk";
+import { Aptos, Network } from "@aptos-labs/ts-sdk";
+import { THALAV2_POOL_ABI } from "./abi/thalav2_pool";
+import { COIN_WRAPPER_ABI } from "./abi/coin_wrapper";
 
 const encodeWeight = (weight: number, resourceAddress: string): string => {
   return `${resourceAddress}::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
@@ -71,19 +73,34 @@ class ThalaswapRouter {
   private graph: Graph | null = null;
   private coins: Coin[] | null = null;
   private resourceAddress: string;
+  private v2ResourceAddress?: string;
   private multirouterAddress: string;
   private options: Options;
 
-  constructor(
-    network: Network,
-    fullnode: string,
-    resourceAddress: string,
-    multirouterAddress: string,
-    options?: Options,
-  ) {
+  constructor({
+    network,
+    fullnode,
+    resourceAddress,
+    v2ResourceAddress,
+    multirouterAddress,
+    options,
+  }: {
+    network: Network;
+    fullnode: string;
+    resourceAddress: string;
+    v2ResourceAddress?: string;
+    multirouterAddress: string;
+    options?: Options;
+  }) {
     this.resourceAddress = resourceAddress;
+    this.v2ResourceAddress = v2ResourceAddress;
     this.multirouterAddress = multirouterAddress;
-    this.client = new PoolDataClient(network, fullnode, resourceAddress);
+    this.client = new PoolDataClient({
+      network,
+      fullnode,
+      resourceAddress,
+      v2ResourceAddress,
+    });
     this.options = options ?? {};
   }
 
@@ -128,6 +145,8 @@ class ThalaswapRouter {
         swapFee: pool.swapFee,
         weights,
         amp,
+        type: pool.type,
+        isV2: pool.isV2,
       };
 
       for (let i = 0; i < assets.length; i++) {
@@ -201,13 +220,17 @@ class ThalaswapRouter {
   // balanceCoinIn is the user's balance of input coin. If it's specified, this function will check
   // (1) for exact-in type of swap, throw an error if the user doesn't have enough balance to perform the swap.
   // (2) for exact-out type of swap, the maximum input amount is limited by the user's balance.
-  encodeRoute(
+  async encodeRoute(
     route: Route,
     slippagePercentage: number,
     balanceCoinIn?: number,
-  ): EntryPayload {
+  ): Promise<EntryPayload> {
     if (route.path.length === 0 || route.path.length > 3) {
       throw new Error("Invalid route");
+    }
+
+    if (route.path[0].pool.isV2) {
+      return this.encodeRouteV2(route, slippagePercentage, balanceCoinIn);
     }
 
     const tokenInDecimals = this.coins!.find(
@@ -295,6 +318,133 @@ class ThalaswapRouter {
       });
     }
   }
+
+  private async encodeRouteV2(
+    route: Route,
+    slippagePercentage: number,
+    balanceCoinIn?: number,
+  ): Promise<EntryPayload> {
+    if (route.path.length === 0 || route.path.length > 3) {
+      throw new Error("Invalid route");
+    }
+
+    if (!this.v2ResourceAddress) {
+      throw new Error("V2 resource address is not set");
+    }
+
+    const coinType = await getCoinType(
+      this.client.client,
+      route.path[0].from,
+      this.v2ResourceAddress,
+    );
+
+    const tokenInDecimals = this.coins!.find(
+      (coin) => coin.address === route.path[0].from,
+    )!.decimals;
+    const tokenOutDecimals = this.coins!.find(
+      (coin) => coin.address === route.path[route.path.length - 1].to,
+    )!.decimals;
+    let amountInArg: number;
+    let amountOutArg: number;
+    if (route.type === "exact_input") {
+      if (balanceCoinIn !== undefined && balanceCoinIn < route.amountIn) {
+        throw new Error("Insufficient balance");
+      }
+      amountInArg = scaleUp(route.amountIn, tokenInDecimals);
+      amountOutArg = scaleUp(
+        calcMinReceivedValue(route.amountOut, slippagePercentage),
+        tokenOutDecimals,
+      );
+    } else {
+      const maxSoldValueAfterSlippage = calcMaxSoldValue(
+        route.amountIn,
+        slippagePercentage,
+      );
+      amountInArg = scaleUp(
+        balanceCoinIn !== undefined
+          ? Math.min(balanceCoinIn, maxSoldValueAfterSlippage)
+          : maxSoldValueAfterSlippage,
+        tokenInDecimals,
+      );
+      amountOutArg = scaleUp(route.amountOut, tokenOutDecimals);
+    }
+    if (route.path.length == 1) {
+      const path = route.path[0];
+      const functionName =
+        `swap_exact_${route.type === "exact_input" ? "in" : "out"}_${path.pool.poolType === "Stable" ? "stable" : "weighted"}` as const;
+
+      return createEntryPayload(COIN_WRAPPER_ABI, {
+        function: functionName,
+        typeArguments: [coinType],
+        functionArguments: [
+          path.pool.type as `0x${string}`,
+          path.from as `0x${string}`,
+          amountInArg,
+          path.to as `0x${string}`,
+          amountOutArg,
+        ],
+        address: this.v2ResourceAddress as `0x${string}`,
+      });
+    }
+
+    throw new Error("Invalid route");
+  }
 }
 
 export { ThalaswapRouter };
+
+async function getCoinType(
+  client: Aptos,
+  coinFaAddress: string,
+  v2ResourceAddress: string,
+) {
+  const result = (await client.view({
+    payload: {
+      function: "0x1::coin::paired_coin",
+      typeArguments: [],
+      functionArguments: [coinFaAddress],
+    },
+  })) as [
+    {
+      vec:
+        | []
+        | [
+            {
+              account_address: string;
+              module_name: string;
+              struct_name: string;
+            },
+          ];
+    },
+  ];
+
+  const optionalCoinType = result[0].vec[0];
+
+  return !optionalCoinType
+    ? `${v2ResourceAddress}::coin_wrapper::Notacoin`
+    : `${optionalCoinType.account_address}::${fromHex(optionalCoinType.module_name.slice(2))}::${fromHex(optionalCoinType.struct_name.slice(2))}`;
+}
+
+function fromHex(h: string): string {
+  const decoder = new TextDecoder("utf-8");
+  return decoder.decode(hexStringToUint8Array(h));
+}
+
+function hexStringToUint8Array(hexString: string) {
+  // Remove "0x" prefix if present
+  hexString = hexString.replace(/^0x/, "");
+
+  // Ensure the length of the hex string is even
+  if (hexString.length % 2 !== 0) {
+    hexString = "0" + hexString;
+  }
+
+  const uint8Array = new Uint8Array(hexString.length / 2);
+
+  for (let i = 0; i < hexString.length; i += 2) {
+    const byte = parseInt(hexString.slice(i, i + 2), 16);
+    uint8Array[i / 2] = byte;
+  }
+
+  return uint8Array;
+}
