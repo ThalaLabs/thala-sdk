@@ -422,9 +422,9 @@ test("encodeRouter with balance input for exact-in swap", async () => {
   expect(payload.functionArguments[0]).toBe(100000000);
 
   // 2. should fail if user doesn't have enough balance
-  expect(() => {
-    router.encodeRoute(route!, 0, 0.1);
-  }).toThrow("Insufficient balance");
+  await expect(router.encodeRoute(route!, 0, 0.1)).rejects.toThrow(
+    "Insufficient balance",
+  );
 });
 
 test("encodeRouter with balance input for exact-out swap", async () => {
