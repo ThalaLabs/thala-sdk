@@ -17,21 +17,23 @@ class PoolDataClient {
   private coins: Coin[] = [];
   private resourceAddress?: string;
   private v2ResourceAddress?: string;
-
+  private v2LensAddress?: string;
   constructor({
     network,
     fullnode,
     resourceAddress,
     v2ResourceAddress,
+    v2LensAddress,
   }: {
     network: Network;
     fullnode: string;
     resourceAddress?: string;
     v2ResourceAddress?: string;
+    v2LensAddress?: string;
   }) {
     this.resourceAddress = resourceAddress;
     this.v2ResourceAddress = v2ResourceAddress;
-
+    this.v2LensAddress = v2LensAddress;
     this.client = new Aptos(
       new AptosConfig({
         network: network,
@@ -171,7 +173,7 @@ class PoolDataClient {
 
     const result = await this.client.view({
       payload: {
-        function: `${this.v2ResourceAddress}::lens::get_all_pools_info`,
+        function: `${this.v2LensAddress}::lens::get_all_pools_info`,
         functionArguments: [],
         typeArguments: [],
       },
