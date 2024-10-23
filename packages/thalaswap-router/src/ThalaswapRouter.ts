@@ -14,7 +14,6 @@ import { STABLE_POOL_SCRIPTS_ABI } from "./abi/stable_pool_scripts";
 import { WEIGHTED_POOL_SCRIPTS_ABI } from "./abi/weighted_pool_scripts";
 import { MULTIHOP_ROUTER_ABI } from "./abi/multihop_router";
 import { Aptos, Network } from "@aptos-labs/ts-sdk";
-import { THALAV2_POOL_ABI } from "./abi/thalav2_pool";
 import { COIN_WRAPPER_ABI } from "./abi/coin_wrapper";
 
 const encodeWeight = (weight: number, resourceAddress: string): string => {
@@ -72,8 +71,9 @@ class ThalaswapRouter {
   public client: PoolDataClient;
   private graph: Graph | null = null;
   private coins: Coin[] | null = null;
-  private resourceAddress: string;
+  private resourceAddress?: string;
   private v2ResourceAddress?: string;
+  private v2LensAddress?: string;
   private multirouterAddress: string;
   private options: Options;
 
@@ -82,13 +82,15 @@ class ThalaswapRouter {
     fullnode,
     resourceAddress,
     v2ResourceAddress,
+    v2LensAddress,
     multirouterAddress,
     options,
   }: {
     network: Network;
     fullnode: string;
-    resourceAddress: string;
+    resourceAddress?: string;
     v2ResourceAddress?: string;
+    v2LensAddress?: string;
     multirouterAddress: string;
     options?: Options;
   }) {
@@ -100,6 +102,7 @@ class ThalaswapRouter {
       fullnode,
       resourceAddress,
       v2ResourceAddress,
+      v2LensAddress,
     });
     this.options = options ?? {};
   }
@@ -231,6 +234,10 @@ class ThalaswapRouter {
 
     if (route.path[0].pool.isV2) {
       return this.encodeRouteV2(route, slippagePercentage, balanceCoinIn);
+    }
+
+    if (!this.resourceAddress) {
+      throw new Error("Resource address is not set");
     }
 
     const tokenInDecimals = this.coins!.find(
