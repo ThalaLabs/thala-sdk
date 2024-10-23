@@ -96,6 +96,7 @@ class ThalaswapRouter {
   }) {
     this.resourceAddress = resourceAddress;
     this.v2ResourceAddress = v2ResourceAddress;
+    this.v2LensAddress = v2LensAddress;
     this.multirouterAddress = multirouterAddress;
     this.client = new PoolDataClient({
       network,
