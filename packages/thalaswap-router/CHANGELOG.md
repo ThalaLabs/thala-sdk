@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.1.0
+
+### Minor Changes
+
+- 54706f6: Add thalaswap v2 lends contract
+
 ## 4.0.0
 
 ### Major Changes
