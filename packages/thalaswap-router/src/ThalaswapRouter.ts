@@ -130,11 +130,25 @@ class ThalaswapRouter {
       }
 
       // Convert pool data to LiquidityPool type
-      const assets = ["asset0", "asset1", "asset2", "asset3"]
+      const assets = [
+        "asset0",
+        "asset1",
+        "asset2",
+        "asset3",
+        "asset4",
+        "asset5",
+      ]
         .filter((a) => pool[a as AssetIndex])
         .map((a) => pool[a as AssetIndex]!);
 
-      const balances = ["balance0", "balance1", "balance2", "balance3"]
+      const balances = [
+        "balance0",
+        "balance1",
+        "balance2",
+        "balance3",
+        "balance4",
+        "balance5",
+      ]
         .filter((b, i) => assets[i])
         .map((b) => pool[b as BalanceIndex] as number);
 

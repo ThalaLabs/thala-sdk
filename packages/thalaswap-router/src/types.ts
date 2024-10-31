@@ -39,12 +39,16 @@ type Pool = {
   asset1: Coin;
   asset2?: Coin;
   asset3?: Coin;
+  asset4?: Coin;
+  asset5?: Coin;
   type: string;
   poolType: "Weighted" | "Stable";
   balance0: number;
   balance1: number;
   balance2?: number;
   balance3?: number;
+  balance4?: number;
+  balance5?: number;
   weights: number[];
   swapFee: number;
   amp?: number;
@@ -66,8 +70,20 @@ type Predecessors = Record<
   Record<number, { token: string; pool: LiquidityPool } | null>
 >;
 
-type AssetIndex = "asset0" | "asset1" | "asset2" | "asset3";
-type BalanceIndex = "balance0" | "balance1" | "balance2" | "balance3";
+type AssetIndex =
+  | "asset0"
+  | "asset1"
+  | "asset2"
+  | "asset3"
+  | "asset4"
+  | "asset5";
+type BalanceIndex =
+  | "balance0"
+  | "balance1"
+  | "balance2"
+  | "balance3"
+  | "balance4"
+  | "balance5";
 
 export type {
   Edge,
