@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.1.1
+
+### Patch Changes
+
+- e0486c4: Use 6 coins for v2 stable pool
+
 ## 4.1.0
 
 ### Minor Changes
