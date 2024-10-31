@@ -217,9 +217,10 @@ class PoolDataClient {
     );
 
     return rawPools.map<Pool>((pool) => {
-      const [coin0, coin1, coin2, coin3] = pool.assets_metadata.map((o) =>
-        this.coins.find((c) => c.address === o.inner),
-      );
+      const [coin0, coin1, coin2, coin3, coin4, coin5] =
+        pool.assets_metadata.map((o) =>
+          this.coins.find((c) => c.address === o.inner),
+        );
       return {
         poolType: pool.pool_type === 100 ? "Stable" : "Weighted",
         type: pool.pool.inner,
@@ -233,6 +234,8 @@ class PoolDataClient {
         asset1: coin1!,
         asset2: coin2,
         asset3: coin3,
+        asset4: coin4,
+        asset5: coin5,
         balance0: scaleDown(pool.balances[0], coin0!.decimals),
         balance1: scaleDown(pool.balances[1], coin1!.decimals),
         balance2:
@@ -242,6 +245,14 @@ class PoolDataClient {
         balance3:
           pool.balances.length > 3
             ? scaleDown(pool.balances[3], coin3!.decimals)
+            : undefined,
+        balance4:
+          pool.balances.length > 4
+            ? scaleDown(pool.balances[4], coin4!.decimals)
+            : undefined,
+        balance5:
+          pool.balances.length > 5
+            ? scaleDown(pool.balances[5], coin5!.decimals)
             : undefined,
         swapFee: Number(pool.swap_fee_bps) / 10000,
         isV2: true,
