@@ -116,10 +116,10 @@ class ThalaswapRouter {
     const poolData = await this.client.getPoolData();
     const pools = poolData.pools;
     this.coins = poolData.coins;
-    this.graph = await this.buildGraph(pools);
+    this.graph = this.buildGraph(pools);
   }
 
-  async buildGraph(pools: Pool[]): Promise<Graph> {
+  buildGraph(pools: Pool[]): Graph {
     const tokens: Set<string> = new Set();
     const graph: Graph = {};
 
@@ -154,7 +154,10 @@ class ThalaswapRouter {
 
       const weights = pool.poolType === "Weighted" ? pool.weights! : undefined;
 
-      const amp = pool.poolType === "Stable" ? pool.amp! : undefined;
+      const amp =
+        pool.poolType === "Stable" || pool.poolType === "Metastable"
+          ? pool.amp!
+          : undefined;
 
       const convertedPool: LiquidityPool = {
         coinAddresses: assets.map((a) => a.address),
@@ -163,6 +166,7 @@ class ThalaswapRouter {
         swapFee: pool.swapFee,
         weights,
         amp,
+        rates: pool.rates,
         type: pool.type,
         isV2: pool.isV2,
       };
@@ -393,7 +397,13 @@ class ThalaswapRouter {
     if (route.path.length == 1) {
       const path = route.path[0];
       const functionName =
-        `swap_exact_${route.type === "exact_input" ? "in" : "out"}_${path.pool.poolType === "Stable" ? "stable" : "weighted"}` as const;
+        `swap_exact_${route.type === "exact_input" ? "in" : "out"}_${
+          path.pool.poolType === "Stable"
+            ? "stable"
+            : path.pool.poolType === "Metastable"
+              ? "metastable"
+              : "weighted"
+        }` as const;
 
       return createEntryPayload(COIN_WRAPPER_ABI, {
         function: functionName,

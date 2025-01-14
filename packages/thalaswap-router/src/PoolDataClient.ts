@@ -142,6 +142,7 @@ class PoolDataClient {
           amp: resource.data.amp_factor
             ? Number(resource.data.amp_factor)
             : undefined,
+          rates: [],
           asset0: coin0!,
           asset1: coin1!,
           asset2: coin2,
@@ -184,10 +185,11 @@ class PoolDataClient {
       assets_metadata: { inner: string }[];
       balances: string[];
       pool: { inner: string };
-      pool_type: 100 | 101;
+      pool_type: 100 | 101 | 102;
       swap_fee_bps: string;
       weights_opt: { vec: string[][] | [] };
       lp_token_metadata: { inner: string };
+      rates_opt: { vec: string[][] | [] };
     }[];
 
     const allCoinAddress = uniq(
@@ -222,10 +224,16 @@ class PoolDataClient {
           this.coins.find((c) => c.address === o.inner),
         );
       return {
-        poolType: pool.pool_type === 100 ? "Stable" : "Weighted",
+        poolType:
+          pool.pool_type === 100
+            ? "Stable"
+            : pool.pool_type === 101
+              ? "Weighted"
+              : "Metastable",
         type: pool.pool.inner,
         weights: pool.weights_opt.vec[0]?.map((w) => Number(w) / 100) ?? [],
         lptAddress: pool.lp_token_metadata.inner,
+        rates: pool.rates_opt.vec[0]?.map((r) => fp64ToFloat(BigInt(r))) ?? [],
         amp:
           pool.amp_factor_opt.vec.length === 0
             ? undefined

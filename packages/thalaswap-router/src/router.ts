@@ -21,7 +21,7 @@ function calcOutGivenIn(
   fromIndex: number,
   toIndex: number,
 ): number {
-  const { poolType, balances, swapFee, weights, amp } = pool;
+  const { poolType, balances, swapFee, weights, amp, rates } = pool;
   if (poolType === "Stable") {
     return calcOutGivenInStable(
       amountIn,
@@ -30,6 +30,17 @@ function calcOutGivenIn(
       balances,
       amp as number,
       swapFee,
+    );
+  } else if (poolType === "Metastable") {
+    return (
+      calcOutGivenInStable(
+        amountIn * rates[fromIndex],
+        fromIndex,
+        toIndex,
+        balances.map((b, i) => b * rates[i]),
+        amp as number,
+        swapFee,
+      ) / rates[toIndex]
     );
   } else if (poolType === "Weighted") {
     const weightFrom = weights![fromIndex];
@@ -53,7 +64,7 @@ function calcInGivenOut(
   fromIndex: number,
   toIndex: number,
 ): number {
-  const { poolType, balances, swapFee, weights, amp } = pool;
+  const { poolType, balances, swapFee, weights, amp, rates } = pool;
   if (balances[toIndex] <= amountOut) {
     throw new Error("Insufficient balance");
   }
@@ -66,6 +77,17 @@ function calcInGivenOut(
       balances,
       amp as number,
       swapFee,
+    );
+  } else if (poolType === "Metastable") {
+    return (
+      calcInGivenOutStable(
+        amountOut * rates[toIndex],
+        fromIndex,
+        toIndex,
+        balances.map((b, i) => b * rates[i]),
+        amp as number,
+        swapFee,
+      ) / rates[fromIndex]
     );
   } else if (poolType === "Weighted") {
     return calcInGivenOutWeighted(
@@ -89,7 +111,7 @@ function calcPriceImpactPercentage(
   fromIndex: number,
   toIndex: number,
 ): number {
-  const { poolType, balances, weights, amp } = pool;
+  const { poolType, balances, weights, amp, rates } = pool;
   if (poolType === "Stable") {
     return calcPriceImpactPercentageStable(
       amountIn,
@@ -97,6 +119,15 @@ function calcPriceImpactPercentage(
       fromIndex,
       toIndex,
       balances,
+      amp as number,
+    );
+  } else if (poolType === "Metastable") {
+    return calcPriceImpactPercentageStable(
+      amountIn * rates[fromIndex],
+      amountOut * rates[toIndex],
+      fromIndex,
+      toIndex,
+      balances.map((b, i) => b * rates[i]),
       amp as number,
     );
   } else if (poolType === "Weighted") {
