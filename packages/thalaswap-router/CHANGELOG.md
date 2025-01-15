@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.2.0
+
+### Minor Changes
+
+- 6118166: Integrate metastable pools
+
 ## 4.1.1
 
 ### Patch Changes
