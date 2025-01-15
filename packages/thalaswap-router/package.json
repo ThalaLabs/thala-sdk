@@ -32,11 +32,11 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "tsup": "^8.0.2",
+    "@thalalabs/thalaswap-math": "workspace:^",
     "typescript": "^5.2.2"
   },
   "license": "MIT",
   "dependencies": {
-    "@thalalabs/thalaswap-math": "workspace:^",
     "bignumber.js": "^9.1.2",
     "lodash": "^4.17.21"
   },

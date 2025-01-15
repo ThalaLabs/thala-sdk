@@ -25,6 +25,7 @@ type LiquidityPool = {
   swapFee: number;
   weights?: number[];
   amp?: number;
+  rates: number[];
   type: string;
   isV2: boolean;
 };
@@ -42,7 +43,7 @@ type Pool = {
   asset4?: Coin;
   asset5?: Coin;
   type: string;
-  poolType: "Weighted" | "Stable";
+  poolType: "Weighted" | "Stable" | "Metastable";
   balance0: number;
   balance1: number;
   balance2?: number;
@@ -54,6 +55,7 @@ type Pool = {
   amp?: number;
   isV2: boolean;
   lptAddress: string;
+  rates: number[];
 };
 
 type PoolData = {
@@ -62,7 +64,7 @@ type PoolData = {
 };
 
 type RouteType = "exact_input" | "exact_output";
-type PoolType = "Stable" | "Weighted";
+type PoolType = "Stable" | "Weighted" | "Metastable";
 type Graph = Record<string, Edge[]>;
 type Distances = Record<string, Record<number, number>>;
 type Predecessors = Record<

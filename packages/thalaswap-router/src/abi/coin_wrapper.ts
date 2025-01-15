@@ -1,10 +1,10 @@
 export const COIN_WRAPPER_ABI = {
-  address: "0x8a08715c6dc0a402c89c446b8ba75fae867f040247b526d309f91a76f098a52e",
+  address: "0x47078bc1e50f803987fbbf69b706cebb29ea4a54dac8b0ce2d9e7af90a41d02f",
   name: "coin_wrapper",
   friends: [],
   exposed_functions: [
     {
-      name: "add_liquidity_stable",
+      name: "add_liquidity_metastable",
       visibility: "public",
       is_entry: true,
       is_view: false,
@@ -24,8 +24,42 @@ export const COIN_WRAPPER_ABI = {
       ],
       params: [
         "&signer",
-        "0x1::object::Object<0x8a08715c6dc0a402c89c446b8ba75fae867f040247b526d309f91a76f098a52e::pool::Pool>",
+        "0x1::object::Object<0x47078bc1e50f803987fbbf69b706cebb29ea4a54dac8b0ce2d9e7af90a41d02f::pool::Pool>",
         "vector<u64>",
+        "u64",
+      ],
+      return: [],
+    },
+    {
+      name: "add_liquidity_stable",
+      visibility: "public",
+      is_entry: true,
+      is_view: false,
+      generic_type_params: [
+        {
+          constraints: [],
+        },
+        {
+          constraints: [],
+        },
+        {
+          constraints: [],
+        },
+        {
+          constraints: [],
+        },
+        {
+          constraints: [],
+        },
+        {
+          constraints: [],
+        },
+      ],
+      params: [
+        "&signer",
+        "0x1::object::Object<0x47078bc1e50f803987fbbf69b706cebb29ea4a54dac8b0ce2d9e7af90a41d02f::pool::Pool>",
+        "vector<u64>",
+        "u64",
       ],
       return: [],
     },
@@ -50,8 +84,37 @@ export const COIN_WRAPPER_ABI = {
       ],
       params: [
         "&signer",
-        "0x1::object::Object<0x8a08715c6dc0a402c89c446b8ba75fae867f040247b526d309f91a76f098a52e::pool::Pool>",
+        "0x1::object::Object<0x47078bc1e50f803987fbbf69b706cebb29ea4a54dac8b0ce2d9e7af90a41d02f::pool::Pool>",
         "vector<u64>",
+        "u64",
+      ],
+      return: [],
+    },
+    {
+      name: "create_pool_metastable",
+      visibility: "public",
+      is_entry: true,
+      is_view: false,
+      generic_type_params: [
+        {
+          constraints: [],
+        },
+        {
+          constraints: [],
+        },
+        {
+          constraints: [],
+        },
+        {
+          constraints: [],
+        },
+      ],
+      params: [
+        "&signer",
+        "vector<0x1::object::Object<0x1::fungible_asset::Metadata>>",
+        "vector<u64>",
+        "u64",
+        "u64",
       ],
       return: [],
     },
@@ -61,6 +124,12 @@ export const COIN_WRAPPER_ABI = {
       is_entry: true,
       is_view: false,
       generic_type_params: [
+        {
+          constraints: [],
+        },
+        {
+          constraints: [],
+        },
         {
           constraints: [],
         },
@@ -112,6 +181,26 @@ export const COIN_WRAPPER_ABI = {
       return: [],
     },
     {
+      name: "swap_exact_in_metastable",
+      visibility: "public",
+      is_entry: true,
+      is_view: false,
+      generic_type_params: [
+        {
+          constraints: [],
+        },
+      ],
+      params: [
+        "&signer",
+        "0x1::object::Object<0x47078bc1e50f803987fbbf69b706cebb29ea4a54dac8b0ce2d9e7af90a41d02f::pool::Pool>",
+        "0x1::object::Object<0x1::fungible_asset::Metadata>",
+        "u64",
+        "0x1::object::Object<0x1::fungible_asset::Metadata>",
+        "u64",
+      ],
+      return: [],
+    },
+    {
       name: "swap_exact_in_stable",
       visibility: "public",
       is_entry: true,
@@ -123,7 +212,7 @@ export const COIN_WRAPPER_ABI = {
       ],
       params: [
         "&signer",
-        "0x1::object::Object<0x8a08715c6dc0a402c89c446b8ba75fae867f040247b526d309f91a76f098a52e::pool::Pool>",
+        "0x1::object::Object<0x47078bc1e50f803987fbbf69b706cebb29ea4a54dac8b0ce2d9e7af90a41d02f::pool::Pool>",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
         "u64",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
@@ -143,7 +232,27 @@ export const COIN_WRAPPER_ABI = {
       ],
       params: [
         "&signer",
-        "0x1::object::Object<0x8a08715c6dc0a402c89c446b8ba75fae867f040247b526d309f91a76f098a52e::pool::Pool>",
+        "0x1::object::Object<0x47078bc1e50f803987fbbf69b706cebb29ea4a54dac8b0ce2d9e7af90a41d02f::pool::Pool>",
+        "0x1::object::Object<0x1::fungible_asset::Metadata>",
+        "u64",
+        "0x1::object::Object<0x1::fungible_asset::Metadata>",
+        "u64",
+      ],
+      return: [],
+    },
+    {
+      name: "swap_exact_out_metastable",
+      visibility: "public",
+      is_entry: true,
+      is_view: false,
+      generic_type_params: [
+        {
+          constraints: [],
+        },
+      ],
+      params: [
+        "&signer",
+        "0x1::object::Object<0x47078bc1e50f803987fbbf69b706cebb29ea4a54dac8b0ce2d9e7af90a41d02f::pool::Pool>",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
         "u64",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
@@ -163,7 +272,7 @@ export const COIN_WRAPPER_ABI = {
       ],
       params: [
         "&signer",
-        "0x1::object::Object<0x8a08715c6dc0a402c89c446b8ba75fae867f040247b526d309f91a76f098a52e::pool::Pool>",
+        "0x1::object::Object<0x47078bc1e50f803987fbbf69b706cebb29ea4a54dac8b0ce2d9e7af90a41d02f::pool::Pool>",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
         "u64",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
@@ -183,7 +292,7 @@ export const COIN_WRAPPER_ABI = {
       ],
       params: [
         "&signer",
-        "0x1::object::Object<0x8a08715c6dc0a402c89c446b8ba75fae867f040247b526d309f91a76f098a52e::pool::Pool>",
+        "0x1::object::Object<0x47078bc1e50f803987fbbf69b706cebb29ea4a54dac8b0ce2d9e7af90a41d02f::pool::Pool>",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
         "u64",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
@@ -196,6 +305,7 @@ export const COIN_WRAPPER_ABI = {
     {
       name: "Notacoin",
       is_native: false,
+      is_event: false,
       abilities: [],
       generic_type_params: [],
       fields: [
