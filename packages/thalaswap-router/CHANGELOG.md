@@ -1,5 +1,12 @@
 # @thalalabs/router-sdk
 
+## 4.2.1
+
+### Patch Changes
+
+- 21a31de: Fix the exception that occurs when the route token does not exist.
+- 21a31de: Fix the error when the v2LensAddress is missing for ThalaswapRouter.
+
 ## 4.2.0
 
 ### Minor Changes
