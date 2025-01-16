@@ -18,11 +18,13 @@ const router = new ThalaswapRouter({
     "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
   v2ResourceAddress:
     "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
+  v2LensAddress:
+    "0xff1ac437457a839f7d07212d789b85dd77b3df00f59613fcba02388464bfcacb",
   multirouterAddress:
     "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
 });
 const fromToken = "0x1::aptos_coin::AptosCoin";
-const toToken = "0xec84c05cc40950c86d8a8bed19552f1e8ebb783196bb021c916161d22dc179f7::asset::USDC";
+const toToken = "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL";
 const amountIn = 0.1;
 
 const route = await router.getRouteGivenExactInput(

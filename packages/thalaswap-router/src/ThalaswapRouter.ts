@@ -247,7 +247,7 @@ class ThalaswapRouter {
     slippagePercentage: number,
     balanceCoinIn?: number,
   ): Promise<EntryPayload> {
-    if (route.path.length === 0 || route.path.length > 3) {
+    if (!route || route.path.length === 0 || route.path.length > 3) {
       throw new Error("Invalid route");
     }
 

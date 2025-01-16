@@ -203,7 +203,7 @@ export function findRouteGivenExactInput(
   let maxDistance = -Infinity;
   let hops = 0;
   for (let i = 1; i <= maxHops; i++) {
-    const distance = distances[endToken][i];
+    const distance = distances[endToken]?.[i];
     if (distance && distance > maxDistance) {
       maxDistance = distance;
       hops = i;
@@ -323,7 +323,7 @@ export function findRouteGivenExactOutput(
   let minDistance = Infinity;
   let hops = 0;
   for (let i = 1; i <= maxHops; i++) {
-    const distance = distances[startToken][i];
+    const distance = distances[startToken]?.[i];
     if (distance && distance < minDistance) {
       minDistance = distance;
       hops = i;

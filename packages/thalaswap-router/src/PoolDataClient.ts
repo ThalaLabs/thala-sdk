@@ -168,7 +168,7 @@ class PoolDataClient {
   }
 
   async getV2Pools(): Promise<Pool[]> {
-    if (!this.v2ResourceAddress) {
+    if (!this.v2ResourceAddress || !this.v2LensAddress) {
       return [];
     }
 
