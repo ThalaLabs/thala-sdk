@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.2.2
+
+### Patch Changes
+
+- 7ca5511: Fix a bug that causes some pools to be missing in the router.
+
 ## 4.2.1
 
 ### Patch Changes
