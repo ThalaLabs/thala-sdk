@@ -189,7 +189,7 @@ class PoolDataClient {
       swap_fee_bps: string;
       weights_opt: { vec: string[][] | [] };
       lp_token_metadata: { inner: string };
-      rates_opt: { vec: string[][] | [] };
+      rates_opt?: { vec: string[][] | [] };
     }[];
 
     const allCoinAddress = uniq(
@@ -233,7 +233,7 @@ class PoolDataClient {
         type: pool.pool.inner,
         weights: pool.weights_opt.vec[0]?.map((w) => Number(w) / 100) ?? [],
         lptAddress: pool.lp_token_metadata.inner,
-        rates: pool.rates_opt.vec[0]?.map((r) => fp64ToFloat(BigInt(r))) ?? [],
+        rates: pool.rates_opt?.vec[0]?.map((r) => fp64ToFloat(BigInt(r))) ?? [],
         amp:
           pool.amp_factor_opt.vec.length === 0
             ? undefined
