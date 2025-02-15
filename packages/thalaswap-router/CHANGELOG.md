@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.2.3
+
+### Patch Changes
+
+- afca50a: Fix a bug that causes some pools to be missing in the router.
+
 ## 4.2.2
 
 ### Patch Changes
