@@ -78,6 +78,10 @@ class PoolDataClient {
 
     const resources = await this.client.getAccountResources({
       accountAddress: resourceAddress,
+      options: {
+        // the default limit is 999, the thala account has 1000+ resources
+        limit: 10000,
+      },
     });
 
     const poolResources = resources.filter(
