@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.2.4
+
+### Patch Changes
+
+- af3deb1: Use new thala v2 lens contract to use pagination view function
+
 ## 4.2.3
 
 ### Patch Changes
