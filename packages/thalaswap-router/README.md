@@ -17,9 +17,9 @@ const router = new ThalaswapRouter({
   resourceAddress:
     "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
   v2ResourceAddress:
-    "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
+    "0x007730cd28ee1cdc9e999336cbc430f99e7c44397c0aa77516f6f23a78559bb5",
   v2LensAddress:
-    "0xff1ac437457a839f7d07212d789b85dd77b3df00f59613fcba02388464bfcacb",
+    "0xeeadd07bb5e307ea3b3fb312bea4d1876526e63b9d00c3d09acca6d3744eecea",
   multirouterAddress:
     "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
 });
