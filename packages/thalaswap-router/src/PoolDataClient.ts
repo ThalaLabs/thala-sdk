@@ -7,6 +7,7 @@ import {
   parsePoolMetadata,
   scaleDown,
 } from "./utils";
+import { getV2PoolsOnChain } from "./getAllV2Pools";
 
 class PoolDataClient {
   public poolData: PoolData | null = null;
@@ -176,25 +177,7 @@ class PoolDataClient {
       return [];
     }
 
-    const result = await this.client.view({
-      payload: {
-        function: `${this.v2LensAddress}::lens::get_all_pools_info`,
-        functionArguments: [],
-        typeArguments: [],
-      },
-    });
-
-    const rawPools = result[0] as {
-      amp_factor_opt: { vec: [string] | [] };
-      assets_metadata: { inner: string }[];
-      balances: string[];
-      pool: { inner: string };
-      pool_type: 100 | 101 | 102;
-      swap_fee_bps: string;
-      weights_opt: { vec: string[][] | [] };
-      lp_token_metadata: { inner: string };
-      rates_opt?: { vec: string[][] | [] };
-    }[];
+    const rawPools = await getV2PoolsOnChain(this.client, this.v2LensAddress);
 
     const allCoinAddress = uniq(
       rawPools.reduce((acc, pool) => {
