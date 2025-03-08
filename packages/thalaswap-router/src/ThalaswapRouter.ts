@@ -15,6 +15,7 @@ import { WEIGHTED_POOL_SCRIPTS_ABI } from "./abi/weighted_pool_scripts";
 import { MULTIHOP_ROUTER_ABI } from "./abi/multihop_router";
 import { Aptos, Network } from "@aptos-labs/ts-sdk";
 import { COIN_WRAPPER_ABI } from "./abi/coin_wrapper";
+import { V2_ROUTER_ABI } from "./abi/v2_router";
 
 const encodeWeight = (weight: number, resourceAddress: string): string => {
   return `${resourceAddress}::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
@@ -73,6 +74,7 @@ class ThalaswapRouter {
   private coins: Coin[] | null = null;
   private resourceAddress?: string;
   private v2ResourceAddress?: string;
+  private v2RouterAddress?: string;
   private v2LensAddress?: string;
   private multirouterAddress: string;
   private options: Options;
@@ -84,6 +86,7 @@ class ThalaswapRouter {
     v2ResourceAddress,
     v2LensAddress,
     multirouterAddress,
+    v2RouterAddress,
     options,
   }: {
     network: Network;
@@ -92,12 +95,14 @@ class ThalaswapRouter {
     v2ResourceAddress?: string;
     v2LensAddress?: string;
     multirouterAddress: string;
+    v2RouterAddress?: string;
     options?: Options;
   }) {
     this.resourceAddress = resourceAddress;
     this.v2ResourceAddress = v2ResourceAddress;
     this.v2LensAddress = v2LensAddress;
     this.multirouterAddress = multirouterAddress;
+    this.v2RouterAddress = v2RouterAddress;
     this.client = new PoolDataClient({
       network,
       fullnode,
@@ -350,7 +355,7 @@ class ThalaswapRouter {
     slippagePercentage: number,
     balanceCoinIn?: number,
   ): Promise<EntryPayload> {
-    if (route.path.length === 0 || route.path.length > 3) {
+    if (route.path.length === 0) {
       throw new Error("Invalid route");
     }
 
@@ -417,9 +422,29 @@ class ThalaswapRouter {
         ],
         address: this.v2ResourceAddress as `0x${string}`,
       });
-    }
+    } else {
+      if (!this.v2RouterAddress) {
+        throw new Error("V2 router address is not set");
+      }
+      // route.path.length > 1
+      const functionName =
+        route.type === "exact_input"
+          ? "swap_exact_in_router_entry"
+          : "swap_exact_out_router_entry";
 
-    throw new Error("Invalid route");
+      return createEntryPayload(V2_ROUTER_ABI, {
+        function: functionName,
+        typeArguments: [],
+        functionArguments: [
+          route.path.map((p) => p.pool.type as `0x${string}`),
+          route.path.map((p) => p.to as `0x${string}`),
+          route.type === "exact_input" ? amountInArg : amountOutArg,
+          route.path[0].from as `0x${string}`,
+          route.type === "exact_input" ? amountOutArg : amountInArg,
+        ],
+        address: this.v2RouterAddress as `0x${string}`,
+      });
+    }
   }
 }
 
