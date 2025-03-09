@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.3.0
+
+### Minor Changes
+
+- e3fe9d8: Support multi pools routing for v2 pools
+
 ## 4.2.4
 
 ### Patch Changes
