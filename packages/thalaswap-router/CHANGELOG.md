@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.3.1
+
+### Patch Changes
+
+- f4ab867: Fix v2 router for APT
+
 ## 4.3.0
 
 ### Minor Changes
