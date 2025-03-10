@@ -362,6 +362,9 @@ class ThalaswapRouter {
     if (!this.v2ResourceAddress) {
       throw new Error("V2 resource address is not set");
     }
+    if (!this.v2RouterAddress) {
+      throw new Error("V2 router address is not set");
+    }
 
     const coinType = await getCoinType(
       this.client.client,
@@ -399,52 +402,24 @@ class ThalaswapRouter {
       );
       amountOutArg = scaleUp(route.amountOut, tokenOutDecimals);
     }
-    if (route.path.length == 1) {
-      const path = route.path[0];
-      const functionName =
-        `swap_exact_${route.type === "exact_input" ? "in" : "out"}_${
-          path.pool.poolType === "Stable"
-            ? "stable"
-            : path.pool.poolType === "Metastable"
-              ? "metastable"
-              : "weighted"
-        }` as const;
 
-      return createEntryPayload(COIN_WRAPPER_ABI, {
-        function: functionName,
-        typeArguments: [coinType],
-        functionArguments: [
-          path.pool.type as `0x${string}`,
-          path.from as `0x${string}`,
-          amountInArg,
-          path.to as `0x${string}`,
-          amountOutArg,
-        ],
-        address: this.v2ResourceAddress as `0x${string}`,
-      });
-    } else {
-      if (!this.v2RouterAddress) {
-        throw new Error("V2 router address is not set");
-      }
-      // route.path.length > 1
-      const functionName =
-        route.type === "exact_input"
-          ? "swap_exact_in_router_entry"
-          : "swap_exact_out_router_entry";
+    const functionName =
+      route.type === "exact_input"
+        ? "swap_exact_in_router_entry"
+        : "swap_exact_out_router_entry";
 
-      return createEntryPayload(V2_ROUTER_ABI, {
-        function: functionName,
-        typeArguments: [],
-        functionArguments: [
-          route.path.map((p) => p.pool.type as `0x${string}`),
-          route.path.map((p) => p.to as `0x${string}`),
-          route.type === "exact_input" ? amountInArg : amountOutArg,
-          route.path[0].from as `0x${string}`,
-          route.type === "exact_input" ? amountOutArg : amountInArg,
-        ],
-        address: this.v2RouterAddress as `0x${string}`,
-      });
-    }
+    return createEntryPayload(V2_ROUTER_ABI, {
+      function: functionName,
+      typeArguments: [coinType ?? `${this.v2RouterAddress}::router::Notacoin`],
+      functionArguments: [
+        route.path.map((p) => p.pool.type as `0x${string}`),
+        route.path.map((p) => p.to as `0x${string}`),
+        route.type === "exact_input" ? amountInArg : amountOutArg,
+        route.path[0].from as `0x${string}`,
+        route.type === "exact_input" ? amountOutArg : amountInArg,
+      ],
+      address: this.v2RouterAddress as `0x${string}`,
+    });
   }
 }
 
@@ -478,7 +453,7 @@ async function getCoinType(
   const optionalCoinType = result[0].vec[0];
 
   return !optionalCoinType
-    ? `${v2ResourceAddress}::coin_wrapper::Notacoin`
+    ? undefined
     : `${optionalCoinType.account_address}::${fromHex(optionalCoinType.module_name.slice(2))}::${fromHex(optionalCoinType.struct_name.slice(2))}`;
 }
 
