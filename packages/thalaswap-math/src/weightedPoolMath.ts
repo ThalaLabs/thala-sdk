@@ -1,4 +1,4 @@
-/// Reference "Out-Given-In" section in Balancer whitepaper https://balancer.fi/whitepaper.pdf
+/// Reference "Out-Given-In" section in Balancer whitepaper https://docs.balancer.fi/whitepaper.pdf
 /// ********************************************************************************************
 /// calcOutGivenIn                                                                            //
 /// aO = tokenAmountOut                                                                       //
@@ -21,7 +21,7 @@ export function calcOutGivenInWeighted(
   return bO * (1 - Math.pow(bI / denom, wI / wO));
 }
 
-/// Reference "In-Given-Out" section in Balancer whitepaper https://balancer.fi/whitepaper.pdf
+/// Reference "In-Given-Out" section in Balancer whitepaper https://docs.balancer.fi/whitepaper.pdf
 /// ********************************************************************************************
 /// calcInGivenOut                                                                            //
 /// aI = tokenAmountIn                                                                        //
