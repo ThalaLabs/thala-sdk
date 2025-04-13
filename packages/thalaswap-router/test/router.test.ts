@@ -252,7 +252,7 @@ test("Low price impact for MOD-USDC stable pool", async () => {
 });
 
 // Below are tests for THL -> USDT
-// We have 3 posible routes:
+// We have 3 possible routes:
 // 1. THL - USDT
 // 2. THL - APT - USDT
 // 3. THL - MOD - APT - USDT
