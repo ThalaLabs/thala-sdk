@@ -189,7 +189,7 @@ function getY(
   );
 }
 
-// see `compute_invarient` in https://github.com/ThalaLabs/thala-modules/blob/main/thalaswap_math/sources/stable_math.move
+// see `compute_invariant` in https://github.com/ThalaLabs/thala-modules/blob/main/thalaswap_math/sources/stable_math.move
 function getD(xp: number[], a: number): number {
   const n = xp.length;
 
