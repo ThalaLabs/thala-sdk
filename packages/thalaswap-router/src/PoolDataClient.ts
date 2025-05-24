@@ -7,7 +7,7 @@ import {
   parsePoolMetadata,
   scaleDown,
 } from "./utils";
-import { getV2PoolsOnChain } from "./getAllV2Pools";
+import { getV2AssetDecimals, getV2PoolsOnChain } from "./getAllV2Pools";
 
 class PoolDataClient {
   public poolData: PoolData | null = null;
@@ -179,37 +179,22 @@ class PoolDataClient {
 
     const rawPools = await getV2PoolsOnChain(this.client, this.v2LensAddress);
 
-    const allCoinAddress = uniq(
-      rawPools.reduce((acc, pool) => {
-        pool.assets_metadata.forEach((o) => acc.push(o.inner));
-        return acc;
-      }, [] as string[]),
-    );
-
-    await Promise.all(
-      allCoinAddress.map(async (address) => {
-        if (this.coins.find((c) => c.address === address)) return;
-        const coin = {
-          address,
-          decimals: (
-            await this.client.view({
-              payload: {
-                function: "0x1::fungible_asset::decimals",
-                functionArguments: [address],
-                typeArguments: ["0x1::fungible_asset::Metadata"],
-              },
-            })
-          )[0] as number,
-        };
-        this.coins.push(coin);
-      }),
-    );
+    const coins = await getV2AssetDecimals(this.client, this.v2LensAddress);
+    this.coins.push(...coins);
 
     return rawPools.map<Pool>((pool) => {
       const [coin0, coin1, coin2, coin3, coin4, coin5] =
         pool.assets_metadata.map((o) =>
           this.coins.find((c) => c.address === o.inner),
         );
+
+      if (
+        [coin0, coin1, coin2, coin3, coin4, coin5].filter(Boolean).length !==
+        pool.assets_metadata.length
+      ) {
+        throw new Error("Pool has invalid assets");
+      }
+
       return {
         poolType:
           pool.pool_type === 100

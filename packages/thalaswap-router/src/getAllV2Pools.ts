@@ -1,4 +1,5 @@
 import { Aptos } from "@aptos-labs/ts-sdk";
+import { Coin } from "./types";
 
 const PAGE_SIZE = 100;
 const LIMIT = 1000;
@@ -13,6 +14,15 @@ type PoolOnChain = {
   weights_opt: { vec: string[][] | [] };
   lp_token_metadata: { inner: string };
   rates_opt?: { vec: string[][] | [] };
+};
+
+type DecimalsOnChain = {
+  data: {
+    key: {
+      inner: string;
+    };
+    value: number;
+  }[];
 };
 
 export async function getV2PoolsOnChain(
@@ -41,4 +51,23 @@ export async function getV2PoolsOnChain(
     }
   }
   return pools;
+}
+
+export async function getV2AssetDecimals(
+  client: Aptos,
+  v2LensAddress: string,
+): Promise<Coin[]> {
+  let offset = 0;
+  const decimals: Coin[] = [];
+  const result: [DecimalsOnChain] = await client.view({
+    payload: {
+      function: `${v2LensAddress}::lens::fee_asset_decimals`,
+      functionArguments: [],
+      typeArguments: [],
+    },
+  });
+  return result[0].data.map((o) => ({
+    address: o.key.inner,
+    decimals: o.value,
+  }));
 }
