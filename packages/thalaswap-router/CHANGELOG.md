@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.3.2
+
+### Patch Changes
+
+- d8ca694: fetch decimals in batch, reduce rpc calls
+
 ## 4.3.1
 
 ### Patch Changes
