@@ -8,6 +8,9 @@ import {
   scaleDown,
 } from "./utils";
 import { getV2AssetDecimals, getV2PoolsOnChain } from "./getAllV2Pools";
+import { createViewPayload } from "@thalalabs/surf";
+import { COIN_ABI } from "./abi/coin";
+import { FUNGIBLE_ASSET_ABI } from "./abi/fungible_asset";
 
 class PoolDataClient {
   public poolData: PoolData | null = null;
@@ -19,6 +22,8 @@ class PoolDataClient {
   private resourceAddress?: string;
   private v2ResourceAddress?: string;
   private v2LensAddress?: string;
+  private v1CoinsInitialized = false;
+  private v2CoinsInitialized = false;
   constructor({
     network,
     fullnode,
@@ -103,34 +108,38 @@ class PoolDataClient {
       };
     }[];
 
-    const allCoinAddress = uniq(
-      poolResources.reduce((acc, resource) => {
-        const metadata = parsePoolMetadata(resource.type, resourceAddress);
-        metadata.coinAddresses.forEach((coin) => {
-          coin && acc.push(coin);
-        });
-        return acc;
-      }, [] as string[]),
-    );
+    if (!this.v1CoinsInitialized) {
+      const allCoinAddress = uniq(
+        poolResources.reduce((acc, resource) => {
+          const metadata = parsePoolMetadata(resource.type, resourceAddress);
+          metadata.coinAddresses.forEach((coin) => {
+            coin && acc.push(coin);
+          });
+          return acc;
+        }, [] as string[]),
+      );
 
-    await Promise.all(
-      allCoinAddress.map(async (address) => {
-        if (this.coins.find((c) => c.address === address)) return;
-        const coin = {
-          address,
-          decimals: (
-            await this.client.view({
-              payload: {
-                function: "0x1::coin::decimals",
-                functionArguments: [],
-                typeArguments: [address as `${string}::${string}::${string}`],
-              },
-            })
-          )[0] as number,
-        };
-        this.coins.push(coin);
-      }),
-    );
+      await Promise.all(
+        allCoinAddress.map(async (address) => {
+          if (this.coins.find((c) => c.address === address)) return;
+          const coin = {
+            address,
+            decimals: (
+              await this.client.view({
+                payload: createViewPayload(COIN_ABI, {
+                  function: "decimals",
+                  functionArguments: [],
+                  typeArguments: [address as `${string}::${string}::${string}`],
+                }),
+              })
+            )[0] as number,
+          };
+          this.coins.push(coin);
+        }),
+      );
+
+      this.v1CoinsInitialized = true;
+    }
 
     const pools = poolResources.reduce((acc, resource) => {
       try {
@@ -138,6 +147,19 @@ class PoolDataClient {
         const [coin0, coin1, coin2, coin3] = metadata.coinAddresses.map(
           (addr) => this.coins.find((c) => c.address === addr),
         );
+
+        // if the v2 pool has invalid assets, skip it, it should not happen
+        if (
+          [coin0, coin1, coin2, coin3].filter(Boolean).length !==
+          metadata.coinAddresses.length
+        ) {
+          console.error(
+            "Pool asset not found in coins",
+            resource.type,
+            metadata.coinAddresses,
+          );
+          return acc;
+        }
 
         acc.push({
           type: metadata.type,
@@ -179,8 +201,43 @@ class PoolDataClient {
 
     const rawPools = await getV2PoolsOnChain(this.client, this.v2LensAddress);
 
-    const coins = await getV2AssetDecimals(this.client, this.v2LensAddress);
-    this.coins.push(...coins);
+    if (!this.v2CoinsInitialized) {
+      // get coins data
+      const coins = await getV2AssetDecimals(this.client, this.v2LensAddress);
+      coins.forEach((coin) => {
+        if (this.coins.find((c) => c.address === coin.address)) return;
+        this.coins.push(coin);
+      });
+      this.v2CoinsInitialized = true;
+    }
+
+    const allCoinAddress = uniq(
+      rawPools.reduce((acc, pool) => {
+        pool.assets_metadata.forEach((o) => acc.push(o.inner));
+        return acc;
+      }, [] as string[]),
+    );
+
+    // some coins may still missing, even if v2 coins are initialized
+    // fetch them here
+    await Promise.all(
+      allCoinAddress.map(async (address) => {
+        if (this.coins.find((c) => c.address === address)) return;
+        const coin = {
+          address,
+          decimals: (
+            await this.client.view({
+              payload: createViewPayload(FUNGIBLE_ASSET_ABI, {
+                function: "decimals",
+                functionArguments: [address as `0x${string}`],
+                typeArguments: ["0x1::fungible_asset::Metadata"],
+              }),
+            })
+          )[0] as number,
+        };
+        this.coins.push(coin);
+      }),
+    );
 
     return rawPools.map<Pool>((pool) => {
       const [coin0, coin1, coin2, coin3, coin4, coin5] =
