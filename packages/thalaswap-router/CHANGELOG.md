@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.3.3
+
+### Patch Changes
+
+- 7596b27: Fix the missing decimal data for some pools.
+
 ## 4.3.2
 
 ### Patch Changes
