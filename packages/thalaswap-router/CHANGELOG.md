@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.4.0
+
+### Minor Changes
+
+- 91feb3e: integrate thalaswap v3
+
 ## 4.3.3
 
 ### Patch Changes
