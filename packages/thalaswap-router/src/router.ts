@@ -295,6 +295,7 @@ export async function findRouteGivenExactOutput(
     distances[token] = {};
     predecessors[token] = {};
   }
+  if (distances[endToken] === undefined) return null;
   distances[endToken][0] = amountOut;
 
   for (let i = 0; i < maxHops; i++) {

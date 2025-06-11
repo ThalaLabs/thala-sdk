@@ -18,6 +18,7 @@ const mockPoolDataClient = {
     return new Promise((resolve) =>
       resolve({
         pools: pools,
+        poolsV3: [],
         coins: coins,
       }),
     );
