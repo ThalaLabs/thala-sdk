@@ -27,13 +27,20 @@ type LiquidityPool = {
   amp?: number;
   rates: number[];
   type: string;
-  isV2: boolean;
+  version: LiquidityPoolVersion;
+  price?: number;
 };
 
 type Coin = {
   address: string;
   decimals: number;
 };
+
+export enum LiquidityPoolVersion {
+  V1 = 1,
+  V2,
+  V3,
+}
 
 type Pool = {
   asset0: Coin;
@@ -43,7 +50,7 @@ type Pool = {
   asset4?: Coin;
   asset5?: Coin;
   type: string;
-  poolType: "Weighted" | "Stable" | "Metastable";
+  poolType: "Weighted" | "Stable" | "Metastable" | "Concentrated";
   balance0: number;
   balance1: number;
   balance2?: number;
@@ -53,18 +60,20 @@ type Pool = {
   weights: number[];
   swapFee: number;
   amp?: number;
-  isV2: boolean;
   lptAddress: string;
   rates: number[];
+  price?: number;
+  version: LiquidityPoolVersion;
 };
 
 type PoolData = {
-  pools: Pool[];
+  pools: Pool[]; // for v1 and v2
+  poolsV3: Pool[]; // for v3
   coins: Coin[];
 };
 
 type RouteType = "exact_input" | "exact_output";
-type PoolType = "Stable" | "Weighted" | "Metastable";
+type PoolType = "Stable" | "Weighted" | "Metastable" | "Concentrated";
 type Graph = Record<string, Edge[]>;
 type Distances = Record<string, Record<number, number>>;
 type Predecessors = Record<

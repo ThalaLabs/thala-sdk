@@ -1,4 +1,4 @@
-import { Coin, Pool, PoolData } from "./types";
+import { Coin, LiquidityPoolVersion, Pool, PoolData } from "./types";
 import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 import { uniq } from "lodash";
 import {
@@ -11,6 +11,7 @@ import { getV2AssetDecimals, getV2PoolsOnChain } from "./getAllV2Pools";
 import { createViewPayload } from "@thalalabs/surf";
 import { COIN_ABI } from "./abi/coin";
 import { FUNGIBLE_ASSET_ABI } from "./abi/fungible_asset";
+import { getV3PoolsOnChain } from "./getAllV3Pools";
 
 class PoolDataClient {
   public poolData: PoolData | null = null;
@@ -22,6 +23,8 @@ class PoolDataClient {
   private resourceAddress?: string;
   private v2ResourceAddress?: string;
   private v2LensAddress?: string;
+  private v3ResourceAddress?: string;
+  private v3LensAddress?: string;
   private v1CoinsInitialized = false;
   private v2CoinsInitialized = false;
   constructor({
@@ -30,16 +33,22 @@ class PoolDataClient {
     resourceAddress,
     v2ResourceAddress,
     v2LensAddress,
+    v3ResourceAddress,
+    v3LensAddress,
   }: {
     network: Network;
     fullnode: string;
     resourceAddress?: string;
     v2ResourceAddress?: string;
     v2LensAddress?: string;
+    v3ResourceAddress?: string;
+    v3LensAddress?: string;
   }) {
     this.resourceAddress = resourceAddress;
     this.v2ResourceAddress = v2ResourceAddress;
     this.v2LensAddress = v2LensAddress;
+    this.v3ResourceAddress = v3ResourceAddress;
+    this.v3LensAddress = v3LensAddress;
     this.client = new Aptos(
       new AptosConfig({
         network: network,
@@ -55,8 +64,10 @@ class PoolDataClient {
         try {
           const v1pools = await this.getV1Pools();
           const v2pools = await this.getV2Pools();
+          const v3pools = await this.getV3Pools();
           this.poolData = {
             pools: [...v1pools, ...v2pools],
+            poolsV3: v3pools,
             coins: this.coins,
           };
           this.lastUpdated = currentTime;
@@ -183,7 +194,7 @@ class PoolDataClient {
             ? scaleDown(resource.data.asset_3.value, coin3.decimals)
             : undefined,
           swapFee: fp64ToFloat(BigInt(resource.data.swap_fee_ratio.v)),
-          isV2: false,
+          version: LiquidityPoolVersion.V1,
         });
       } catch (e) {
         console.error("failed to add pool", resource.type, e);
@@ -292,7 +303,71 @@ class PoolDataClient {
             ? scaleDown(pool.balances[5], coin5!.decimals)
             : undefined,
         swapFee: Number(pool.swap_fee_bps) / 10000,
-        isV2: true,
+        version: LiquidityPoolVersion.V2,
+      };
+    });
+  }
+
+  async getV3Pools(): Promise<Pool[]> {
+    if (!this.v3ResourceAddress || !this.v3LensAddress) {
+      return [];
+    }
+
+    const rawPools = await getV3PoolsOnChain(this.client, this.v3LensAddress);
+
+    const allCoinAddress = uniq(
+      rawPools.reduce((acc, pool) => {
+        acc.push(pool.metadata_0.inner);
+        acc.push(pool.metadata_1.inner);
+        return acc;
+      }, [] as string[]),
+    );
+
+    // some coins may still missing, even if v2 coins are initialized
+    // fetch them here
+    await Promise.all(
+      allCoinAddress.map(async (address) => {
+        if (this.coins.find((c) => c.address === address)) return;
+        const coin = {
+          address,
+          decimals: (
+            await this.client.view({
+              payload: createViewPayload(FUNGIBLE_ASSET_ABI, {
+                function: "decimals",
+                functionArguments: [address as `0x${string}`],
+                typeArguments: ["0x1::fungible_asset::Metadata"],
+              }),
+            })
+          )[0] as number,
+        };
+        this.coins.push(coin);
+      }),
+    );
+
+    return rawPools.map<Pool>((pool) => {
+      const [coin0, coin1] = [pool.metadata_0.inner, pool.metadata_1.inner].map(
+        (o) => this.coins.find((c) => c.address === o),
+      );
+
+      if ([coin0, coin1].filter(Boolean).length !== 2) {
+        throw new Error("Pool has invalid assets");
+      }
+
+      return {
+        poolType: "Concentrated",
+        type: pool.pool.inner,
+        lptAddress: pool.pool.inner,
+        asset0: coin0!,
+        asset1: coin1!,
+        weights: [],
+        rates: [],
+        balance0: scaleDown(pool.balance_0, coin0!.decimals),
+        balance1: scaleDown(pool.balance_1, coin1!.decimals),
+        swapFee: Number(pool.swap_fee_bps) / 10000,
+        price:
+          (Number(pool.sqrt_price) * 2 ** -64) ** 2 *
+          10 ** (coin0!.decimals - coin1!.decimals),
+        version: LiquidityPoolVersion.V3,
       };
     });
   }

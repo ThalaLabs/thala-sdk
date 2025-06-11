@@ -3,6 +3,10 @@ import { LiquidityPoolMetadata } from "./types";
 
 export const BN_TEN = new BigNumber(10);
 
+export function scaleUp(amount: number, decimals: number): number {
+  return Math.floor(amount * Math.pow(10, decimals));
+}
+
 export function scaleDown(v: number | string, decimals: number): number {
   return new BigNumber(v)
     .dividedBy(BN_TEN.exponentiatedBy(decimals))
