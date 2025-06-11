@@ -8,6 +8,7 @@ import {
   BalanceIndex,
   LiquidityPool,
   Pool,
+  LiquidityPoolVersion,
 } from "./types";
 import { EntryPayload, createEntryPayload } from "@thalalabs/surf";
 import { STABLE_POOL_SCRIPTS_ABI } from "./abi/stable_pool_scripts";
@@ -16,6 +17,8 @@ import { MULTIHOP_ROUTER_ABI } from "./abi/multihop_router";
 import { Aptos, Network } from "@aptos-labs/ts-sdk";
 import { COIN_WRAPPER_ABI } from "./abi/coin_wrapper";
 import { V2_ROUTER_ABI } from "./abi/v2_router";
+import { scaleDown, scaleUp } from "./utils";
+import { V3_SCRIPT_ABI } from "./abi/v3_script";
 
 const encodeWeight = (weight: number, resourceAddress: string): string => {
   return `${resourceAddress}::weighted_pool::Weight_${Math.floor(weight * 100).toString()}`;
@@ -59,10 +62,6 @@ const calcMinReceivedValue = (
 const calcMaxSoldValue = (expectedAmountIn: number, slippage: number): number =>
   expectedAmountIn * (1.0 + slippage / 100);
 
-const scaleUp = (amount: number, decimals: number): number => {
-  return Math.floor(amount * Math.pow(10, decimals));
-};
-
 type Options = {
   maxAllowedSwapPercentage?: number;
   poolFilter?: (pool: Pool) => boolean;
@@ -71,11 +70,14 @@ type Options = {
 class ThalaswapRouter {
   public client: PoolDataClient;
   private graph: Graph | null = null;
+  private graphV3: Graph | null = null;
   private coins: Coin[] | null = null;
   private resourceAddress?: string;
   private v2ResourceAddress?: string;
   private v2RouterAddress?: string;
   private v2LensAddress?: string;
+  private v3ResourceAddress?: string;
+  private v3LensAddress?: string;
   private multirouterAddress: string;
   private options: Options;
 
@@ -87,6 +89,8 @@ class ThalaswapRouter {
     v2LensAddress,
     multirouterAddress,
     v2RouterAddress,
+    v3ResourceAddress,
+    v3LensAddress,
     options,
   }: {
     network: Network;
@@ -96,6 +100,8 @@ class ThalaswapRouter {
     v2LensAddress?: string;
     multirouterAddress: string;
     v2RouterAddress?: string;
+    v3ResourceAddress?: string;
+    v3LensAddress?: string;
     options?: Options;
   }) {
     this.resourceAddress = resourceAddress;
@@ -103,12 +109,16 @@ class ThalaswapRouter {
     this.v2LensAddress = v2LensAddress;
     this.multirouterAddress = multirouterAddress;
     this.v2RouterAddress = v2RouterAddress;
+    this.v3ResourceAddress = v3ResourceAddress;
+    this.v3LensAddress = v3LensAddress;
     this.client = new PoolDataClient({
       network,
       fullnode,
       resourceAddress,
       v2ResourceAddress,
       v2LensAddress,
+      v3ResourceAddress,
+      v3LensAddress,
     });
     this.options = options ?? {};
   }
@@ -119,9 +129,10 @@ class ThalaswapRouter {
 
   async refreshData() {
     const poolData = await this.client.getPoolData();
-    const pools = poolData.pools;
     this.coins = poolData.coins;
-    this.graph = this.buildGraph(pools);
+    this.graph = this.buildGraph(poolData.pools);
+
+    this.graphV3 = this.buildGraph(poolData.poolsV3);
   }
 
   buildGraph(pools: Pool[]): Graph {
@@ -173,7 +184,8 @@ class ThalaswapRouter {
         amp,
         rates: pool.rates,
         type: pool.type,
-        isV2: pool.isV2,
+        version: pool.version,
+        price: pool.price,
       };
 
       for (let i = 0; i < assets.length; i++) {
@@ -204,12 +216,13 @@ class ThalaswapRouter {
   ): Promise<Route | null> {
     await this.refreshData();
 
-    if (!this.graph) {
+    if (!this.graph || !this.graphV3) {
       console.error("Failed to load pools");
       return null;
     }
 
-    return findRouteGivenExactInput(
+    const route = await findRouteGivenExactInput(
+      this,
       this.graph,
       startToken,
       endToken,
@@ -218,6 +231,27 @@ class ThalaswapRouter {
       this.options.maxAllowedSwapPercentage ??
         DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE,
     );
+
+    const routeV3 = await findRouteGivenExactInput(
+      this,
+      this.graphV3,
+      startToken,
+      endToken,
+      amountIn,
+      maxHops,
+      this.options.maxAllowedSwapPercentage ??
+        DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE,
+    );
+
+    if (routeV3 && !route) {
+      return routeV3;
+    } else if (route && !routeV3) {
+      return route;
+    } else if (routeV3 && route) {
+      return routeV3.amountOut > route.amountOut ? routeV3 : route;
+    } else {
+      return null;
+    }
   }
 
   async getRouteGivenExactOutput(
@@ -228,12 +262,13 @@ class ThalaswapRouter {
   ): Promise<Route | null> {
     await this.refreshData();
 
-    if (!this.graph) {
+    if (!this.graph || !this.graphV3) {
       console.error("Failed to load pools");
       return null;
     }
 
-    return findRouteGivenExactOutput(
+    const route = await findRouteGivenExactOutput(
+      this,
       this.graph,
       startToken,
       endToken,
@@ -242,6 +277,29 @@ class ThalaswapRouter {
       this.options.maxAllowedSwapPercentage ??
         DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE,
     );
+
+    const routeV3 = await findRouteGivenExactOutput(
+      this,
+      this.graphV3,
+      startToken,
+      endToken,
+      amountOut,
+      maxHops,
+      this.options.maxAllowedSwapPercentage ??
+        DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE,
+    );
+
+    if (routeV3 && !route) {
+      return routeV3;
+    } else if (route && !routeV3) {
+      return route;
+    } else if (routeV3 && route) {
+      return routeV3.amountIn < route.amountIn ? routeV3 : route;
+    } else {
+      return null;
+    }
+
+    return route;
   }
 
   // balanceCoinIn is the user's balance of input coin. If it's specified, this function will check
@@ -256,8 +314,12 @@ class ThalaswapRouter {
       throw new Error("Invalid route");
     }
 
-    if (route.path[0].pool.isV2) {
+    if (route.path[0].pool.version === LiquidityPoolVersion.V2) {
       return this.encodeRouteV2(route, slippagePercentage, balanceCoinIn);
+    }
+
+    if (route.path[0].pool.version === LiquidityPoolVersion.V3) {
+      return this.encodeRouteV3(route, slippagePercentage, balanceCoinIn);
     }
 
     if (!this.resourceAddress) {
@@ -421,6 +483,99 @@ class ThalaswapRouter {
       address: this.v2RouterAddress as `0x${string}`,
     });
   }
+
+  private async encodeRouteV3(
+    route: Route,
+    slippagePercentage: number,
+    balanceCoinIn?: number,
+  ): Promise<EntryPayload> {
+    if (route.path.length !== 1) {
+      throw new Error("Invalid route");
+    }
+
+    if (!this.v3ResourceAddress) {
+      throw new Error("V3 resource address is not set");
+    }
+
+    const tokenInDecimals = this.coins!.find(
+      (coin) => coin.address === route.path[0].from,
+    )!.decimals;
+    const tokenOutDecimals = this.coins!.find(
+      (coin) => coin.address === route.path[route.path.length - 1].to,
+    )!.decimals;
+    const minAmountOut = route.amountOut * (1 - slippagePercentage / 100);
+
+    const path = route.path[0];
+    return createEntryPayload(V3_SCRIPT_ABI, {
+      function: "swap",
+      typeArguments: [],
+      functionArguments: [
+        path.pool.type as `0x${string}`,
+        path.from === path.pool.coinAddresses[0],
+        scaleUp(route.amountIn, tokenInDecimals).toFixed(0),
+        scaleUp(minAmountOut, tokenOutDecimals).toFixed(0),
+        path.to === path.pool.coinAddresses[1]
+          ? MIN_SQRT_PRICE
+          : MAX_SQRT_PRICE,
+        route.type === "exact_input",
+      ],
+      address: this.v2RouterAddress as `0x${string}`,
+    });
+  }
+
+  public async calcOutGivenOutConcentrated(
+    pool: LiquidityPool,
+    toIndex: number,
+    amountOut: number,
+  ): Promise<number> {
+    const decimals = pool.coinAddresses.map(
+      (c) => this.coins!.find((coin) => coin.address === c)!.decimals,
+    );
+
+    // (amount_in, amount_out, protocol_fee_amount)
+    const result: [string, string, string] = await this.client.client.view({
+      payload: {
+        function: `${this.v3ResourceAddress}::pool::preview_swap`,
+        functionArguments: [
+          pool.type,
+          pool.coinAddresses[1 - toIndex],
+          scaleUp(amountOut, decimals[toIndex]).toFixed(0),
+          toIndex === 1 ? MIN_SQRT_PRICE : MAX_SQRT_PRICE,
+          false,
+          undefined,
+        ],
+        typeArguments: [],
+      },
+    });
+    return scaleDown(result[0], decimals[1 - toIndex]);
+  }
+
+  async calcOutGivenInConcentrated(
+    pool: LiquidityPool,
+    fromIndex: number,
+    amountIn: number,
+  ): Promise<number> {
+    const decimals = pool.coinAddresses.map(
+      (c) => this.coins!.find((coin) => coin.address === c)!.decimals,
+    );
+
+    // (amount_in, amount_out, protocol_fee_amount)
+    const result: [string, string, string] = await this.client.client.view({
+      payload: {
+        function: `${this.v3ResourceAddress}::pool::preview_swap`,
+        functionArguments: [
+          pool.type,
+          pool.coinAddresses[fromIndex],
+          scaleUp(amountIn, decimals[fromIndex]).toFixed(0),
+          fromIndex === 0 ? MIN_SQRT_PRICE : MAX_SQRT_PRICE,
+          true,
+          undefined,
+        ],
+        typeArguments: [],
+      },
+    });
+    return scaleDown(result[1], decimals[1 - fromIndex]);
+  }
 }
 
 export { ThalaswapRouter };
@@ -480,3 +635,6 @@ function hexStringToUint8Array(hexString: string) {
 
   return uint8Array;
 }
+
+const MAX_SQRT_PRICE = "79226673515207749235715866624";
+const MIN_SQRT_PRICE = "4295048016";

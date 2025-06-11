@@ -14,13 +14,15 @@ import {
   Distances,
   Predecessors,
 } from "./types";
+import { ThalaswapRouter } from "./ThalaswapRouter";
 
-function calcOutGivenIn(
+async function calcOutGivenIn(
+  router: ThalaswapRouter,
   amountIn: number,
   pool: LiquidityPool,
   fromIndex: number,
   toIndex: number,
-): number {
+): Promise<number> {
   const { poolType, balances, swapFee, weights, amp, rates } = pool;
   if (poolType === "Stable") {
     return calcOutGivenInStable(
@@ -53,17 +55,20 @@ function calcOutGivenIn(
       amountIn,
       swapFee,
     );
+  } else if (poolType === "Concentrated") {
+    return router.calcOutGivenInConcentrated(pool, fromIndex, amountIn);
   } else {
     throw new Error("Invalid pool type");
   }
 }
 
-function calcInGivenOut(
+async function calcInGivenOut(
+  router: ThalaswapRouter,
   amountOut: number,
   pool: LiquidityPool,
   fromIndex: number,
   toIndex: number,
-): number {
+): Promise<number> {
   const { poolType, balances, swapFee, weights, amp, rates } = pool;
   if (balances[toIndex] <= amountOut) {
     throw new Error("Insufficient balance");
@@ -98,6 +103,8 @@ function calcInGivenOut(
       amountOut,
       swapFee,
     );
+  } else if (poolType === "Concentrated") {
+    return router.calcOutGivenOutConcentrated(pool, toIndex, amountOut);
   } else {
     throw new Error("Invalid pool type");
   }
@@ -139,19 +146,25 @@ function calcPriceImpactPercentage(
       weights![fromIndex],
       weights![toIndex],
     );
+  } else if (poolType === "Concentrated") {
+    const newPrice =
+      fromIndex === 0 ? amountOut / amountIn : amountIn / amountOut;
+    const oldPrice = pool.price!;
+    return (Math.abs(newPrice - oldPrice) / oldPrice) * 100;
   } else {
     throw new Error("Invalid pool type");
   }
 }
 
-export function findRouteGivenExactInput(
+export async function findRouteGivenExactInput(
+  router: ThalaswapRouter,
   graph: Graph,
   startToken: string,
   endToken: string,
   amountIn: number,
   maxHops: number,
   maxAllowedSwapPercentage: number,
-): Route | null {
+): Promise<Route | null> {
   const tokens = Object.keys(graph);
   // distances[token][hop] is the maximum amount of token that can be received given hop number
   const distances: Distances = {};
@@ -163,6 +176,7 @@ export function findRouteGivenExactInput(
     distances[token] = {};
     predecessors[token] = {};
   }
+  if (distances[startToken] === undefined) return null;
   distances[startToken][0] = amountIn;
 
   for (let i = 0; i < maxHops; i++) {
@@ -180,7 +194,8 @@ export function findRouteGivenExactInput(
         )
           continue;
 
-        const newDistance = calcOutGivenIn(
+        const newDistance = await calcOutGivenIn(
+          router,
           distances[fromToken][i]!,
           edge.pool,
           edge.fromIndex,
@@ -232,12 +247,14 @@ export function findRouteGivenExactInput(
   for (const pathSegment of path) {
     const fromIndex = pathSegment.pool.coinAddresses.indexOf(pathSegment.from);
     const toIndex = pathSegment.pool.coinAddresses.indexOf(pathSegment.to);
-    const amoutOutNoFees = calcOutGivenIn(
+    const amoutOutNoFees = await calcOutGivenIn(
+      router,
       currentAmountIn,
       { ...pathSegment.pool, swapFee: 0 },
       fromIndex,
       toIndex,
     );
+
     const currentPriceImpact = calcPriceImpactPercentage(
       currentAmountIn,
       amoutOutNoFees,
@@ -260,14 +277,15 @@ export function findRouteGivenExactInput(
   };
 }
 
-export function findRouteGivenExactOutput(
+export async function findRouteGivenExactOutput(
+  router: ThalaswapRouter,
   graph: Graph,
   startToken: string,
   endToken: string,
   amountOut: number,
   maxHops: number,
   maxAllowedSwapPercentage: number,
-): Route | null {
+): Promise<Route | null> {
   const tokens = Object.keys(graph);
   const distances: Distances = {};
   const predecessors: Predecessors = {};
@@ -277,6 +295,7 @@ export function findRouteGivenExactOutput(
     distances[token] = {};
     predecessors[token] = {};
   }
+  if (distances[endToken] === undefined) return null;
   distances[endToken][0] = amountOut;
 
   for (let i = 0; i < maxHops; i++) {
@@ -295,7 +314,8 @@ export function findRouteGivenExactOutput(
           continue;
 
         try {
-          const newDistance = calcInGivenOut(
+          const newDistance = await calcInGivenOut(
+            router,
             distances[toToken][i]!,
             edge.pool,
             edge.fromIndex,
@@ -353,7 +373,8 @@ export function findRouteGivenExactOutput(
   for (const pathSegment of path) {
     const fromIndex = pathSegment.pool.coinAddresses.indexOf(pathSegment.from);
     const toIndex = pathSegment.pool.coinAddresses.indexOf(pathSegment.to);
-    const amoutInNoFees = calcInGivenOut(
+    const amoutInNoFees = await calcInGivenOut(
+      router,
       currentAmountOut,
       { ...pathSegment.pool, swapFee: 0 },
       fromIndex,
