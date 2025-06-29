@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.4.1
+
+### Patch Changes
+
+- 449a285: Catch the issue that calcOutGivenIn failed to compute
+
 ## 4.4.0
 
 ### Minor Changes
