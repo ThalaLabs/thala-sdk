@@ -194,21 +194,25 @@ export async function findRouteGivenExactInput(
         )
           continue;
 
-        const newDistance = await calcOutGivenIn(
-          router,
-          distances[fromToken][i]!,
-          edge.pool,
-          edge.fromIndex,
-          edge.toIndex,
-        );
+        try {
+          const newDistance = await calcOutGivenIn(
+            router,
+            distances[fromToken][i]!,
+            edge.pool,
+            edge.fromIndex,
+            edge.toIndex,
+          );
 
-        const nextHop = i + 1;
-        if (newDistance > (distances[toToken][nextHop] || defaultDistance)) {
-          distances[toToken][nextHop] = newDistance;
-          predecessors[toToken][nextHop] = {
-            token: fromToken,
-            pool: edge.pool,
-          };
+          const nextHop = i + 1;
+          if (newDistance > (distances[toToken][nextHop] || defaultDistance)) {
+            distances[toToken][nextHop] = newDistance;
+            predecessors[toToken][nextHop] = {
+              token: fromToken,
+              pool: edge.pool,
+            };
+          }
+        } catch (error) {
+          // If expected output amount is greater than pool balance, do not update distance
         }
       }
     }
