@@ -22,6 +22,8 @@ const router = new ThalaswapRouter({
     "0x2ee2526b8035890ebf30510aae8891d41116d83d2b5b7d774a3bc73d2b751d61",
   multirouterAddress:
     "0x60955b957956d79bc80b096d3e41bad525dd400d8ce957cdeb05719ed1e4fc26",
+  v2RouterAddress: 
+    "0xc36ceb6d7b137cea4897d4bc82d8e4d8be5f964c4217dbc96b0ba03cc64070f4",
 });
 const fromToken = "0x1::aptos_coin::AptosCoin";
 const toToken = "0x7fd500c11216f0fe3095d0c4b8aa4d64a4e2e04f83758462f2b127255643615::thl_coin::THL";

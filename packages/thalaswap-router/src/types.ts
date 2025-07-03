@@ -68,7 +68,6 @@ type Pool = {
 
 type PoolData = {
   pools: Pool[]; // for v1 and v2
-  poolsV3: Pool[]; // for v3
   coins: Coin[];
 };
 

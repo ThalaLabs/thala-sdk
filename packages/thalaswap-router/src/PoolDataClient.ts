@@ -66,8 +66,7 @@ class PoolDataClient {
           const v2pools = await this.getV2Pools();
           const v3pools = await this.getV3Pools();
           this.poolData = {
-            pools: [...v1pools, ...v2pools],
-            poolsV3: v3pools,
+            pools: [...v1pools, ...v2pools, ...v3pools],
             coins: this.coins,
           };
           this.lastUpdated = currentTime;
