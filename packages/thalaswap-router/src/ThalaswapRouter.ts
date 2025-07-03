@@ -15,8 +15,7 @@ import { STABLE_POOL_SCRIPTS_ABI } from "./abi/stable_pool_scripts";
 import { WEIGHTED_POOL_SCRIPTS_ABI } from "./abi/weighted_pool_scripts";
 import { MULTIHOP_ROUTER_ABI } from "./abi/multihop_router";
 import { Aptos, Network } from "@aptos-labs/ts-sdk";
-import { COIN_WRAPPER_ABI } from "./abi/coin_wrapper";
-import { V2_ROUTER_ABI } from "./abi/v2_router";
+import { V3_ROUTER_ABI } from "./abi/v3_router";
 import { scaleDown, scaleUp } from "./utils";
 import { V3_SCRIPT_ABI } from "./abi/v3_script";
 
@@ -70,7 +69,6 @@ type Options = {
 class ThalaswapRouter {
   public client: PoolDataClient;
   private graph: Graph | null = null;
-  private graphV3: Graph | null = null;
   private coins: Coin[] | null = null;
   private resourceAddress?: string;
   private v2ResourceAddress?: string;
@@ -131,8 +129,6 @@ class ThalaswapRouter {
     const poolData = await this.client.getPoolData();
     this.coins = poolData.coins;
     this.graph = this.buildGraph(poolData.pools);
-
-    this.graphV3 = this.buildGraph(poolData.poolsV3);
   }
 
   buildGraph(pools: Pool[]): Graph {
@@ -216,7 +212,7 @@ class ThalaswapRouter {
   ): Promise<Route | null> {
     await this.refreshData();
 
-    if (!this.graph || !this.graphV3) {
+    if (!this.graph) {
       console.error("Failed to load pools");
       return null;
     }
@@ -232,26 +228,7 @@ class ThalaswapRouter {
         DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE,
     );
 
-    const routeV3 = await findRouteGivenExactInput(
-      this,
-      this.graphV3,
-      startToken,
-      endToken,
-      amountIn,
-      maxHops,
-      this.options.maxAllowedSwapPercentage ??
-        DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE,
-    );
-
-    if (routeV3 && !route) {
-      return routeV3;
-    } else if (route && !routeV3) {
-      return route;
-    } else if (routeV3 && route) {
-      return routeV3.amountOut > route.amountOut ? routeV3 : route;
-    } else {
-      return null;
-    }
+    return route;
   }
 
   async getRouteGivenExactOutput(
@@ -262,7 +239,7 @@ class ThalaswapRouter {
   ): Promise<Route | null> {
     await this.refreshData();
 
-    if (!this.graph || !this.graphV3) {
+    if (!this.graph) {
       console.error("Failed to load pools");
       return null;
     }
@@ -277,27 +254,6 @@ class ThalaswapRouter {
       this.options.maxAllowedSwapPercentage ??
         DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE,
     );
-
-    const routeV3 = await findRouteGivenExactOutput(
-      this,
-      this.graphV3,
-      startToken,
-      endToken,
-      amountOut,
-      maxHops,
-      this.options.maxAllowedSwapPercentage ??
-        DEFAULT_MAX_ALLOWED_SWAP_PERCENTAGE,
-    );
-
-    if (routeV3 && !route) {
-      return routeV3;
-    } else if (route && !routeV3) {
-      return route;
-    } else if (routeV3 && route) {
-      return routeV3.amountIn < route.amountIn ? routeV3 : route;
-    } else {
-      return null;
-    }
 
     return route;
   }
@@ -314,11 +270,7 @@ class ThalaswapRouter {
       throw new Error("Invalid route");
     }
 
-    if (route.path[0].pool.version === LiquidityPoolVersion.V2) {
-      return this.encodeRouteV2(route, slippagePercentage, balanceCoinIn);
-    }
-
-    if (route.path[0].pool.version === LiquidityPoolVersion.V3) {
+    if (route.path[0].pool.version !== LiquidityPoolVersion.V1) {
       return this.encodeRouteV3(route, slippagePercentage, balanceCoinIn);
     }
 
@@ -412,7 +364,7 @@ class ThalaswapRouter {
     }
   }
 
-  private async encodeRouteV2(
+  private async encodeRouteV3(
     route: Route,
     slippagePercentage: number,
     balanceCoinIn?: number,
@@ -470,7 +422,7 @@ class ThalaswapRouter {
         ? "swap_exact_in_router_entry"
         : "swap_exact_out_router_entry";
 
-    return createEntryPayload(V2_ROUTER_ABI, {
+    return createEntryPayload(V3_ROUTER_ABI, {
       function: functionName,
       typeArguments: [coinType ?? `${this.v2RouterAddress}::router::Notacoin`],
       functionArguments: [
@@ -479,45 +431,6 @@ class ThalaswapRouter {
         route.type === "exact_input" ? amountInArg : amountOutArg,
         route.path[0].from as `0x${string}`,
         route.type === "exact_input" ? amountOutArg : amountInArg,
-      ],
-      address: this.v2RouterAddress as `0x${string}`,
-    });
-  }
-
-  private async encodeRouteV3(
-    route: Route,
-    slippagePercentage: number,
-    balanceCoinIn?: number,
-  ): Promise<EntryPayload> {
-    if (route.path.length !== 1) {
-      throw new Error("Invalid route");
-    }
-
-    if (!this.v3ResourceAddress) {
-      throw new Error("V3 resource address is not set");
-    }
-
-    const tokenInDecimals = this.coins!.find(
-      (coin) => coin.address === route.path[0].from,
-    )!.decimals;
-    const tokenOutDecimals = this.coins!.find(
-      (coin) => coin.address === route.path[route.path.length - 1].to,
-    )!.decimals;
-    const minAmountOut = route.amountOut * (1 - slippagePercentage / 100);
-
-    const path = route.path[0];
-    return createEntryPayload(V3_SCRIPT_ABI, {
-      function: "swap",
-      typeArguments: [],
-      functionArguments: [
-        path.pool.type as `0x${string}`,
-        path.from === path.pool.coinAddresses[0],
-        scaleUp(route.amountIn, tokenInDecimals).toFixed(0),
-        scaleUp(minAmountOut, tokenOutDecimals).toFixed(0),
-        path.to === path.pool.coinAddresses[1]
-          ? MIN_SQRT_PRICE
-          : MAX_SQRT_PRICE,
-        route.type === "exact_input",
       ],
       address: this.v2RouterAddress as `0x${string}`,
     });

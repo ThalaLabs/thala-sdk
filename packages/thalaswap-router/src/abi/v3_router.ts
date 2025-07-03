@@ -1,5 +1,5 @@
-export const V2_ROUTER_ABI = {
-  address: "0xc36ceb6d7b137cea4897d4bc82d8e4d8be5f964c4217dbc96b0ba03cc64070f4",
+export const V3_ROUTER_ABI = {
+  address: "0x1d2bd7dd7641e65a9706d4c72bea0b1aa48a41217c481c49e41b9456d7143d0a",
   name: "router",
   friends: [],
   exposed_functions: [
@@ -10,7 +10,21 @@ export const V2_ROUTER_ABI = {
       is_view: true,
       generic_type_params: [],
       params: [
-        "vector<0x1::object::Object<0xfbdb3da73efcfa742d542f152d65fc6da7b55dee864cd66475213e4be18c9d54::pool::Pool>>",
+        "vector<address>",
+        "vector<0x1::object::Object<0x1::fungible_asset::Metadata>>",
+        "0x1::object::Object<0x1::fungible_asset::Metadata>",
+        "u64",
+      ],
+      return: ["u64"],
+    },
+    {
+      name: "simulate_out_given_in",
+      visibility: "public",
+      is_entry: false,
+      is_view: true,
+      generic_type_params: [],
+      params: [
+        "vector<address>",
         "vector<0x1::object::Object<0x1::fungible_asset::Metadata>>",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
         "u64",
@@ -29,7 +43,7 @@ export const V2_ROUTER_ABI = {
       ],
       params: [
         "&signer",
-        "vector<0x1::object::Object<0xfbdb3da73efcfa742d542f152d65fc6da7b55dee864cd66475213e4be18c9d54::pool::Pool>>",
+        "vector<address>",
         "vector<0x1::object::Object<0x1::fungible_asset::Metadata>>",
         "u64",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
@@ -49,7 +63,7 @@ export const V2_ROUTER_ABI = {
       ],
       params: [
         "&signer",
-        "vector<0x1::object::Object<0xfbdb3da73efcfa742d542f152d65fc6da7b55dee864cd66475213e4be18c9d54::pool::Pool>>",
+        "vector<address>",
         "vector<0x1::object::Object<0x1::fungible_asset::Metadata>>",
         "u64",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
@@ -65,7 +79,7 @@ export const V2_ROUTER_ABI = {
       generic_type_params: [],
       params: [
         "&signer",
-        "vector<0x1::object::Object<0xfbdb3da73efcfa742d542f152d65fc6da7b55dee864cd66475213e4be18c9d54::pool::Pool>>",
+        "vector<address>",
         "vector<0x1::object::Object<0x1::fungible_asset::Metadata>>",
         "0x1::fungible_asset::FungibleAsset",
       ],
@@ -76,6 +90,7 @@ export const V2_ROUTER_ABI = {
     {
       name: "Notacoin",
       is_native: false,
+      is_event: false,
       abilities: ["key"],
       generic_type_params: [],
       fields: [
