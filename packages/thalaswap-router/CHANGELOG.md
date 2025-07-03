@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.5.0
+
+### Minor Changes
+
+- 360aef8: Use a new router contract which compatible with both v3 and v2 pools
+
 ## 4.4.1
 
 ### Patch Changes
