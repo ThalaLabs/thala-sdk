@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.5.1
+
+### Patch Changes
+
+- 7ba2c40: Update V3 router contract
+
 ## 4.5.0
 
 ### Minor Changes
