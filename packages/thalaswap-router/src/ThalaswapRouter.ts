@@ -431,7 +431,7 @@ class ThalaswapRouter {
         route.type === "exact_input" ? amountInArg : amountOutArg,
         route.path[0].from as `0x${string}`,
         route.type === "exact_input" ? amountOutArg : amountInArg,
-        "FirstPartyRouter",
+        "OfficialUI",
       ],
       address: this.v2RouterAddress as `0x${string}`,
     });
