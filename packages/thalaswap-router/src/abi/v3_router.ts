@@ -1,5 +1,5 @@
 export const V3_ROUTER_ABI = {
-  address: "0x1d2bd7dd7641e65a9706d4c72bea0b1aa48a41217c481c49e41b9456d7143d0a",
+  address: "0x74abf1d5dae17399fe4fe4de5acdabf350a6ace84650cd164e68dd34687c9de2",
   name: "router",
   friends: [],
   exposed_functions: [
@@ -48,6 +48,7 @@ export const V3_ROUTER_ABI = {
         "u64",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
         "u64",
+        "0x1::string::String",
       ],
       return: [],
     },
@@ -68,6 +69,7 @@ export const V3_ROUTER_ABI = {
         "u64",
         "0x1::object::Object<0x1::fungible_asset::Metadata>",
         "u64",
+        "0x1::string::String",
       ],
       return: [],
     },
@@ -82,6 +84,7 @@ export const V3_ROUTER_ABI = {
         "vector<address>",
         "vector<0x1::object::Object<0x1::fungible_asset::Metadata>>",
         "0x1::fungible_asset::FungibleAsset",
+        "0x1::string::String",
       ],
       return: ["0x1::fungible_asset::FungibleAsset"],
     },
