@@ -1,5 +1,5 @@
 export const V3_ROUTER_ABI = {
-  address: "0x74abf1d5dae17399fe4fe4de5acdabf350a6ace84650cd164e68dd34687c9de2",
+  address: "0xa746b0fc9bf1e391d10836d6d14fbf362960e78c0b522c238253ca9a67b82de5",
   name: "router",
   friends: [],
   exposed_functions: [
@@ -36,11 +36,7 @@ export const V3_ROUTER_ABI = {
       visibility: "public",
       is_entry: true,
       is_view: false,
-      generic_type_params: [
-        {
-          constraints: [],
-        },
-      ],
+      generic_type_params: [],
       params: [
         "&signer",
         "vector<address>",
@@ -57,11 +53,7 @@ export const V3_ROUTER_ABI = {
       visibility: "public",
       is_entry: true,
       is_view: false,
-      generic_type_params: [
-        {
-          constraints: [],
-        },
-      ],
+      generic_type_params: [],
       params: [
         "&signer",
         "vector<address>",

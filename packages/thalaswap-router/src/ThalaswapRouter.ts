@@ -424,7 +424,7 @@ class ThalaswapRouter {
 
     return createEntryPayload(V3_ROUTER_ABI, {
       function: functionName,
-      typeArguments: [coinType ?? `${this.v2RouterAddress}::router::Notacoin`],
+      typeArguments: [],
       functionArguments: [
         route.path.map((p) => p.pool.type as `0x${string}`),
         route.path.map((p) => p.to as `0x${string}`),
