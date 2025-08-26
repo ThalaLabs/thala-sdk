@@ -551,4 +551,4 @@ function hexStringToUint8Array(hexString: string) {
 }
 
 const MAX_SQRT_PRICE = "79226673515207749235715866624";
-const MIN_SQRT_PRICE = "4295048016";
+const MIN_SQRT_PRICE = "4295048017";

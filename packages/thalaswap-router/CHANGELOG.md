@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.5.2
+
+### Patch Changes
+
+- 67529e9: Sync MIN_SQRT_PRICE with the value in contract
+
 ## 4.5.1
 
 ### Patch Changes

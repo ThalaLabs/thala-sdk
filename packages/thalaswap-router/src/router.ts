@@ -212,6 +212,7 @@ export async function findRouteGivenExactInput(
             };
           }
         } catch (error) {
+          console.error(error);
           // If expected output amount is greater than pool balance, do not update distance
         }
       }
