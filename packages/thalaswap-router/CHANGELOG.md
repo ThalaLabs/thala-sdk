@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.5.3
+
+### Patch Changes
+
+- 4982a8a: Update router contract ABI, remove generic args in swap entry function
+
 ## 4.5.2
 
 ### Patch Changes
