@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 4.5.4
+
+### Patch Changes
+
+- 6087ac1: Fix clmm preview swap
+
 ## 4.5.3
 
 ### Patch Changes
