@@ -12,8 +12,12 @@ $ npm i @thalalabs/router-sdk
 
 ```
 const router = new ThalaswapRouter({
-  network: Network.MAINNET,
-  fullnode: "https://fullnode.mainnet.aptoslabs.com/v1",
+  client: new Aptos(
+      new AptosConfig({
+        network: "mainnet",
+        fullnode: "https://fullnode.mainnet.aptoslabs.com/v1",
+      })
+    ),
   resourceAddress:
     "0x48271d39d0b05bd6efca2278f22277d6fcc375504f9839fd73f74ace240861af",
   v2ResourceAddress:

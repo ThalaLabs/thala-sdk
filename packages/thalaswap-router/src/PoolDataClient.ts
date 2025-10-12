@@ -28,16 +28,14 @@ class PoolDataClient {
   private v1CoinsInitialized = false;
   private v2CoinsInitialized = false;
   constructor({
-    network,
-    fullnode,
+    client,
     resourceAddress,
     v2ResourceAddress,
     v2LensAddress,
     v3ResourceAddress,
     v3LensAddress,
   }: {
-    network: Network;
-    fullnode: string;
+    client: Aptos;
     resourceAddress?: string;
     v2ResourceAddress?: string;
     v2LensAddress?: string;
@@ -49,12 +47,7 @@ class PoolDataClient {
     this.v2LensAddress = v2LensAddress;
     this.v3ResourceAddress = v3ResourceAddress;
     this.v3LensAddress = v3LensAddress;
-    this.client = new Aptos(
-      new AptosConfig({
-        network: network,
-        fullnode: fullnode,
-      }),
-    );
+    this.client = client;
   }
 
   async getPoolData(): Promise<PoolData> {

@@ -1,6 +1,6 @@
 import poolData from "./test-pools.json";
 import { ThalaswapRouter } from "../src";
-import { Network } from "@aptos-labs/ts-sdk";
+import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 
 const coins = poolData.coins;
 const pools = poolData.pools.map((pool: any) => {
@@ -26,8 +26,12 @@ const mockPoolDataClient = {
 };
 
 const router = new ThalaswapRouter({
-  network: Network.MAINNET,
-  fullnode: "test",
+  client: new Aptos(
+    new AptosConfig({
+      network: Network.MAINNET,
+      fullnode: "https://fullnode.mainnet.aptoslabs.com/v1",
+    }),
+  ),
   resourceAddress: "0x123",
   v2ResourceAddress: "0x123",
   multirouterAddress: "0x123",
