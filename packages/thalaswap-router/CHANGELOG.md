@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 5.0.0
+
+### Major Changes
+
+- e1d6cee: Change ThalaswapRouter to use the Aptos instance as input instead of the fullnode endpoint. This allows the user to have complete control over the AptosConfig.
+
 ## 4.5.4
 
 ### Patch Changes
