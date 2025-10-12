@@ -80,8 +80,7 @@ class ThalaswapRouter {
   private options: Options;
 
   constructor({
-    network,
-    fullnode,
+    client,
     resourceAddress,
     v2ResourceAddress,
     v2LensAddress,
@@ -91,8 +90,7 @@ class ThalaswapRouter {
     v3LensAddress,
     options,
   }: {
-    network: Network;
-    fullnode: string;
+    client: Aptos;
     resourceAddress?: string;
     v2ResourceAddress?: string;
     v2LensAddress?: string;
@@ -110,8 +108,7 @@ class ThalaswapRouter {
     this.v3ResourceAddress = v3ResourceAddress;
     this.v3LensAddress = v3LensAddress;
     this.client = new PoolDataClient({
-      network,
-      fullnode,
+      client,
       resourceAddress,
       v2ResourceAddress,
       v2LensAddress,
