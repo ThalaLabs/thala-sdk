@@ -5,7 +5,7 @@ SDK to get optimal swap routing for ThalaSwap. Currently, we support finding rou
 ## Install
 
 ```
-$ npm i @thalalabs/router-sdk
+$ npm i @preceptlabs/router-sdk
 ```
 
 ## Examples

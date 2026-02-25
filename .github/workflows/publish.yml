@@ -1,17 +1,16 @@
 name: Publish
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: ["Build"]
     types:
       - completed
-  push:
     branches:
       - "main"
-
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
   publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -24,8 +23,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
-          
+          cache: "pnpm"
+
+      - name: Creating .npmrc
+        run: |
+          cat << EOF > "./.npmrc"
+            //registry.npmjs.org/:_authToken=$NPM_TOKEN
+          EOF
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Verify npm auth
+        run: npm whoami --registry=https://registry.npmjs.org/
+
       - run: pnpm i
       - name: Create Release Pull Request or Publish
         id: changesets

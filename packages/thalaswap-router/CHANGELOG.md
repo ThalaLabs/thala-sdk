@@ -1,4 +1,4 @@
-# @thalalabs/router-sdk
+# @preceptlabs/router-sdk
 
 ## 5.0.1
 
@@ -180,7 +180,7 @@
 ### Patch Changes
 
 - Updated dependencies [9729afa]
-  - @thalalabs/thalaswap-math@1.0.1
+  - @preceptlabs/thalaswap-math@1.0.1
 
 ## 2.1.0
 

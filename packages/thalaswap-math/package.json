@@ -1,5 +1,5 @@
 {
-  "name": "@thalalabs/thalaswap-math",
+  "name": "@preceptlabs/thalaswap-math",
   "version": "1.0.1",
   "description": "",
   "scripts": {
@@ -30,7 +30,8 @@
   "author": "",
   "license": "MIT",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "repository": {
     "type": "git",

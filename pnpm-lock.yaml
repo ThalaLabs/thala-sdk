@@ -57,12 +57,12 @@ importers:
       '@aptos-labs/ts-sdk':
         specifier: ^5.1.1
         version: 5.1.1(got@11.8.6)
+      '@preceptlabs/thalaswap-math':
+        specifier: workspace:^
+        version: link:../thalaswap-math
       '@thalalabs/surf':
         specifier: ^1.9.7
         version: 1.9.7(@aptos-labs/ts-sdk@5.1.1(got@11.8.6))(google-protobuf@3.21.4)(react@18.3.1)(typescript@5.4.5)
-      '@thalalabs/thalaswap-math':
-        specifier: workspace:^
-        version: link:../thalaswap-math
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12

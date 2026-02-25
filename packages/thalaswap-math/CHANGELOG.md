@@ -1,4 +1,4 @@
-# thalaswap-math
+# @preceptlabs/thalaswap-math
 
 ## 1.0.1
 

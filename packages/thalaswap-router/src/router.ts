@@ -5,7 +5,7 @@ import {
   calcInGivenOutWeighted,
   calcPriceImpactPercentageStable,
   calcPriceImpactPercentageWeighted,
-} from "@thalalabs/thalaswap-math";
+} from "@preceptlabs/thalaswap-math";
 import {
   Graph,
   Route,

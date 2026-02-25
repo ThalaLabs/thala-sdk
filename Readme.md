@@ -1,4 +1,4 @@
 # thala-sdk
 
-- [@thalalabs/thalaswap-math](./packages/thalaswap-math/)
-- [@thalalabs/router-sdk](./packages/thalaswap-router/)
+- [@preceptlabs/thalaswap-math](./packages/thalaswap-math/)
+- [@preceptlabs/router-sdk](./packages/thalaswap-router/)

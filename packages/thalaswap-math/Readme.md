@@ -5,7 +5,7 @@ SDK to calculate swap amounts and pool price.
 # install
 
 ```
-$ npm i @thalalabs/thalaswap-math
+$ npm i @preceptlabs/thalaswap-math
 ```
 
 # example
@@ -16,7 +16,7 @@ import {
   calcInGivenOutWeighted,
   calcOutGivenInStable,
   calcOutGivenInWeighted,
-} from "@thalalabs/thalaswap-math";
+} from "@preceptlabs/thalaswap-math";
 
 // Calculate amount out given amount in:
 // A stable pool with three tokens having balances of [100, 200, 300],
