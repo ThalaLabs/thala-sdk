@@ -134,15 +134,22 @@ class PoolDataClient {
           if (this.coins.find((c) => c.address === address)) return;
           const coin = {
             address,
-            decimals: (
-              await this.client.view({
-                payload: createViewPayload(COIN_ABI, {
-                  function: "decimals",
-                  functionArguments: [],
-                  typeArguments: [address as `${string}::${string}::${string}`],
-                }),
-              })
-            )[0] as number,
+            // cannot fetch metadata for GUI coin, so we hardcode the decimals here.
+            decimals:
+              address ===
+              "0xe4ccb6d39136469f376242c31b34d10515c8eaaa38092f804db8e08a8f53c5b2::assets_v1::EchoCoin002"
+                ? 6
+                : ((
+                    await this.client.view({
+                      payload: createViewPayload(COIN_ABI, {
+                        function: "decimals",
+                        functionArguments: [],
+                        typeArguments: [
+                          address as `${string}::${string}::${string}`,
+                        ],
+                      }),
+                    })
+                  )[0] as number),
           };
           this.coins.push(coin);
         }),
