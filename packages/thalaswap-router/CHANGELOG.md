@@ -1,5 +1,11 @@
 # @thalalabs/router-sdk
 
+## 5.0.1
+
+### Patch Changes
+
+- eb33c57: hotfix for the GUI coin contract issue
+
 ## 5.0.0
 
 ### Major Changes
